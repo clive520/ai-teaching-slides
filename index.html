@@ -98,6 +98,11 @@
 						<h2><i class="fa-solid fa-brain"></i>零、 AI 核心概念解析</h2>
 						<p>建立最新的 AI 認知：生成式 AI vs <span class="highlight-neon">AI Agent</span></p>
 					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (Step-by-Step)</h4>
+						<p>1. <strong>開場破冰</strong>：先問台下學生「大家平常怎麼用 ChatGPT？」，引導出目前多數人把 AI 當作單純的問答機器。</p>
+						<p>2. <strong>核心切入</strong>：告訴學生今天這堂課不一樣，我們要教的是如何讓 AI 幫你「做事」，也就是進入 AI Agent 的領域。</p>
+					</aside>
 				</section>
 
 				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
@@ -112,6 +117,11 @@
 							</ul>
 						</div>
 					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (Step-by-Step)</h4>
+						<p>1. <strong>展示 NotebookLM</strong>：點開事先準備好的 NotebookLM 網址。</p>
+						<p>2. <strong>操作示範</strong>：在 NotebookLM 中上傳一份 PDF，並當場示範點擊「語音導覽 (Audio Overview)」，讓學生聽 AI 怎麼把無聊的講義變成兩人對話的 Podcast，引起學習興趣。</p>
+					</aside>
 				</section>
 
 				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
@@ -128,6 +138,11 @@
 							<img src="assets/images/agent_cases.jpg" class="spot-img" alt="AI Agent Concept">
 						</div>
 					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (Step-by-Step)</h4>
+						<p>1. <strong>比喻法</strong>：生成式 AI 是大腦，AI Agent 是「大腦 + 手 + 腳」。</p>
+						<p>2. <strong>舉例說明</strong>：舉例「請幫我規劃日本五天旅遊並訂機票」。ChatGPT 只會給你計畫清單；但 Agent 會自己去查機票網、比對價格、並自動呼叫購票系統訂票。</p>
+					</aside>
 				</section>
 
 				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
@@ -146,6 +161,12 @@
 							<img src="assets/images/prompt_elements.jpg" class="spot-img" alt="Prompt Elements Checklist">
 						</div>
 					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (Step-by-Step)</h4>
+						<p>1. <strong>發放學習單</strong>：請學生拿出一張紙或開啟筆記軟體。</p>
+						<p>2. <strong>實作練習</strong>：請學生依照這 5 大要素，寫出一個「請 AI 幫忙規劃英文單字背誦計畫」的 Prompt。</p>
+						<p>3. <strong>隨機抽點</strong>：請 2-3 位同學分享他們的 Prompt，並由老師指出哪裡可以加入更明確的「限制條件」或「驗收標準」。</p>
+					</aside>
 				</section>
 
 				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
@@ -160,6 +181,11 @@
 							<li><strong>可由人類審核</strong>：產出能快速驗證對錯</li>
 						</ul>
 					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (Step-by-Step)</h4>
+						<p>1. <strong>情境反問</strong>：「如果請 AI 每天幫你決定早餐吃什麼，適合做成自動化嗎？」(引導學生思考：這沒有固定 SOP，也不好驗證對錯，其實不適合。)</p>
+						<p>2. <strong>重點強調</strong>：自動化的核心是「重複發生且 SOP 化」，不是為了用 AI 而用 AI。</p>
+					</aside>
 				</section>
 
 				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
@@ -179,6 +205,11 @@
 						<h2><i class="fa-solid fa-cloud-arrow-up"></i>一、 網頁與服務部署空間</h2>
 						<p>成果展示與實作</p>
 					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (Step-by-Step)</h4>
+						<p>1. <strong>觀念釐清</strong>：告訴學生，網頁寫好只在自己的電腦裡，別人看不到。我們需要「部署」讓它上網。</p>
+						<p>2. <strong>名詞解釋</strong>：用「租店面」來比喻網頁部署空間，網址就是「門牌號碼」。</p>
+					</aside>
 				</section>
 
 				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="1">
@@ -191,6 +222,15 @@
 							<li><strong>Cloudflare Pages</strong>：極速與超大流量。</li>
 						</ul>
 					</div>
+					<aside class="notes">
+						<h4>👉 實作演練：GitHub Pages 詳細部署步驟</h4>
+						<p>1. 請學生登入 GitHub。點擊右上角 `+` -> `New repository`。</p>
+						<p>2. 命名為 `my-first-ai-web`，設為 Public。</p>
+						<p>3. 點擊 `Upload files`，上傳事前寫好的 HTML 檔案，然後按下 Commit。</p>
+						<p>4. 點擊專案上方的 `Settings` -> 左側找到 `Pages`。</p>
+						<p>5. 在 Branch 下拉選單選擇 `main`，點擊 `Save`。</p>
+						<p>6. (提醒學生) 等待大約兩分鐘，頁面上方就會出現專屬網址囉！</p>
+					</aside>
 				</section>
 
 				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="1">
@@ -203,6 +243,11 @@
 							<li><strong>Render / Zeabur</strong>：容器化與 PostgreSQL 部署。</li>
 						</ul>
 					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (Step-by-Step)</h4>
+						<p>1. <strong>痛點說明</strong>：靜態網頁無法存資料 (例如留言板)。如果要存資料，入門非常推薦用 GAS + Google 試算表。</p>
+						<p>2. <strong>展示範例</strong>：打開一個已經寫好的 Google 表單 + 試算表，當場示範資料是如何即時存進免費的試算表中的。</p>
+					</aside>
 				</section>
 
 				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="1">
@@ -214,6 +259,13 @@
 							<li class="highlight-neon">非永續性風險：請定期備份！</li>
 						</ul>
 					</div>
+					<aside class="notes">
+						<h4>👉 實機展示 CI/CD (自動化部署)</h4>
+						<p>1. 在本地端用 VS Code 打開剛剛上傳的 HTML 檔，當著學生的面修改一個大標題文字。</p>
+						<p>2. 打開 GitHub Desktop，點擊 `Commit` 跟 `Push origin`。</p>
+						<p>3. 馬上切換到 GitHub 網頁，讓學生看 Actions 正在自動編譯的齒輪轉動畫面。</p>
+						<p>4. 結論：向學生證明，有了 CI/CD，以後只要修改程式碼，不需要再手動開網頁上傳，網站就會自動更新！</p>
+					</aside>
 				</section>
 
                 <!-- 二、 學生範例 -->
