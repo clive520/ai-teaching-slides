@@ -32,6 +32,50 @@
 				margin-right: 15px;
 				color: #ff79c6;
 			}
+			/* 毛玻璃方框 (Glassmorphism) */
+			.glass-panel {
+				background: rgba(0, 0, 0, 0.65);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				padding: 40px;
+				border-radius: 20px;
+				border: 1px solid rgba(255, 255, 255, 0.1);
+				box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				height: 100%;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.glass-panel.center {
+				text-align: center;
+				align-items: center;
+			}
+			/* 左右排版 */
+			.slide-layout {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+				width: 100%;
+			}
+			.content-col {
+				flex: 1;
+				padding-right: 30px;
+			}
+			.img-col {
+				flex: 0 0 350px;
+				display: flex;
+				justify-content: center;
+			}
+			.spot-img {
+				width: 100%;
+				border-radius: 15px;
+				box-shadow: 0 0 25px rgba(66, 185, 131, 0.4);
+				border: 2px solid rgba(255, 255, 255, 0.1);
+			}
 		</style>
 	</head>
 	<body>
@@ -39,170 +83,230 @@
 			<div class="slides">
 
                 <!-- 封面 -->
-				<section data-background-image="assets/images/cover_bg.jpg" data-background-opacity="0.3">
-					<h2><i class="fa-solid fa-rocket"></i>AI 主題教學課程規劃</h2>
-					<p>網頁部署 ｜ 實作範例 ｜ 教師備課 ｜ 工具推薦</p>
+				<section data-background-image="assets/images/cover_bg.jpg" data-background-opacity="1">
+					<div class="glass-panel center">
+						<h2><i class="fa-solid fa-rocket"></i>AI 主題教學課程規劃</h2>
+						<p>網頁部署 ｜ 實作範例 ｜ 教師備課 ｜ 工具推薦</p>
+					</div>
 				</section>
 
                 <!-- 零、 核心概念 -->
-				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="0.2">
-					<h2><i class="fa-solid fa-brain"></i>零、 AI 核心概念解析</h2>
-					<p>建立最新的 AI 認知：生成式 AI vs <span class="highlight-neon">AI Agent</span></p>
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel center">
+						<h2><i class="fa-solid fa-brain"></i>零、 AI 核心概念解析</h2>
+						<p>建立最新的 AI 認知：生成式 AI vs <span class="highlight-neon">AI Agent</span></p>
+					</div>
 				</section>
 
-				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="0.2">
-					<h3><i class="fa-solid fa-comment-dots"></i>1. 生成式 AI (Generative AI)</h3>
-					<ul>
-						<li><strong>定位</strong>：超級大腦或百科全書</li>
-						<li><strong>特性</strong>：一問一答。沒有手腳，需依賴人類指令推進。</li>
-						<li><strong>代表案例</strong>：ChatGPT, Google Gemini, Claude</li>
-						<li><strong>實用工具</strong>：Gemini「Gems」、NotebookLM</li>
-					</ul>
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-comment-dots"></i>1. 生成式 AI (Generative AI)</h3>
+							<ul>
+								<li><strong>定位</strong>：超級大腦或百科全書</li>
+								<li><strong>特性</strong>：一問一答。沒有手腳，需依賴人類指令推進。</li>
+								<li><strong>代表案例</strong>：ChatGPT, Google Gemini, Claude</li>
+								<li><strong>實用工具</strong>：Gemini「Gems」、NotebookLM</li>
+							</ul>
+						</div>
+					</div>
 				</section>
 
-				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="0.2">
-					<h3><i class="fa-solid fa-robot"></i>2. AI Agent (代理 / 智能體)</h3>
-					<ul>
-						<li><strong>定位</strong>：有手有腳的獨立助理</li>
-						<li><strong>特性</strong>：具備規劃任務、長期記憶、使用工具 (Tool Use)、與自主行動的能力。</li>
-						<li><strong>優勢</strong>：只要給定「大目標」，Agent 能自行拆解步驟、完成任務。</li>
-					</ul>
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-robot"></i>2. AI Agent (代理 / 智能體)</h3>
+							<ul>
+								<li><strong>定位</strong>：有手有腳的獨立助理</li>
+								<li><strong>特性</strong>：具備規劃任務、長期記憶、使用工具 (Tool Use)、與自主行動的能力。</li>
+								<li><strong>優勢</strong>：只要給定「大目標」，Agent 能自行拆解步驟、完成任務。</li>
+							</ul>
+						</div>
+						<div class="img-col">
+							<img src="assets/images/agent_cases.jpg" class="spot-img" alt="AI Agent Concept">
+						</div>
+					</div>
 				</section>
 
-				<section>
-					<h3><i class="fa-solid fa-list-check"></i>3. 提示詞 (Prompt) 5 大要素</h3>
-					<ol>
-						<li><strong>任務 (Task)</strong>：核心目標。</li>
-						<li><strong>輸入資料 (Input Data)</strong>：背景資訊或素材。</li>
-						<li><strong>輸出成品 (Output Format)</strong>：最終期望的格式。</li>
-						<li><strong>限制條件 (Constraints)</strong>：範圍限制或語氣要求。</li>
-						<li><strong>驗收標準 (Acceptance Criteria)</strong>：及格或完美的標準。</li>
-					</ol>
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-list-check"></i>3. 提示詞 (Prompt) 5 大要素</h3>
+							<ol>
+								<li><strong>任務 (Task)</strong>：核心目標。</li>
+								<li><strong>輸入資料 (Input Data)</strong>：背景資訊或素材。</li>
+								<li><strong>輸出成品 (Output Format)</strong>：最終期望的格式。</li>
+								<li><strong>限制條件 (Constraints)</strong>：範圍限制或語氣要求。</li>
+								<li><strong>驗收標準 (Acceptance Criteria)</strong>：及格或完美的標準。</li>
+							</ol>
+						</div>
+						<div class="img-col">
+							<img src="assets/images/prompt_elements.jpg" class="spot-img" alt="Prompt Elements Checklist">
+						</div>
+					</div>
 				</section>
 
-				<section>
-					<h3><i class="fa-solid fa-scale-balanced"></i>4. 自動化任務的 5 大判準</h3>
-					<p>不是每件事都值得做成 Skill！</p>
-					<ul>
-						<li><strong>流程固定</strong>：步驟 SOP 化</li>
-						<li><strong>輸入明確</strong>：初始條件清楚</li>
-						<li><strong>成品明確</strong>：產出格式可預期</li>
-						<li><strong>重複發生</strong>：一再出現才有投資效益</li>
-						<li><strong>可由人類審核</strong>：產出能快速驗證對錯</li>
-					</ul>
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-scale-balanced"></i>4. 自動化任務的 5 大判準</h3>
+						<p>不是每件事都值得做成 Skill！</p>
+						<ul>
+							<li><strong>流程固定</strong>：步驟 SOP 化</li>
+							<li><strong>輸入明確</strong>：初始條件清楚</li>
+							<li><strong>成品明確</strong>：產出格式可預期</li>
+							<li><strong>重複發生</strong>：一再出現才有投資效益</li>
+							<li><strong>可由人類審核</strong>：產出能快速驗證對錯</li>
+						</ul>
+					</div>
 				</section>
 
-				<section>
-					<h3><i class="fa-solid fa-bolt"></i>5. 實用 AI Agent 案例</h3>
-					<ul>
-						<li><strong>Google Antigravity</strong>：強大開發與系統 Agent。</li>
-						<li><strong>ChatGPT Code Interpreter</strong>：進階資料分析，自動寫 Python。</li>
-						<li><strong>Open Code</strong>：本機端開源 Agent。</li>
-					</ul>
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-bolt"></i>5. 實用 AI Agent 案例</h3>
+						<ul>
+							<li><strong>Google Antigravity</strong>：強大開發與系統 Agent。</li>
+							<li><strong>ChatGPT Code Interpreter</strong>：進階資料分析，自動寫 Python。</li>
+							<li><strong>Open Code</strong>：本機端開源 Agent。</li>
+						</ul>
+					</div>
 				</section>
 
                 <!-- 一、 網頁部署 -->
-				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="0.3">
-					<h2><i class="fa-solid fa-cloud-arrow-up"></i>一、 網頁與服務部署空間</h2>
-					<p>成果展示與實作</p>
+				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="1">
+					<div class="glass-panel center">
+						<h2><i class="fa-solid fa-cloud-arrow-up"></i>一、 網頁與服務部署空間</h2>
+						<p>成果展示與實作</p>
+					</div>
 				</section>
 
-				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="0.2">
-					<h3><i class="fa-solid fa-file-code"></i>1. 靜態網頁部署空間</h3>
-					<ul>
-						<li><strong>GitHub Pages</strong>：經典免費，學習 Git 必備。</li>
-						<li><strong>Vercel</strong>：前端最熱門，現代化 CI/CD。</li>
-						<li><strong>Netlify</strong>：老牌無伺服器託管。</li>
-						<li><strong>Cloudflare Pages</strong>：極速與超大流量。</li>
-					</ul>
+				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-file-code"></i>1. 靜態網頁部署空間</h3>
+						<ul>
+							<li><strong>GitHub Pages</strong>：經典免費，學習 Git 必備。</li>
+							<li><strong>Vercel</strong>：前端最熱門，現代化 CI/CD。</li>
+							<li><strong>Netlify</strong>：老牌無伺服器託管。</li>
+							<li><strong>Cloudflare Pages</strong>：極速與超大流量。</li>
+						</ul>
+					</div>
 				</section>
 
-				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="0.2">
-					<h3><i class="fa-solid fa-database"></i>2. 結合資料庫的動態網頁</h3>
-					<ul>
-						<li><strong>GAS + Google Sheets</strong>：最親民，試算表當後端。</li>
-						<li><strong>Vercel + Supabase</strong>：最主流現代全端。</li>
-						<li><strong>Firebase</strong>：強大 NoSQL 與即時資料庫。</li>
-						<li><strong>Render / Zeabur</strong>：容器化與 PostgreSQL 部署。</li>
-					</ul>
+				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-database"></i>2. 結合資料庫的動態網頁</h3>
+						<ul>
+							<li><strong>GAS + Google Sheets</strong>：最親民，試算表當後端。</li>
+							<li><strong>Vercel + Supabase</strong>：最主流現代全端。</li>
+							<li><strong>Firebase</strong>：強大 NoSQL 與即時資料庫。</li>
+							<li><strong>Render / Zeabur</strong>：容器化與 PostgreSQL 部署。</li>
+						</ul>
+					</div>
 				</section>
 
-				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="0.2">
-					<h3><i class="fa-solid fa-server"></i>3. CI/CD 自動化與限制</h3>
-					<ul>
-						<li>GitHub 自動化上傳，免 FTP。</li>
-						<li><strong>注意限制</strong>：冷啟動 (Cold Start)、流量上限。</li>
-						<li class="highlight-neon">非永續性風險：請定期備份！</li>
-					</ul>
+				<section data-background-image="assets/images/deployment.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-server"></i>3. CI/CD 自動化與限制</h3>
+						<ul>
+							<li>GitHub 自動化上傳，免 FTP。</li>
+							<li><strong>注意限制</strong>：冷啟動 (Cold Start)、流量上限。</li>
+							<li class="highlight-neon">非永續性風險：請定期備份！</li>
+						</ul>
+					</div>
 				</section>
 
                 <!-- 二、 學生範例 -->
-				<section data-background-image="assets/images/cover_bg.jpg" data-background-opacity="0.2">
-					<h2><i class="fa-solid fa-chalkboard-user"></i>二、 學生/一般 AI 教學範例</h2>
+				<section data-background-image="assets/images/cover_bg.jpg" data-background-opacity="1">
+					<div class="glass-panel center">
+						<h2><i class="fa-solid fa-chalkboard-user"></i>二、 學生/一般 AI 教學範例</h2>
+					</div>
 				</section>
 
-				<section>
-					<h3><i class="fa-solid fa-lightbulb"></i>實作範例 (1)</h3>
-					<ul>
-						<li><strong>呈現文字雲</strong>：萃取長文關鍵字，利用 AI 寫 Python / JS 生成視覺圖。</li>
-						<li><strong>製作教學助手</strong>：使用 Custom GPTs 或 Dify (RAG) 打造專屬助教。</li>
-						<li><strong>HTML 簡報</strong>：AI 生成 Markdown，直接無痛轉換為 Reveal.js。</li>
-					</ul>
-				</section>
-
-				<section>
-					<h3><i class="fa-solid fa-calendar-check"></i>實作範例 (2)</h3>
-					<ul>
-						<li><strong>打造行事曆 Agent</strong>：使用 No-Code 平台串接 Google Calendar，解析自然語言排程。</li>
-						<li><strong>API 串接</strong>：
+				<section data-background-image="assets/images/cover_bg.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-lightbulb"></i>實作範例 (1)</h3>
 							<ul>
-								<li>免費：Gemini, NVIDIA NIM, Groq</li>
-								<li>付費：OpenAI, Claude, OpenCode (GO)</li>
+								<li><strong>呈現文字雲</strong>：萃取長文關鍵字，利用 AI 寫 Python / JS 生成視覺圖。</li>
+								<li><strong>製作教學助手</strong>：使用 Custom GPTs 或 Dify (RAG) 打造專屬助教。</li>
+								<li><strong>HTML 簡報</strong>：AI 生成 Markdown，直接無痛轉換為 Reveal.js。</li>
 							</ul>
-						</li>
-					</ul>
-					<p class="fragment highlight-neon" style="margin-top:20px;">安全提醒：API Key 絕不能直接寫在前端公開代碼中！</p>
+						</div>
+						<div class="img-col">
+							<img src="assets/images/student_examples.jpg" class="spot-img" alt="Student Terminal">
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="assets/images/cover_bg.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-calendar-check"></i>實作範例 (2)</h3>
+						<ul>
+							<li><strong>打造行事曆 Agent</strong>：使用 No-Code 平台串接 Google Calendar，解析自然語言排程。</li>
+							<li><strong>API 串接</strong>：
+								<ul>
+									<li>免費：Gemini, NVIDIA NIM, Groq</li>
+									<li>付費：OpenAI, Claude, OpenCode (GO)</li>
+								</ul>
+							</li>
+						</ul>
+						<p class="fragment highlight-neon" style="margin-top:20px;">安全提醒：API Key 絕不能直接寫在前端公開代碼中！</p>
+					</div>
 				</section>
 
                 <!-- 三、 教師備課 -->
-				<section data-background-image="assets/images/second_brain.jpg" data-background-opacity="0.3">
-					<h2><i class="fa-solid fa-book-open-reader"></i>三、 專屬教師的備課範例</h2>
+				<section data-background-image="assets/images/second_brain.jpg" data-background-opacity="1">
+					<div class="glass-panel center">
+						<h2><i class="fa-solid fa-book-open-reader"></i>三、 專屬教師的備課範例</h2>
+					</div>
 				</section>
 
-				<section data-background-image="assets/images/second_brain.jpg" data-background-opacity="0.2">
-					<h3><i class="fa-solid fa-file-pen"></i>自動化備課流程</h3>
-					<ul>
-						<li><strong>教案製作</strong>：快速生成含動機、發展、評量的草案。</li>
-						<li><strong>建立題庫</strong>：試題 PDF 轉文字，結構化出題。</li>
-						<li><strong>會議紀錄</strong>：語音 STT 轉文字，清洗萃取決議事項。</li>
-						<li><strong>問卷調查</strong>：生成題目並透過 Tally.so 直接轉表單。</li>
-					</ul>
+				<section data-background-image="assets/images/second_brain.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-file-pen"></i>自動化備課流程</h3>
+							<ul>
+								<li><strong>教案製作</strong>：快速生成含動機、發展、評量的草案。</li>
+								<li><strong>建立題庫</strong>：試題 PDF 轉文字，結構化出題。</li>
+								<li><strong>會議紀錄</strong>：語音 STT 轉文字，清洗萃取決議事項。</li>
+								<li><strong>問卷調查</strong>：生成題目並透過 Tally.so 直接轉表單。</li>
+							</ul>
+						</div>
+						<div class="img-col">
+							<img src="assets/images/teacher_prep.jpg" class="spot-img" alt="Teacher Prep Document">
+						</div>
+					</div>
 				</section>
 
-				<section data-background-image="assets/images/second_brain.jpg" data-background-opacity="0.2">
-					<h3><i class="fa-solid fa-folder-tree"></i>打造教師專屬「第二大腦」</h3>
-					<ul>
-						<li>利用 <strong>Obsidian</strong> 建立本地端結構化知識庫。</li>
-						<li>讓 AI (NotebookLM / Agent) 存取資料夾，根據個人脈絡回答。</li>
-						<li class="highlight-neon">雙向反饋：AI 產出之新教材，再存回 Obsidian 擴充大腦。</li>
-					</ul>
+				<section data-background-image="assets/images/second_brain.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-folder-tree"></i>打造教師專屬「第二大腦」</h3>
+						<ul>
+							<li>利用 <strong>Obsidian</strong> 建立本地端結構化知識庫。</li>
+							<li>讓 AI (NotebookLM / Agent) 存取資料夾，根據個人脈絡回答。</li>
+							<li class="highlight-neon">雙向反饋：AI 產出之新教材，再存回 Obsidian 擴充大腦。</li>
+						</ul>
+					</div>
 				</section>
 
                 <!-- 四、 工具與參考 -->
-				<section>
-					<h2><i class="fa-solid fa-toolbox"></i>四、 好用工具推薦</h2>
-					<ul>
-						<li><strong>Typeless</strong>：AI 聽打與會議整理神器。</li>
-						<li><strong>Gamma / Tome</strong>：輸入一句話，生成精美網頁簡報。</li>
-						<li><strong>Napkin AI</strong>：文字瞬間轉為流程圖。</li>
-					</ul>
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h2><i class="fa-solid fa-toolbox"></i>四、 好用工具推薦</h2>
+						<ul>
+							<li><strong>Typeless</strong>：AI 聽打與會議整理神器。</li>
+							<li><strong>Gamma / Tome</strong>：輸入一句話，生成精美網頁簡報。</li>
+							<li><strong>Napkin AI</strong>：文字瞬間轉為流程圖。</li>
+						</ul>
+					</div>
 				</section>
 
-				<section>
-					<h2><i class="fa-solid fa-link"></i>五、 參考資料與延伸閱讀</h2>
-					<p><strong>AI 知識庫搜尋示範 (NotebookLM)</strong></p>
-					<a href="https://notebooklm.google.com/notebook/36af090d-abf8-489c-b3c4-d05ad6d8c7b9" target="_blank" style="color: #ff79c6;">「三師爸」教學精華 NotebookLM 知識庫</a>
-					<p style="font-size: 0.8em; margin-top: 20px;">展示 AI 幫你極速找回龐大影音資料，精準定位影片與 Timestamp！</p>
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h2><i class="fa-solid fa-link"></i>五、 參考資料與延伸閱讀</h2>
+						<p><strong>AI 知識庫搜尋示範 (NotebookLM)</strong></p>
+						<a href="https://notebooklm.google.com/notebook/36af090d-abf8-489c-b3c4-d05ad6d8c7b9" target="_blank" style="color: #ff79c6;">「三師爸」教學精華 NotebookLM 知識庫</a>
+						<p style="font-size: 0.8em; margin-top: 20px;">展示 AI 幫你極速找回龐大影音資料，精準定位影片與 Timestamp！</p>
+					</div>
 				</section>
 
 			</div>
