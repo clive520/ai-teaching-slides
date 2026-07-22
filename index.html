@@ -367,6 +367,7 @@
 		</div>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
 		<script>
 			Reveal.initialize({
 				width: 1280,         // 將簡報基礎解析度設為 16:9
@@ -377,7 +378,8 @@
                 backgroundTransition: 'zoom',
 				progress: true,      // 開啟底部的進度條 (可點擊跳頁)
 				slideNumber: 'c/t',  // 在右下角顯示 當前頁碼/總頁數
-				controls: true       // 顯示右下角方向控制箭頭
+				controls: true,      // 顯示右下角方向控制箭頭
+				plugins: [ RevealNotes ] // 啟用講者備忘錄外掛
 			});
 		</script>
 	</body>
