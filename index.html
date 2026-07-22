@@ -19,9 +19,12 @@
 				text-transform: none; /* 保留中文與大小寫原貌 */
 				color: #42b983; /* 科技綠 */
 			}
+			.reveal h2 { font-size: 2em; }
+			.reveal h3 { font-size: 1.5em; margin-bottom: 20px; }
 			.reveal p, .reveal li {
-				font-size: 0.9em;
-				line-height: 1.6;
+				font-size: 0.95em;
+				line-height: 1.5;
+				margin-bottom: 12px;
 			}
 			.highlight-neon {
 				color: #ff79c6;
@@ -37,7 +40,7 @@
 				background: rgba(0, 0, 0, 0.65);
 				backdrop-filter: blur(12px);
 				-webkit-backdrop-filter: blur(12px);
-				padding: 40px;
+				padding: 35px 45px;
 				border-radius: 20px;
 				border: 1px solid rgba(255, 255, 255, 0.1);
 				box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
@@ -45,23 +48,8 @@
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
-				max-height: 90vh; /* 避免超出螢幕高度 */
-				overflow-y: auto; /* 文字過多時允許垂直捲動 */
-				height: auto;
 				width: 100%;
 				box-sizing: border-box;
-			}
-			/* 自訂捲動軸樣式，融入科幻風格 */
-			.glass-panel::-webkit-scrollbar {
-				width: 8px;
-			}
-			.glass-panel::-webkit-scrollbar-track {
-				background: rgba(0,0,0,0.2);
-				border-radius: 10px;
-			}
-			.glass-panel::-webkit-scrollbar-thumb {
-				background: #ff79c6; /* 霓虹粉紅 */
-				border-radius: 10px;
 			}
 			.glass-panel.center {
 				text-align: center;
@@ -329,6 +317,9 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
 		<script>
 			Reveal.initialize({
+				width: 1280,         // 將簡報基礎解析度設為 16:9
+				height: 720,         // 提供更多排版空間，避免文字擁擠
+				margin: 0.1,
 				hash: true,
 				transition: 'convex', // 立體感轉場
                 backgroundTransition: 'zoom',
