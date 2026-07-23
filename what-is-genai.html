@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>什麼是生成式 AI？ - 教師實務應用</title>
+		<title>什麼是生成式 AI？ - 教師實務應用大綱</title>
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
@@ -20,33 +20,36 @@
 			
 			body {
 				font-family: 'Noto Sans TC', sans-serif;
+				/* 保留科技感背景，但內部方框改為高對比白色 */
 				background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
 			}
 			.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
 				font-family: 'Noto Sans TC', sans-serif;
 				font-weight: 700;
-				color: #ffffff;
+				color: #111111; /* 改為深色，極大化閱讀性 */
 				text-transform: none;
-				text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+				text-shadow: none;
 			}
-			.reveal h1 { font-size: 2.5em; }
-			.reveal h2 { font-size: 2em; color: #00f2fe; }
-			.reveal h3 { font-size: 1.6em; color: #b14bf4; }
+			.reveal h1 { font-size: 2.5em; color: #1a237e; } /* 深邃藍 */
+			.reveal h2 { font-size: 2em; color: #311b92; } /* 深紫色 */
+			.reveal h3 { font-size: 1.6em; color: #4a148c; }
 			
 			.reveal p, .reveal li {
 				font-size: 1.05em;
 				line-height: 1.5;
 				margin-bottom: 12px;
+				color: #222222; /* 提高對比度 */
 			}
-			/* 霓虹紫青毛玻璃方框 */
+			
+			/* 高對比亮色毛玻璃方框 */
 			.glass-panel {
-				background: rgba(20, 15, 30, 0.75);
-				backdrop-filter: blur(15px);
-				-webkit-backdrop-filter: blur(15px);
-				padding: 20px 40px;
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(20px);
+				-webkit-backdrop-filter: blur(20px);
+				padding: 25px 40px;
 				border-radius: 20px;
-				border: 1px solid rgba(177, 75, 244, 0.3);
-				box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 242, 254, 0.1);
+				border: 1px solid rgba(255, 255, 255, 0.8);
+				box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.4);
 				text-align: left;
 				display: flex;
 				flex-direction: column;
@@ -71,12 +74,13 @@
 				flex: 1;
 			}
 			
-			.highlight-cyan {
-				color: #00f2fe;
+			/* 強調色 (針對白色背景調整) */
+			.highlight-main {
+				color: #e65100; /* 深橘色 */
 				font-weight: bold;
 			}
-			.highlight-purple {
-				color: #b14bf4;
+			.highlight-sub {
+				color: #00695c; /* 深青色 */
 				font-weight: bold;
 			}
 			
@@ -84,32 +88,49 @@
 				background: transparent !important;
 			}
 			
-			.home-btn {
+			/* 浮動導覽按鈕群 */
+			.floating-nav {
 				position: fixed;
 				bottom: 20px;
 				right: 20px;
 				z-index: 1000;
-				background: rgba(177, 75, 244, 0.2);
-				border: 1px solid rgba(0, 242, 254, 0.5);
-				color: white;
+				display: flex;
+				gap: 10px;
+			}
+			.nav-btn {
+				background: rgba(255, 255, 255, 0.9);
+				border: 2px solid #311b92;
+				color: #311b92;
 				padding: 10px 20px;
 				border-radius: 30px;
 				text-decoration: none;
 				font-family: 'Noto Sans TC', sans-serif;
+				font-weight: bold;
 				backdrop-filter: blur(5px);
 				transition: all 0.3s ease;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 			}
-			.home-btn:hover {
-				background: rgba(0, 242, 254, 0.4);
-				transform: translateY(-2px);
+			.nav-btn:hover {
+				background: #311b92;
+				color: white;
+				transform: translateY(-3px);
+			}
+			.nav-btn.primary {
+				background: #e65100;
+				border-color: #e65100;
+				color: white;
+			}
+			.nav-btn.primary:hover {
+				background: #bf360c;
 			}
 			
-			/* Customizing links */
+			/* Customizing links for light background */
 			.reveal a {
-				color: #00f2fe;
+				color: #1565c0;
+				font-weight: bold;
 			}
 			.reveal a:hover {
-				color: #b14bf4;
+				color: #e65100;
 			}
 		</style>
 	</head>
@@ -120,40 +141,42 @@
 				<!-- 封面 -->
 				<section data-background-image="assets/images/purple_cover.jpg" data-background-opacity="0.8">
 					<div class="glass-panel center" style="padding: 60px;">
-						<h1 style="color: #00f2fe; font-size: 2.8em; margin-bottom: 20px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 什麼是生成式 AI？</h1>
-						<h3 style="color: #ffffff; font-weight: 300; letter-spacing: 2px;">從無到有的魔法 ── 教師實務應用大補帖</h3>
-						<div style="margin-top: 40px; font-size: 1.2em; color: #b14bf4;">
-							<p>文字 <i class="fa-solid fa-font"></i> ｜ 圖像 <i class="fa-solid fa-image"></i> ｜ 音訊 <i class="fa-solid fa-music"></i> ｜ 影片 <i class="fa-solid fa-video"></i></p>
+						<h1><i class="fa-solid fa-wand-magic-sparkles" style="color:#e65100;"></i> 什麼是生成式 AI？</h1>
+						<h3 style="color: #444; font-weight: 500; letter-spacing: 1px;">從無到有的創意引擎 ── 教師實務應用大綱</h3>
+						<div style="margin-top: 40px; font-size: 1.2em; color: #311b92; font-weight: bold;">
+							<p>📝 文字 ｜ 🎨 圖像 ｜ 🎵 音訊 ｜ 🎬 影片</p>
 						</div>
 					</div>
 					<aside class="notes">
 						<h4>👉 教學指引 (封面)</h4>
-						<p>各位老師好，今天我們要來了解什麼是「生成式 AI (Generative AI)」。</p>
-						<p>傳統的電腦只能幫我們「搜尋」既有的資料，但生成式 AI 就像是一個充滿創意的魔法師，它可以根據我們的指令，從無到有「創造」出全新的文字、圖片、甚至是音樂和影片！今天，我們就來看看這四大領域能如何顛覆我們的教學現場。</p>
+						<p>各位老師好，今天我們要來了解什麼是「生成式 AI (Generative AI)」。傳統電腦只能幫我們搜尋，但生成式 AI 就像是一個魔法師，能從無到有創造出全新的內容！</p>
 					</aside>
 				</section>
 
 				<!-- 定義 -->
 				<section data-background-image="assets/images/purple_cover.jpg" data-background-opacity="0.5">
 					<div class="glass-panel center">
-						<h2><i class="fa-solid fa-brain"></i> 生成式 AI 的核心概念</h2>
-						<p style="font-size: 1.3em; margin: 30px 0;">它不是在「資料庫找答案」，而是**「學習規律後產生新作品」**。</p>
-						<div class="slide-layout" style="margin-top: 20px;">
-							<div class="content-col" style="background: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 15px; border-top: 3px solid #00f2fe;">
-								<h4 style="color: #00f2fe;"><i class="fa-solid fa-magnifying-glass"></i> 傳統搜尋引擎</h4>
-								<p>你輸入關鍵字，它給你「別人已經寫好」的網頁連結。</p>
+						<h2><i class="fa-solid fa-brain" style="color:#e65100;"></i> 生成式 AI 的核心概念</h2>
+						<p style="font-size: 1.3em; margin: 30px 0; font-weight: bold;">並非資料庫檢索，而是「學習規律後產生新作品」。</p>
+						<div class="slide-layout" style="margin-top: 20px; text-align: left;">
+							<div class="content-col" style="background: #f5f5f5; padding: 20px; border-radius: 15px; border-top: 4px solid #757575;">
+								<h4 style="color: #424242;"><i class="fa-solid fa-magnifying-glass"></i> 傳統搜尋</h4>
+								<ul style="font-size: 0.9em; margin-top:10px;">
+									<li>輸入關鍵字</li>
+									<li>獲得「既有」的網頁連結</li>
+									<li>人類自行整理資訊</li>
+								</ul>
 							</div>
-							<div class="content-col" style="background: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 15px; border-top: 3px solid #b14bf4;">
-								<h4 style="color: #b14bf4;"><i class="fa-solid fa-pen-fancy"></i> 生成式 AI</h4>
-								<p>你輸入指令(Prompt)，它為你「量身打造」一份全世界獨一無二的內容。</p>
+							<div class="content-col" style="background: #ede7f6; padding: 20px; border-radius: 15px; border-top: 4px solid #311b92;">
+								<h4 style="color: #311b92;"><i class="fa-solid fa-pen-fancy"></i> 生成式 AI</h4>
+								<ul style="font-size: 0.9em; margin-top:10px;">
+									<li>輸入提示詞 (Prompt)</li>
+									<li>獲得「全新量身打造」的內容</li>
+									<li>AI 負責創作與統整</li>
+								</ul>
 							</div>
 						</div>
 					</div>
-					<aside class="notes">
-						<h4>👉 教學指引 (核心概念)</h4>
-						<p>很多學生以為 ChatGPT 只是厲害的 Google，這是不對的。</p>
-						<p>Google 是去圖書館幫你找書；而生成式 AI 是現場為你寫一本新書。這就是「搜尋」與「生成」最大的差異。</p>
-					</aside>
 				</section>
 
 				<!-- 領域一：文字生成 -->
@@ -161,35 +184,27 @@
 					<div class="glass-panel">
 						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-font"></i> 領域一：文字生成 (Text Generation)</h3>
 						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
-							<!-- 左欄：圖片 -->
 							<div style="flex: 0 0 320px; margin-right: 25px;">
-								<img src="assets/images/purple_text.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid rgba(0, 242, 254, 0.5); box-shadow: 0 0 20px rgba(177, 75, 244, 0.5);">
-								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #aaa;">代表工具：ChatGPT, Claude</p>
+								<img src="assets/images/purple_text.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666; font-weight:bold;">工具：ChatGPT, Claude</p>
 							</div>
-							<!-- 中欄：傳統痛點 -->
 							<div class="content-col" style="padding-right: 15px;">
-								<h4 style="color:#00f2fe; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-book-skull"></i> 老師的痛點</h4>
+								<h4 style="color:#d84315; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-book-skull"></i> 教學痛點</h4>
 								<ul>
-									<li>社會科歷史年代生硬，國小學生背不起來。</li>
-									<li>國文科作文引導，難以針對每個學生的興趣舉例。</li>
-									<li>需要花大量時間設計「情境式」的素養導向試題。</li>
+									<li>社會科年代生硬，學生背不起來。</li>
+									<li>耗時設計「素養導向」的情境試題。</li>
 								</ul>
 							</div>
-							<!-- 右欄：AI 應用 -->
-							<div class="content-col" style="border-left: 2px solid rgba(177, 75, 244, 0.3); padding-left: 20px;">
-								<h4 style="color:#b14bf4; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-wand-magic-sparkles"></i> AI 應用案例：教材故事化</h4>
+							<div class="content-col" style="border-left: 2px solid #ddd; padding-left: 20px;">
+								<h4 style="color:#00695c; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-wand-magic-sparkles"></i> 應用案例：教材故事化</h4>
 								<ul>
-									<li><strong>老師指令</strong>：把歷史改寫成適合五年級閱讀的 RPG 冒險故事。</li>
-									<li><strong>結果</strong>：AI 產出一篇充滿對話、引人入勝的故事。</li>
-									<li class="highlight-cyan">效果：大幅提升閱讀興趣與學習動機！</li>
+									<li><strong>指令</strong>：將歷史事件改寫為 RPG 冒險故事。</li>
+									<li><strong>結果</strong>：產出引人入勝的奇幻對話。</li>
+									<li class="highlight-main">👉 大幅提升閱讀興趣與學習動機！</li>
 								</ul>
 							</div>
 						</div>
 					</div>
-					<aside class="notes">
-						<h4>👉 教學指引 (文字生成案例)</h4>
-						<p>文字生成是我們最常接觸的 AI。老師們可以把它當作「教材轉譯器」，把無聊的課本內容，瞬間轉換成學生愛看的故事、短劇劇本，或是新聞報導的格式，這是活化教學最棒的幫手。</p>
-					</aside>
 				</section>
 
 				<!-- 領域二：圖像生成 -->
@@ -197,35 +212,27 @@
 					<div class="glass-panel">
 						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-image"></i> 領域二：圖像生成 (Image Generation)</h3>
 						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
-							<!-- 左欄：圖片 -->
 							<div style="flex: 0 0 320px; margin-right: 25px;">
-								<img src="assets/images/purple_image.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid rgba(0, 242, 254, 0.5); box-shadow: 0 0 20px rgba(177, 75, 244, 0.5);">
-								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #aaa;">代表工具：Midjourney, DALL-E 3</p>
+								<img src="assets/images/purple_image.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666; font-weight:bold;">工具：Midjourney, DALL-E 3</p>
 							</div>
-							<!-- 中欄：傳統痛點 -->
 							<div class="content-col" style="padding-right: 15px;">
-								<h4 style="color:#00f2fe; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-copyright"></i> 老師的痛點</h4>
+								<h4 style="color:#d84315; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-copyright"></i> 教學痛點</h4>
 								<ul>
-									<li>製作學習單時，在網路上找不到「符合需求」的插圖。</li>
+									<li>學習單找不到完全符合情境的插圖。</li>
 									<li>隨便抓圖有嚴重的<strong>版權侵權風險</strong>。</li>
-									<li>英文單字卡找不到趣味的對應圖片。</li>
 								</ul>
 							</div>
-							<!-- 右欄：AI 應用 -->
-							<div class="content-col" style="border-left: 2px solid rgba(177, 75, 244, 0.3); padding-left: 20px;">
-								<h4 style="color:#b14bf4; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-palette"></i> AI 應用案例：專屬學習單插圖</h4>
+							<div class="content-col" style="border-left: 2px solid #ddd; padding-left: 20px;">
+								<h4 style="color:#00695c; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-palette"></i> 應用案例：專屬無版權插圖</h4>
 								<ul>
-									<li><strong>老師指令</strong>：畫一隻戴黑框眼鏡的恐龍在教數學，水彩繪本風格。</li>
-									<li><strong>結果</strong>：AI 生成四張完全不侵權的高畫質插圖。</li>
-									<li class="highlight-cyan">效果：吸睛的專屬插圖讓低年級學生愛不釋手。</li>
+									<li><strong>指令</strong>：畫一隻戴眼鏡的恐龍教數學，水彩風。</li>
+									<li><strong>結果</strong>：生成完全不侵權的高畫質插圖。</li>
+									<li class="highlight-main">👉 解決版權疑慮，圖文精準契合！</li>
 								</ul>
 							</div>
 						</div>
 					</div>
-					<aside class="notes">
-						<h4>👉 教學指引 (圖像生成案例)</h4>
-						<p>老師們最怕的就是版權問題！圖像生成 AI 完全解決了這個痛點，你可以要任何風格、任何情境的圖片，完全貼合你的教學需求，再也不用妥協於 Google 搜尋到的破圖了。</p>
-					</aside>
 				</section>
 
 				<!-- 領域三：音訊生成 -->
@@ -233,34 +240,27 @@
 					<div class="glass-panel">
 						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-music"></i> 領域三：音訊生成 (Audio Generation)</h3>
 						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
-							<!-- 左欄：圖片 -->
 							<div style="flex: 0 0 320px; margin-right: 25px;">
-								<img src="assets/images/purple_audio.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid rgba(0, 242, 254, 0.5); box-shadow: 0 0 20px rgba(177, 75, 244, 0.5);">
-								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #aaa;">代表工具：Suno, ElevenLabs</p>
+								<img src="assets/images/purple_audio.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666; font-weight:bold;">工具：Suno, ElevenLabs</p>
 							</div>
-							<!-- 中欄：傳統痛點 -->
 							<div class="content-col" style="padding-right: 15px;">
-								<h4 style="color:#00f2fe; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-volume-xmark"></i> 老師的痛點</h4>
+								<h4 style="color:#d84315; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-volume-xmark"></i> 教學痛點</h4>
 								<ul>
-									<li>想讓學生聽英語發音，但找不到對應課文的道地音檔。</li>
-									<li>校慶表演、班級話劇，一直找不到合適的背景音樂。</li>
+									<li>找不到英文課文的道地外籍人士音檔。</li>
+									<li>班級話劇、校慶表演缺乏合適配樂。</li>
 								</ul>
 							</div>
-							<!-- 右欄：AI 應用 -->
-							<div class="content-col" style="border-left: 2px solid rgba(177, 75, 244, 0.3); padding-left: 20px;">
-								<h4 style="color:#b14bf4; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-headphones"></i> AI 應用案例：雙語聽力與班級配樂</h4>
+							<div class="content-col" style="border-left: 2px solid #ddd; padding-left: 20px;">
+								<h4 style="color:#00695c; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-headphones"></i> 應用案例：雙語聽力與配樂</h4>
 								<ul>
-									<li><strong>老師指令</strong>：將這篇短文，用「英國腔的女聲」念出來。</li>
-									<li><strong>結果</strong>：生成媲美廣播等級的英語聽力素材。</li>
-									<li class="highlight-cyan">效果：學生能練習多元口音，聽力素材自己做！</li>
+									<li><strong>指令</strong>：將短文用「英國腔女聲」唸出。</li>
+									<li><strong>結果</strong>：生成廣播等級的聽力素材。</li>
+									<li class="highlight-main">👉 聽力素材自己做，古文也能變神曲！</li>
 								</ul>
 							</div>
 						</div>
 					</div>
-					<aside class="notes">
-						<h4>👉 教學指引 (音訊生成案例)</h4>
-						<p>語文科的老師特別好用！你甚至可以把古文丟給音樂 AI (例如 Suno)，請它把「木蘭詩」做成一首流行 RAP 歌曲，學生聽幾次就背起來了！</p>
-					</aside>
 				</section>
 
 				<!-- 領域四：影片生成 -->
@@ -268,56 +268,69 @@
 					<div class="glass-panel">
 						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-video"></i> 領域四：影片生成 (Video Generation)</h3>
 						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
-							<!-- 左欄：圖片 -->
 							<div style="flex: 0 0 320px; margin-right: 25px;">
-								<img src="assets/images/purple_video.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid rgba(0, 242, 254, 0.5); box-shadow: 0 0 20px rgba(177, 75, 244, 0.5);">
-								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #aaa;">代表工具：HeyGen, Sora</p>
+								<img src="assets/images/purple_video.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666; font-weight:bold;">工具：HeyGen, Sora</p>
 							</div>
-							<!-- 中欄：傳統痛點 -->
 							<div class="content-col" style="padding-right: 15px;">
-								<h4 style="color:#00f2fe; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-face-frown"></i> 老師的痛點</h4>
+								<h4 style="color:#d84315; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-face-frown"></i> 教學痛點</h4>
 								<ul>
-									<li>遠距或非同步學習時，只有乾巴巴的 PPT，學生易分心。</li>
-									<li>歷史或科學概念過於抽象，很難用言語形容。</li>
+									<li>遠距或非同步學習時，純 PPT 容易分心。</li>
+									<li>抽象的科學概念難以用言語具象化。</li>
 								</ul>
 							</div>
-							<!-- 右欄：AI 應用 -->
-							<div class="content-col" style="border-left: 2px solid rgba(177, 75, 244, 0.3); padding-left: 20px;">
-								<h4 style="color:#b14bf4; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-clapperboard"></i> AI 應用案例：歷史人物來代課</h4>
+							<div class="content-col" style="border-left: 2px solid #ddd; padding-left: 20px;">
+								<h4 style="color:#00695c; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-clapperboard"></i> 應用案例：歷史人物來代課</h4>
 								<ul>
-									<li><strong>老師指令</strong>：上傳愛因斯坦照片，輸入一段相對論解說。</li>
-									<li><strong>結果</strong>：AI (HeyGen) 讓靜態照片「開口對著學生講話」。</li>
-									<li class="highlight-cyan">效果：國中生看到歷史人物開口，注意力瞬間集中！</li>
+									<li><strong>指令</strong>：上傳照片與解說講稿。</li>
+									<li><strong>結果</strong>：靜態照片「開口對學生講話」。</li>
+									<li class="highlight-main">👉 虛擬主播抓住目光，引發強烈動機！</li>
 								</ul>
 							</div>
 						</div>
 					</div>
-					<aside class="notes">
-						<h4>👉 教學指引 (影片生成案例)</h4>
-						<p>虛擬主播現在非常流行。老師可以把自己的教學大綱交給 AI 虛擬人來播報，或是讓歷史課本上的人物復活，這是目前最能吸引國中小學生目光的黑科技！</p>
-					</aside>
 				</section>
 
-				<!-- 參考資料 -->
-				<section data-background-image="assets/images/purple_cover.jpg" data-background-opacity="0.3">
-					<div class="glass-panel center">
-						<h2><i class="fa-solid fa-link"></i> 參考資料與延伸閱讀</h2>
-						<p style="margin-top: 30px;">本簡報內容參考以下具公信力之教育資源：</p>
-						<ul style="text-align: left; display: inline-block; margin-top: 20px; font-size: 1.2em; line-height: 2;">
-							<li><a href="https://cirn.moe.edu.tw/" target="_blank"><i class="fa-solid fa-book"></i> 教育部：國民中小學課程與教學資源整合平臺 (CIRN)</a></li>
-							<li><a href="https://pad.moe.edu.tw/" target="_blank"><i class="fa-solid fa-chalkboard-user"></i> 教育部：中小學數位教學指引 3.0 (含 AI 應用)</a></li>
-							<li><a href="https://market.cloud.edu.tw/" target="_blank"><i class="fa-solid fa-store"></i> 教育部：教育大市集 (教案分享)</a></li>
-						</ul>
+				<!-- 新增：國際 AI 教學指引 -->
+				<section data-background-image="assets/images/purple_cover.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 15px; text-align: center;"><i class="fa-solid fa-globe" style="color:#e65100;"></i> 國際 AI 教學指引 (Global Guidelines)</h3>
+						<div class="slide-layout" style="align-items: stretch; font-size: 0.85em; text-align: left;">
+							<div class="content-col" style="background: #e3f2fd; padding: 20px; border-radius: 10px;">
+								<h4 style="color: #1565c0; font-size: 1.1em;"><i class="fa-solid fa-landmark"></i> UNESCO (聯合國)</h4>
+								<p style="font-weight: bold; margin-bottom: 5px;">以人為本，絕不取代教師</p>
+								<ul style="margin-top:0;">
+									<li>強調人類的能動性與批判思考。</li>
+									<li>防範資料隱私與數位落差風險。</li>
+								</ul>
+							</div>
+							<div class="content-col" style="background: #fff3e0; padding: 20px; border-radius: 10px;">
+								<h4 style="color: #e65100; font-size: 1.1em;"><i class="fa-solid fa-chalkboard-user"></i> ISTE (國際教育科技協會)</h4>
+								<p style="font-weight: bold; margin-bottom: 5px;">教師賦能 GenerationAI</p>
+								<ul style="margin-top:0;">
+									<li>推動 AI 素養，培訓教師正確使用 AI。</li>
+									<li>建立安全的校園應用政策 (TeachAI)。</li>
+								</ul>
+							</div>
+							<div class="content-col" style="background: #e8f5e9; padding: 20px; border-radius: 10px;">
+								<h4 style="color: #2e7d32; font-size: 1.1em;"><i class="fa-solid fa-school-flag"></i> Edutopia (教育創新)</h4>
+								<p style="font-weight: bold; margin-bottom: 5px;">紅黃綠燈的課堂規範</p>
+								<ul style="margin-top:0;">
+									<li>教導學生「保持懷疑」，查證 AI 內容。</li>
+									<li>建立明確的 AI 使用時機「社會契約」。</li>
+								</ul>
+							</div>
+						</div>
 					</div>
-					<aside class="notes">
-						<h4>👉 教學指引 (參考資料)</h4>
-						<p>如果老師們想要看更多第一線老師的教案，推薦大家上去教育部 CIRN 平台或是教育大市集，輸入「生成式 AI」，就能看到非常多現成的精采教學設計！</p>
-					</aside>
 				</section>
 
 			</div>
 			
-			<a href="index.html" class="home-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+			<div class="floating-nav">
+				<a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+				<!-- 切換至詳細網頁的按鈕 -->
+				<a href="what-is-genai-details.html" class="nav-btn primary"><i class="fa-solid fa-file-lines"></i> 閱讀詳細網頁版</a>
+			</div>
 		</div>
 
 		<script src="dist/reveal.js"></script>

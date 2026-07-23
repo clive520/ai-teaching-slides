@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>什麼是生成式 AI？詳細解說與國際準則</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+        
+        :root {
+            --primary: #311b92;
+            --secondary: #e65100;
+            --bg-color: #f8f9fa;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 頂部導覽列 */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        header p {
+            margin: 5px 0 0 0;
+            color: #d1c4e9;
+        }
+
+        /* 主容器與側邊欄排版 */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            display: flex;
+            gap: 40px;
+            padding: 0 20px;
+        }
+        
+        .sidebar {
+            flex: 0 0 250px;
+            position: sticky;
+            top: 120px;
+            height: fit-content;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .sidebar h3 {
+            margin-top: 0;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li {
+            margin-bottom: 15px;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .sidebar a:hover {
+            color: var(--secondary);
+        }
+
+        .content {
+            flex: 1;
+            background: white;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        /* 內容區塊排版 */
+        h2 {
+            color: var(--primary);
+            border-left: 5px solid var(--secondary);
+            padding-left: 15px;
+            margin-top: 50px;
+        }
+        h2:first-child { margin-top: 0; }
+        h3 {
+            color: var(--secondary);
+            margin-top: 30px;
+        }
+        
+        .image-banner {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-box {
+            background-color: #e3f2fd;
+            border-left: 4px solid #1565c0;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        .info-box.warning {
+            background-color: #fff3e0;
+            border-color: #e65100;
+        }
+
+        /* 浮動按鈕 */
+        .floating-nav {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            background: #4a148c;
+        }
+        .nav-btn.secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .nav-btn.secondary:hover {
+            background: #f5f5f5;
+        }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar { position: relative; top: 0; }
+            .content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>什麼是生成式 AI？</h1>
+        <p>教師實務應用與國際政策指引 ── 詳細解說版</p>
+    </header>
+
+    <div class="container">
+        <!-- 左側導覽列 -->
+        <nav class="sidebar">
+            <h3>目錄導覽</h3>
+            <ul>
+                <li><a href="#intro"><i class="fa-solid fa-brain"></i> 生成式 AI 核心概念</a></li>
+                <li><a href="#text"><i class="fa-solid fa-font"></i> 領域一：文字生成</a></li>
+                <li><a href="#image"><i class="fa-solid fa-image"></i> 領域二：圖像生成</a></li>
+                <li><a href="#audio"><i class="fa-solid fa-music"></i> 領域三：音訊生成</a></li>
+                <li><a href="#video"><i class="fa-solid fa-video"></i> 領域四：影片生成</a></li>
+                <li><a href="#global"><i class="fa-solid fa-globe"></i> 國際 AI 教學指引</a></li>
+            </ul>
+        </nav>
+
+        <!-- 右側主要內容 -->
+        <main class="content">
+            
+            <section id="intro">
+                <h2>生成式 AI 核心概念：不僅是搜尋，更是「創作」</h2>
+                <p>傳統的電腦運作模式，我們稱之為「資料庫檢索」。當你在 Google 輸入關鍵字時，搜尋引擎只是去海量的網頁中，找出「別人已經寫好」的內容並呈現給你。這種模式下，電腦並沒有理解內容，它只是在做字串比對。</p>
+                
+                <div class="info-box">
+                    <strong>生成式 AI 的突破在於「學習規律」：</strong><br>
+                    生成式 AI (Generative AI) 閱讀了人類歷史上數十億筆的文章、圖片與資料，它從中學習到了人類語言的文法、藝術的風格與邏輯的脈絡。當你給它一段提示詞 (Prompt) 時，它不是去資料庫找現成的檔案，而是根據它學到的規律，<strong>當場「算」出（生成）一份全世界獨一無二的全新內容</strong>。
+                </div>
+                <p>對於國中小教師而言，這意味著我們擁有了一個能夠24小時隨時待命、且精通各科知識的「客製化助教」。以下我們將分為四大領域來探討實務應用。</p>
+            </section>
+
+            <section id="text">
+                <h2>領域一：文字生成 (Text Generation)</h2>
+                <img src="assets/images/purple_text.jpg" class="image-banner" alt="文字生成 AI 概念圖">
+                <p><strong>代表工具：</strong> ChatGPT, Claude, Google Gemini</p>
+                <p>文字生成是目前發展最成熟、也是教師最常接觸的領域。它能夠理解複雜的語意，並產出各種格式的文章、表格甚至程式碼。</p>
+                
+                <h3>教學實務痛點與解方：教材故事化</h3>
+                <p>在國中小教學現場，最大的挑戰往往是「引發學生的學習動機」。例如社會科的歷史年代、自然科的細胞構造，這些生硬的知識點很難讓學生產生共鳴。此外，教師為了設計符合108課綱的「素養導向情境題」，往往需要絞盡腦汁撰寫前導故事，極度耗時。</p>
+                
+                <ul>
+                    <li><strong>傳統作法：</strong> 教師自行上網搜尋相關故事，但往往不夠貼切，或者需要花費數小時親自撰寫故事腳本。</li>
+                    <li><strong>AI 輔助作法：</strong> 教師可以下達指令：「請將『台灣荷治時期』的歷史背景，結合小學生喜歡的 RPG 冒險遊戲元素，改寫成一篇約 500 字的短篇故事。故事中必須包含三道關卡，對應當時的歷史事件。」</li>
+                </ul>
+                <p>透過 AI 瞬間產出的故事，教師不僅能輕鬆製作出極具吸引力的閱讀文本，還能要求 AI 根據學生的閱讀程度（例如：小學三年級）自動調整用詞難易度與注音標示。</p>
+            </section>
+
+            <section id="image">
+                <h2>領域二：圖像生成 (Image Generation)</h2>
+                <img src="assets/images/purple_image.jpg" class="image-banner" alt="圖像生成 AI 概念圖">
+                <p><strong>代表工具：</strong> Midjourney, DALL-E 3, Leonardo AI</p>
+                
+                <h3>教學實務痛點與解方：專屬無版權插圖</h3>
+                <p>製作考卷、學習單或教學簡報時，合適的視覺素材不可或缺。然而，直接在 Google 搜尋圖片不僅容易畫質不佳、帶有浮水印，更存在<strong>嚴重的智慧財產權（版權）侵權風險</strong>。如果教師想要一張「戴著黑框眼鏡的恐龍正在教數學」這種特定情境的圖片，幾乎不可能在網路上找到剛好的素材。</p>
+                
+                <div class="info-box warning">
+                    <strong>版權安全與客製化：</strong><br>
+                    使用 AI 圖像生成工具，教師只需輸入描述詞，AI 就能在數十秒內生成 100% 貼合教學情境、且無直接版權爭議的原創插圖。這不僅能大幅提升低年級學習單的吸睛程度，還能確保學校教材的適法性。
+                </div>
+            </section>
+
+            <section id="audio">
+                <h2>領域三：音訊生成 (Audio Generation)</h2>
+                <img src="assets/images/purple_audio.jpg" class="image-banner" alt="音訊生成 AI 概念圖">
+                <p><strong>代表工具：</strong> Suno (音樂), ElevenLabs (人聲)</p>
+                
+                <h3>教學實務痛點與解方：雙語聽力與情境配樂</h3>
+                <p>在推動雙語教育的過程中，英語聽力素材是一大挑戰。課本附贈的 CD 內容固定，如果教師想結合時事（例如奧運）寫一篇新的英文閱讀測驗，通常無法找到相對應的「道地外籍人士發音」音檔。</p>
+                <p>透過 <strong>ElevenLabs</strong>，教師可以將自己寫好的英文考題貼入，選擇「英國腔的年輕女性」或「美國腔的中年男性」，一鍵生成宛如真人錄音室錄製的聽力測驗。此外，若班級需要舉辦話劇表演，也能使用 <strong>Suno</strong> 自動生成無版權的專屬背景音樂，甚至將古文詩詞丟給 AI 變成一首流行歌曲，幫助學生記憶。</p>
+            </section>
+
+            <section id="video">
+                <h2>領域四：影片生成 (Video Generation)</h2>
+                <img src="assets/images/purple_video.jpg" class="image-banner" alt="影片生成 AI 概念圖">
+                <p><strong>代表工具：</strong> HeyGen, Sora, Runway</p>
+                
+                <h3>教學實務痛點與解方：虛擬主播與歷史人物代課</h3>
+                <p>在非同步遠距教學或翻轉教育中，純粹的簡報配上教師畫外音，很容易讓國中小學生分心。影片生成技術中的「虛擬人 (Avatar)」能有效解決這個問題。</p>
+                <p>透過 <strong>HeyGen</strong>，教師可以上傳一張愛因斯坦或牛頓的歷史照片，並輸入一段解說文字。AI 能夠偵測照片人物的臉部特徵，讓這張靜態照片「活過來」，嘴巴會根據你輸入的文字開口說話，甚至帶有自然的頭部擺動。這種「歷史人物親自來代課」的視覺衝擊，能極大化地抓住學生的專注力。</p>
+            </section>
+
+            <section id="global">
+                <h2>國際 AI 教學指引 (Global Guidelines)</h2>
+                <p>隨著 AI 進入校園，各國與國際組織紛紛提出指導原則，確保科技能真正輔助教育而非帶來傷害。以下是三個最具代表性的國際準則：</p>
+
+                <h3>1. 聯合國教科文組織 (UNESCO)：以人為本的 AI 教育</h3>
+                <p>UNESCO 發布了《生成式 AI 應用於教育與研究之指引》。其核心精神在於**「AI 絕對不能取代教師」**。</p>
+                <ul>
+                    <li><strong>保障人類能動性 (Human Agency)：</strong> 教師必須維持對課堂的主導權，AI 產出的評量結果或教材，最終必須由人類教師進行審核與裁決。</li>
+                    <li><strong>防範數位落差：</strong> 國家必須確保所有階層的學生都有平等的機會存取 AI 資源，避免偏鄉與城市的學習差距擴大。</li>
+                </ul>
+
+                <h3>2. 國際教育科技協會 (ISTE)：GenerationAI 教師賦能</h3>
+                <p>ISTE 主導的 GenerationAI 計畫與 TeachAI 聯盟，將焦點放在「教師培訓與政策制定」。</p>
+                <ul>
+                    <li><strong>建立 AI 素養 (AI Literacy)：</strong> 不只教導學生如何下指令，更要教導他們理解 AI 的運作機制與潛在的偏見 (Bias)。</li>
+                    <li><strong>學校政策框架：</strong> 建議學校應建立透明的 AI 使用政策，明確規範哪些作業允許使用 AI 輔助，並注重學生資料隱私的保護。</li>
+                </ul>
+
+                <h3>3. Edutopia：紅黃綠燈的課堂實務規範</h3>
+                <p>Edutopia 提出了許多第一線教師正在使用的「課堂社會契約」。其中最著名的是<strong>「紅黃綠燈系統」</strong>：</p>
+                <div class="info-box">
+                    <ul>
+                        <li><span style="color:red; font-weight:bold;">紅燈任務：</span> 完全禁止使用 AI (例如：期中考、寫作初稿測驗)，旨在訓練大腦的基礎邏輯。</li>
+                        <li><span style="color:#e65100; font-weight:bold;">黃燈任務：</span> 允許使用 AI 作為「腦力激盪」或「文法檢查」的工具，但必須附上與 AI 的對話紀錄並標明引用。</li>
+                        <li><span style="color:green; font-weight:bold;">綠燈任務：</span> 鼓勵全力使用 AI 來完成專案 (例如：利用 AI 生成各種圖像來製作一部動畫短片)，重點在評量學生的「指令工程 (Prompt Engineering)」能力與最終創意。</li>
+                    </ul>
+                </div>
+                <p>此外，Edutopia 也極力主張教導學生對 AI 產生的內容**「保持健康的懷疑態度」**，學習橫向閱讀與事實查核，這才是 AI 時代最重要的媒體識讀能力。</p>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- 浮動按鈕 -->
+    <div class="floating-nav">
+        <a href="what-is-genai.html" class="nav-btn"><i class="fa-solid fa-person-chalkboard"></i> 切換為簡報模式</a>
+        <a href="index.html" class="nav-btn secondary"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+    </div>
+
+</body>
+</html>
