@@ -6,12 +6,12 @@
 
 		<title>什麼是生成式 AI？ - 教師實務應用大綱</title>
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css" id="theme">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.css" id="theme">
 
 		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/monokai.css">
 		<!-- Font Awesome -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		
@@ -30,15 +30,15 @@
 				text-transform: none;
 				text-shadow: none;
 			}
-			.reveal h1 { font-size: 2.5em; color: #1a237e; } /* 深邃藍 */
-			.reveal h2 { font-size: 2em; color: #311b92; } /* 深紫色 */
-			.reveal h3 { font-size: 1.6em; color: #4a148c; }
+			.reveal h1 { font-size: 3em; color: #1a237e; } /* 深邃藍 */
+			.reveal h2 { font-size: 2.3em; color: #311b92; } /* 深紫色 */
+			.reveal h3 { font-size: 1.8em; color: #4a148c; }
 			
 			.reveal p, .reveal li {
-				font-size: 1.05em;
-				line-height: 1.5;
-				margin-bottom: 12px;
-				color: #222222; /* 提高對比度 */
+				font-size: 1.3em; /* 放大文字 */
+				line-height: 1.6;
+				margin-bottom: 15px;
+				color: #222222; 
 			}
 			
 			/* 高對比亮色毛玻璃方框 */
@@ -333,17 +333,16 @@
 			</div>
 		</div>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
 		<script>
 			Reveal.initialize({
 				hash: true,
 				width: 1280,
 				height: 720,
 				margin: 0.1,
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+                controls: true,      // 顯示右下角方向控制箭頭
+				plugins: [ RevealNotes ]
 			});
 		</script>
 	</body>

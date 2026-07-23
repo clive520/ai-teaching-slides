@@ -66,12 +66,45 @@
             border-radius: 12px;
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
-        .sidebar h3 {
-            margin-top: 0;
-            color: var(--primary);
+        .sidebar.collapsed {
+            flex: 0 0 60px;
+            padding: 20px 10px;
+        }
+        .sidebar.collapsed ul, .sidebar.collapsed h3 span {
+            display: none;
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 2px solid var(--primary);
             padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .sidebar.collapsed .sidebar-header {
+            border-bottom: none;
+            justify-content: center;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        .sidebar h3 {
+            margin: 0;
+            color: var(--primary);
+        }
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.collapsed .toggle-btn {
+            transform: rotate(180deg);
         }
         .sidebar ul {
             list-style: none;
@@ -184,8 +217,11 @@
 
     <div class="container">
         <!-- 左側導覽列 -->
-        <nav class="sidebar">
-            <h3>目錄導覽</h3>
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3><span>目錄導覽</span></h3>
+                <button class="toggle-btn" id="sidebarToggle" title="收合/展開側欄"><i class="fa-solid fa-chevron-left"></i></button>
+            </div>
             <ul>
                 <li><a href="#intro"><i class="fa-solid fa-brain"></i> 生成式 AI 核心概念</a></li>
                 <li><a href="#text"><i class="fa-solid fa-font"></i> 領域一：文字生成</a></li>
@@ -299,5 +335,13 @@
         <a href="index.html" class="nav-btn secondary"><i class="fa-solid fa-house"></i> 回到主目錄</a>
     </div>
 
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+    </script>
 </body>
 </html>
