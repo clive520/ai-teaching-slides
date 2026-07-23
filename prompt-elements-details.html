@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提示詞 (Prompt) 5 大要素 - 詳細解說版</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+        
+        :root {
+            --primary: #e65100;
+            --secondary: #bf360c;
+            --bg-color: #fff8e1;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border-color: #ffcc80;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 頂部導覽列 */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        header p {
+            margin: 5px 0 0 0;
+            color: #ffe0b2;
+        }
+
+        /* 主容器與側邊欄排版 */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            display: flex;
+            gap: 40px;
+            padding: 0 20px;
+        }
+        
+        .sidebar {
+            flex: 0 0 250px;
+            position: sticky;
+            top: 120px;
+            height: fit-content;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .sidebar.collapsed {
+            flex: 0 0 60px;
+            padding: 20px 10px;
+        }
+        .sidebar.collapsed ul, .sidebar.collapsed h3 span {
+            display: none;
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .sidebar.collapsed .sidebar-header {
+            border-bottom: none;
+            justify-content: center;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        .sidebar h3 {
+            margin: 0;
+            color: var(--primary);
+        }
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.collapsed .toggle-btn {
+            transform: rotate(180deg);
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li {
+            margin-bottom: 15px;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .sidebar a:hover {
+            color: var(--secondary);
+        }
+
+        .content {
+            flex: 1;
+            background: white;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        /* 內容區塊排版 */
+        h2 {
+            color: var(--primary);
+            border-left: 5px solid var(--secondary);
+            padding-left: 15px;
+            margin-top: 50px;
+        }
+        h2:first-child { margin-top: 0; }
+        h3 {
+            color: var(--secondary);
+            margin-top: 30px;
+        }
+        
+        .image-banner {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-box {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        .info-box.warning {
+            background-color: #ffebee;
+            border-color: #c62828;
+        }
+
+        /* 比較表格樣式 */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: #f5f5f5;
+            color: var(--primary);
+        }
+        .comparison-table td.ng {
+            background-color: #ffebee;
+        }
+        .comparison-table td.good {
+            background-color: #e8f5e9;
+        }
+
+        /* 浮動按鈕 */
+        .floating-nav {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            background: #d84315;
+        }
+        .nav-btn.secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .nav-btn.secondary:hover {
+            background: #fff8e1;
+        }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar { position: relative; top: 0; }
+            .content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>提示詞 (Prompt) 5 大要素</h1>
+        <p>國中小教師實務應用與對照範例 ── 詳細解說版</p>
+    </header>
+
+    <div class="container">
+        <!-- 左側導覽列 -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3><span>目錄導覽</span></h3>
+                <button class="toggle-btn" id="sidebarToggle" title="收合/展開側欄"><i class="fa-solid fa-chevron-left"></i></button>
+            </div>
+            <ul>
+                <li><a href="#intro"><i class="fa-solid fa-list-check"></i> 什麼是 5 大要素？</a></li>
+                <li><a href="#genai"><i class="fa-solid fa-pen-fancy"></i> 情境一：生成式 AI (寫教案)</a></li>
+                <li><a href="#agent"><i class="fa-solid fa-robot"></i> 情境二：AI Agent (自動化預警)</a></li>
+                <li><a href="#safety"><i class="fa-solid fa-shield-halved"></i> 提示詞安全準則</a></li>
+                <li><a href="#reference"><i class="fa-solid fa-link"></i> 參考文獻與資源</a></li>
+            </ul>
+        </nav>
+
+        <!-- 右側主要內容 -->
+        <main class="content">
+            
+            <section id="intro">
+                <h2>提示詞 5 大要素：如何交代 AI 幫你工作？</h2>
+                <p>很多人抱怨 AI 產生的內容「很廢、不能用」，其實是因為我們沒有給出足夠的指令。把 AI 想像成一位聰明但「剛報到、完全不了解你的學校」的實習生。如果你只對他說：「去寫個台灣歷史教案」，他只能憑空捏造一個大眾化的罐頭內容。要讓實習生寫出能直接在你的課堂上使用的講義，你必須清楚交代以下 5 大要素：</p>
+                
+                <div class="info-box">
+                    <ol style="line-height: 2;">
+                        <li><strong>任務 (Task)：</strong> 明確的動作目標（例如：設計教案、寫家長信、分析成績）。</li>
+                        <li><strong>輸入資料 (Input Data)：</strong> 提供背景資訊或原始素材（例如：學生的年級程度、課文內容、成績單 Excel）。</li>
+                        <li><strong>輸出成品 (Output Format)：</strong> 要求的最終格式（例如：以表格呈現、分段點列、限制 200 字內）。</li>
+                        <li><strong>限制條件 (Constraints)：</strong> 語氣要求或禁止事項（例如：語氣要溫柔同理、<span style="color:red;">不准使用艱澀成語</span>）。</li>
+                        <li><strong>驗收標準 (Acceptance Criteria)：</strong> 符合什麼條件才算好（例如：必須符合 108 課綱的核心素養，能在 40 分鐘內教完）。</li>
+                    </ol>
+                </div>
+                <p>這 5 要素與國際知名的 <strong>PARTS</strong> 框架 (Persona, Aim, Recipients, Theme, Structure) 精神不謀而合，都是為了給予 AI 充分的「上下文 (Context)」。接下來，我們將示範在「生成式 AI」與「AI Agent」這兩種不同系統中，如何應用這 5 要素。</p>
+            </section>
+
+            <section id="genai">
+                <h2>情境一：生成式 AI (單次內容產出)</h2>
+                <img src="assets/images/prompt_genai_example.jpg" class="image-banner" alt="生成式 AI 寫教案">
+                
+                <h3>教學痛點：設計差異化素養教案</h3>
+                <p>國中小老師經常面臨的挑戰是，同一個班級裡有程度極佳的資優生，也有需要更多協助的資源班學生。過去老師要自己生出三種難度的學習單，極度耗時。現在我們可以使用 ChatGPT 或 Claude 來幫忙，看看指令下法的差異：</p>
+                
+                <table class="comparison-table">
+                    <tr>
+                        <th width="30%">NG 的提示詞 (太簡短)</th>
+                        <th width="70%">優良的 5 要素提示詞</th>
+                    </tr>
+                    <tr>
+                        <td class="ng" valign="top">
+                            <p>「幫我寫一個關於台灣荷治時期的國小教案，裡面要包含遊戲。」</p>
+                            <hr>
+                            <p><strong>缺點：</strong> AI 不知道國小是幾年級？不知道你的班級狀況？也不知道你要表格還是純文字？最後產出的內容通常無法直接拿來教書。</p>
+                        </td>
+                        <td class="good" valign="top">
+                            <p><strong>[任務]</strong> 你是一位有 10 年經驗的社會科老師。請設計一堂 40 分鐘的台灣荷治時期歷史課教案。</p>
+                            <p><strong>[輸入]</strong> 我的目標學生是國小五年級。班上有 25 人，其中有 3 位是注意力不足 (ADHD) 的資源班學生。</p>
+                            <p><strong>[輸出]</strong> 請用「表格」呈現，包含：時間分配、教師活動、學生活動。</p>
+                            <p><strong>[限制]</strong> 必須包含一個小組互動遊戲。用詞必須符合國小五年級的國語程度，避免艱澀的歷史專有名詞。</p>
+                            <p><strong>[驗收]</strong> 確保遊戲規則能在 3 分鐘內讓國小生聽懂，且設計中需有讓 ADHD 學生能短暫走動的橋段 (符合 UDL 普遍化設計精神)。</p>
+                        </td>
+                    </tr>
+                </table>
+            </section>
+
+            <section id="agent">
+                <h2>情境二：AI Agent (自動化流程制定)</h2>
+                <img src="assets/images/prompt_agent_example.jpg" class="image-banner" alt="AI Agent 自動化管理">
+                
+                <h3>教學痛點：成績預警與親師關懷自動化</h3>
+                <p>與 ChatGPT 這種單次產出內容的工具不同，當我們在設定 AI Agent (如 Dify, Coze, 或 Make) 時，我們是在「打造一個自動化流程」。Agent 有手有腳（可以呼叫外部工具），因此在寫 Agent 提示詞時，<strong>重點不再是把文章寫好，而是告訴它「判斷邏輯」與「工具權限」</strong>。</p>
+                
+                <div class="info-box">
+                    <h4>Agent 專屬的 5 要素提示詞</h4>
+                    <p><strong>[任務]</strong> 你的角色是「班級守護助理」。你每天早上 8 點必須自動啟動，協助導師監控學生的學習狀況。</p>
+                    <p><strong>[輸入/工具權限]</strong> 授權你使用 [Google Sheets API] 讀取「雲端出缺席與線上平台登入紀錄表」。</p>
+                    <p><strong>[限制/邏輯規則]</strong> <br>
+                        規則 1：如果發現某學生「連續三天未交作業」或「線上測驗低於 50 分」，請進入規則 2。<br>
+                        規則 2：根據學生的姓名與問題，自動草擬一封給家長的關懷 Email。<br>
+                        <span style="color:red; font-weight:bold;">絕對禁止：你只有「草擬」權限，絕對不可以直接將信件寄出。</span></p>
+                    <p><strong>[輸出]</strong> 將草擬好的 Email 文字，透過 [LINE Notify API] 傳送到導師的私有 LINE 群組。</p>
+                    <p><strong>[驗收]</strong> 信件語氣必須是「溫和、關心、非指責的」，且必須在每天早上 8:10 前完成回報。</p>
+                </div>
+            </section>
+
+            <section id="safety">
+                <h2>提示詞的安全與倫理準則</h2>
+                <p>根據聯合國教科文組織 (UNESCO) 與各大教育科技協會的指引，下達提示詞時，必須遵守以下人類本位精神：</p>
+
+                <div class="info-box warning">
+                    <h3>人類必須在迴圈內 (Human-in-the-Loop)</h3>
+                    <p>這是寫 AI Agent 提示詞時最關鍵的「限制條件 (Constraints)」。無論 Agent 設定得多完美，它都有可能發生幻覺 (Hallucination) 或判斷錯誤。因此：</p>
+                    <ul>
+                        <li><strong>AI 只負責起草：</strong> 提示詞中必須明訂「產出結果僅供教師參考」。</li>
+                        <li><strong>最後的審核按鈕：</strong> 任何對外發送的訊息、成績評語，最後都必須經過教師的肉眼審視後，由人類按下「發送」。</li>
+                        <li><strong>不給真實個資：</strong> 在 [輸入] 階段，不要給 AI 學生真實的全名或身分證字號，請使用代號（如：座號 5 號同學）。</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="reference">
+                <h2>參考文獻與延伸資源</h2>
+                <p>點擊以下連結，了解更多國際教育界對於 Prompt Engineering 的框架與實務應用：</p>
+                <ul>
+                    <li><a href="https://www.edutopia.org/article/using-ai-to-support-student-learning/" target="_blank" style="color: #b71c1c; font-weight: bold; text-decoration: none;">🔗 Edutopia: Prompt Engineering for Educators (課堂實務運用)</a></li>
+                    <li><a href="https://www.iste.org/ai" target="_blank" style="color: #b71c1c; font-weight: bold; text-decoration: none;">🔗 國際教育科技協會 (ISTE): 教師的 AI 素養與提示詞指南</a></li>
+                    <li><a href="https://zapier.com/blog/what-is-an-ai-agent/" target="_blank" style="color: #b71c1c; font-weight: bold; text-decoration: none;">🔗 Zapier: 什麼是 AI Agent？如何精準下達系統提示詞？</a></li>
+                </ul>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- 浮動按鈕 -->
+    <div class="floating-nav">
+        <a href="prompt-elements.html" class="nav-btn"><i class="fa-solid fa-person-chalkboard"></i> 切換為簡報模式</a>
+        <a href="index.html" class="nav-btn secondary"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+    </script>
+</body>
+</html>
