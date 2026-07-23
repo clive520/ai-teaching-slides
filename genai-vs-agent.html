@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>生成式 AI vs AI Agent</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/night.css">
+		
+		<!-- 導入 FontAwesome Icon 庫 -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+		<style>
+			/* 琥珀金 / 深空灰 科技風 */
+			.reveal h1, .reveal h2, .reveal h3 {
+				text-transform: none; 
+				color: #ffb86c; /* 琥珀金 */
+			}
+			.reveal h2 { font-size: 2.2em; }
+			.reveal h3 { font-size: 1.6em; margin-bottom: 20px; }
+			.reveal p, .reveal li {
+				font-size: 1.05em;
+				line-height: 1.5;
+				margin-bottom: 12px;
+			}
+			.highlight-amber {
+				color: #f1fa8c;
+				text-shadow: 0 0 8px rgba(241, 250, 140, 0.6);
+				font-weight: bold;
+			}
+			.fa-solid {
+				margin-right: 15px;
+				color: #f1fa8c;
+			}
+			/* 毛玻璃方框 */
+			.glass-panel {
+				background: rgba(20, 20, 25, 0.7);
+				backdrop-filter: blur(15px);
+				-webkit-backdrop-filter: blur(15px);
+				padding: 40px 50px;
+				border-radius: 20px;
+				border: 1px solid rgba(255, 184, 108, 0.2);
+				box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6);
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.glass-panel.center {
+				text-align: center;
+				align-items: center;
+			}
+			/* 左右排版 */
+			.slide-layout {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+				width: 100%;
+			}
+			.content-col {
+				flex: 1;
+				padding-right: 40px;
+			}
+			.img-col {
+				flex: 0 0 450px;
+				display: flex;
+				justify-content: center;
+			}
+			.spot-img {
+				width: 100%;
+				border-radius: 15px;
+				box-shadow: 0 0 30px rgba(255, 184, 108, 0.3);
+				border: 2px solid rgba(255, 255, 255, 0.1);
+			}
+			/* 比較表格樣式 */
+			.compare-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 20px;
+			}
+			.compare-table th, .compare-table td {
+				border: 1px solid rgba(255, 184, 108, 0.3);
+				padding: 15px;
+				text-align: center;
+			}
+			.compare-table th {
+				background: rgba(255, 184, 108, 0.15);
+				color: #f1fa8c;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<!-- 封面 -->
+				<section data-background-image="assets/images/amber_cover.jpg" data-background-opacity="0.9">
+					<div class="glass-panel center">
+						<h2><i class="fa-solid fa-microchip"></i>生成式 AI vs AI Agent</h2>
+						<p>從「對話框」到「真實世界」的進化</p>
+					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (開場)</h4>
+						<p>1. <strong>破冰引言</strong>：各位老師/同學，我們每天都在用 ChatGPT，但你知道我們用的只是 AI 的「冰山一角」嗎？</p>
+						<p>2. <strong>課程目標</strong>：今天我們不只要認識「生成式 AI」，更要帶大家看懂未來趨勢——「AI Agent (AI 代理人)」。</p>
+					</aside>
+				</section>
+
+				<!-- 什麼是生成式 AI -->
+				<section data-background-image="assets/images/amber_brain.jpg" data-background-opacity="0.9">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-brain"></i>生成式 AI：內容的創造者</h3>
+							<ul>
+								<li><strong>定位</strong>：數位大腦、百科全書、專業創作者。</li>
+								<li><strong>工作模式</strong>：反應型 (Reactive)。你給提示詞 (Prompt)，它給你回應。</li>
+								<li><strong>能力極限</strong>：任務在「產出文字、圖片或程式碼」後即結束。</li>
+								<li class="highlight-amber">它沒有手腳，無法幫你「執行」真實世界的動作。</li>
+							</ul>
+						</div>
+					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (生成式 AI)</h4>
+						<p>1. <strong>比喻法</strong>：生成式 AI 就像是一個坐在書桌前、絕頂聰明的軍師。你問他什麼他都知道，但他不會自己站起來去幫你倒水。</p>
+						<p>2. <strong>生活舉例</strong>：請 ChatGPT 寫一封英文信。它寫得很好，但你還是得自己「複製、打開 Gmail、貼上、按發送」。</p>
+					</aside>
+				</section>
+
+				<!-- 什麼是 AI Agent -->
+				<section data-background-image="assets/images/amber_agent.jpg" data-background-opacity="0.9">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-robot"></i>AI Agent：目標的執行者</h3>
+							<ul>
+								<li><strong>定位</strong>：全自動數位助理。</li>
+								<li><strong>工作模式</strong>：主動型 (Proactive)。給定「大目標」，它會自主規劃。</li>
+								<li><strong>核心能力</strong>：
+									<ul>
+										<li><strong>感知環境</strong>：讀取外部資訊</li>
+										<li><strong>使用工具 (Tool Use)</strong>：呼叫 API、上網搜尋</li>
+										<li><strong>自主行動</strong>：規劃步驟並執行</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (AI Agent)</h4>
+						<p>1. <strong>比喻法延續</strong>：AI Agent 不只有大腦，還長出了「手跟腳」。它不僅能思考，還能操作電腦。</p>
+						<p>2. <strong>生活舉例</strong>：同樣是英文信。你只要說「幫我回信給客戶說我明天休假」，Agent 會自動讀取最新郵件、擬定草稿，然後「自己透過 Gmail 幫你寄出去」。</p>
+					</aside>
+				</section>
+
+				<!-- 核心差異比較表 -->
+				<section data-background-image="assets/images/amber_cover.jpg" data-background-opacity="0.9">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-scale-balanced"></i>核心差異對比</h3>
+						<table class="compare-table">
+							<tr>
+								<th>比較項目</th>
+								<th>生成式 AI (GenAI)</th>
+								<th>AI Agent (AI 代理人)</th>
+							</tr>
+							<tr>
+								<td><strong>核心目標</strong></td>
+								<td>創作內容 (文字/圖片)</td>
+								<td>完成任務 (執行工作流)</td>
+							</tr>
+							<tr>
+								<td><strong>工作模式</strong></td>
+								<td>一問一答 (反應型)</td>
+								<td>自主規劃 (主動型)</td>
+							</tr>
+							<tr>
+								<td><strong>自主性</strong></td>
+								<td>低 (依賴人類明確指令)</td>
+								<td class="highlight-amber">高 (能自主判斷並調整策略)</td>
+							</tr>
+						</table>
+					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (表格比較)</h4>
+						<p>1. <strong>引導觀看表格</strong>：帶著學生掃過三個維度 (目標、模式、自主性)。</p>
+						<p>2. <strong>重點強調</strong>：自主性是最大的分水嶺。未來的 AI 發展方向，就是從左邊走向右邊。</p>
+					</aside>
+				</section>
+
+				<!-- 兩者的協作 -->
+				<section data-background-image="assets/images/amber_brain.jpg" data-background-opacity="0.9">
+					<div class="glass-panel center">
+						<h3><i class="fa-solid fa-handshake-angle"></i>兩者的完美協作</h3>
+						<p>它們並非互斥，而是最強大的組合！</p>
+						<div style="font-size: 1.2em; margin: 30px 0; color: #f1fa8c;">
+							<strong>生成式 AI = 大腦 (邏輯推理)</strong> <br>+<br> <strong>AI Agent = 手腳 (工具執行)</strong>
+						</div>
+						<p>需要「靈感創意」找生成式 AI；需要「完成繁瑣工作」找 AI Agent。</p>
+					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (總結)</h4>
+						<p>1. <strong>觀念釐清</strong>：AI Agent 的核心運算能力，其實還是來自於背後的生成式 AI (如 GPT-4)。沒有聰明的大腦，手腳就會做錯事。</p>
+						<p>2. <strong>收尾提問</strong>：「大家能想到有什麼日常工作，是你想交給 Agent 幫你自動執行的嗎？」(與台下互動)</p>
+					</aside>
+				</section>
+
+				<!-- 參考資料 -->
+				<section data-background-image="assets/images/amber_cover.jpg" data-background-opacity="0.9">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-link"></i>參考資料 (References)</h3>
+						<ul>
+							<li><a href="https://cloud.google.com/use-cases/ai-agent" target="_blank" class="highlight-amber">Google Cloud</a> - 什麼是 AI 代理程式？</li>
+							<li><a href="https://www.ibm.com/think/topics/ai-agents" target="_blank" class="highlight-amber">IBM</a> - What are AI agents?</li>
+							<li><a href="https://www.gartner.com/en/articles/generative-ai-vs-ai-agents" target="_blank" class="highlight-amber">Gartner</a> - Generative AI vs AI Agents</li>
+							<li><a href="https://www.databricks.com/glossary/ai-agents" target="_blank" class="highlight-amber">DataBricks</a> - Introduction to AI Agents</li>
+							<li><a href="https://www.redhat.com/en/topics/ai/what-is-an-ai-agent" target="_blank" class="highlight-amber">Red Hat</a> - What is an AI agent?</li>
+						</ul>
+					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (參考文獻)</h4>
+						<p>這裡附上了各大科技巨頭與研調機構的權威定義，學生若要寫報告，可以直接點擊連結參考原文。</p>
+					</aside>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
+		<script>
+			Reveal.initialize({
+				width: 1280,
+				height: 720,
+				margin: 0.1,
+				hash: true,
+				transition: 'convex',
+				backgroundTransition: 'zoom',
+				progress: true,
+				slideNumber: 'c/t',
+				controls: true,
+				plugins: [ RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
