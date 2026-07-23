@@ -87,21 +87,22 @@
 			/* 浮動導覽按鈕群 */
 			.floating-nav {
 				position: fixed;
-				bottom: 20px;
-				right: 20px;
+				bottom: 15px;
+				right: 15px;
 				z-index: 1000;
 				display: flex;
-				gap: 10px;
+				gap: 8px;
 			}
 			.nav-btn {
 				background: rgba(255, 255, 255, 0.9);
 				border: 2px solid #e65100;
 				color: #e65100;
-				padding: 10px 20px;
+				padding: 8px 15px;
 				border-radius: 30px;
 				text-decoration: none;
 				font-family: 'Noto Sans TC', sans-serif;
 				font-weight: bold;
+				font-size: 0.85em;
 				backdrop-filter: blur(5px);
 				transition: all 0.3s ease;
 				box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -167,58 +168,71 @@
 					</div>
 				</section>
 
-				<!-- 情境一：生成式 AI -->
+				<!-- 情境一：生成式 AI (上) -->
 				<section data-background-image="assets/images/prompt_cover_orange.jpg" data-background-opacity="0.5">
 					<div class="glass-panel">
 						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-pen-fancy"></i> 寫法差異一：生成式 AI (單次內容產出)</h3>
-						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
-							<div style="flex: 0 0 320px; margin-right: 25px;">
+						<div class="slide-layout" style="align-items: center; font-size: 0.9em;">
+							<div style="flex: 0 0 400px; margin-right: 25px;">
 								<img src="assets/images/prompt_genai_example.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
 								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666; font-weight:bold;">情境：設計差異化素養教案</p>
 							</div>
 							<div class="content-col" style="padding-right: 15px;">
-								<h4 style="color:#d84315; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-xmark"></i> NG 的提示詞 (太簡短)</h4>
-								<ul style="background: #ffebee; padding: 15px 30px; border-radius: 8px;">
+								<h4 style="color:#d84315; margin-bottom: 10px; font-size: 1.2em;"><i class="fa-solid fa-xmark"></i> NG 的提示詞 (太簡短)</h4>
+								<ul style="background: #ffebee; padding: 20px 30px; border-radius: 8px; line-height: 1.8;">
 									<li>「幫我寫一個關於台灣歷史的國小教案。」</li>
 									<li style="color:#c62828;">(結果：AI 給出大學生程度的死板條列式歷史大綱，無法用於國小課堂)</li>
 								</ul>
-							</div>
-							<div class="content-col" style="border-left: 2px solid #ddd; padding-left: 20px;">
-								<h4 style="color:#2e7d32; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-check"></i> 優良的 5 要素提示詞</h4>
-								<ul style="background: #e8f5e9; padding: 15px 30px; border-radius: 8px;">
-									<li><strong>[任務]</strong> 請設計一堂 40 分鐘的台灣荷治時期歷史課。</li>
-									<li><strong>[輸入]</strong> 目標是國小五年級學生，班上有三位資源班學生。</li>
-									<li><strong>[輸出]</strong> 請用「表格」呈現時間分配。</li>
-									<li><strong>[限制]</strong> 必須包含一個小組遊戲，且用詞要淺顯易懂。</li>
-									<li><strong>[驗收]</strong> 確保遊戲規則能在 3 分鐘內讓國小生聽懂。</li>
-								</ul>
+								<p style="margin-top:20px;">➡️ <span style="color: #d84315; font-weight:bold;">為什麼失敗？</span> 因為 AI 不知道學生的程度、班級狀況，也不知道你需要什麼格式！</p>
 							</div>
 						</div>
 					</div>
 				</section>
 
-				<!-- 情境二：AI Agent -->
+				<!-- 情境一：生成式 AI (下) -->
+				<section data-background-image="assets/images/prompt_cover_orange.jpg" data-background-opacity="0.5">
+					<div class="glass-panel center">
+						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-check" style="color: #2e7d32;"></i> 優良的 5 要素提示詞範例</h3>
+						<div style="text-align: left; background: #e8f5e9; padding: 25px 40px; border-radius: 12px; font-size: 0.95em; line-height: 1.8; border-left: 8px solid #4caf50;">
+							<ul style="list-style-type: none; padding: 0;">
+								<li style="margin-bottom: 12px;"><strong>[任務]</strong> 請設計一堂 40 分鐘的台灣荷治時期歷史課。</li>
+								<li style="margin-bottom: 12px;"><strong>[輸入]</strong> 目標是國小五年級學生，班上有三位資源班學生。</li>
+								<li style="margin-bottom: 12px;"><strong>[輸出]</strong> 請用「表格」呈現時間分配。</li>
+								<li style="margin-bottom: 12px;"><strong>[限制]</strong> 必須包含一個小組遊戲，且用詞要淺顯易懂。</li>
+								<li style="margin-bottom: 12px;"><strong>[驗收]</strong> 確保遊戲規則能在 3 分鐘內讓國小生聽懂。</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<!-- 情境二：AI Agent (上) -->
 				<section data-background-image="assets/images/prompt_cover_orange.jpg" data-background-opacity="0.5">
 					<div class="glass-panel">
 						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-robot"></i> 寫法差異二：AI Agent (自動化流程制定)</h3>
-						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
-							<div style="flex: 0 0 320px; margin-right: 25px;">
+						<div class="slide-layout" style="align-items: center; font-size: 0.9em;">
+							<div style="flex: 0 0 400px; margin-right: 25px;">
 								<img src="assets/images/prompt_agent_example.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
 								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666; font-weight:bold;">情境：建立自動化成績預警助理</p>
 							</div>
 							<div class="content-col" style="padding-right: 15px;">
-								<h4 style="color:#d84315; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-bolt"></i> 核心差異：告訴 Agent「如何判斷與使用工具」</h4>
-								<p>生成式 AI 只要「寫出文章」就結束了；但給 AI Agent 的提示詞，重點在於給予他<strong>「邏輯判斷的規則 (If-Else)」</strong>與<strong>「呼叫外部工具的權限」</strong>。</p>
+								<h4 style="color:#d84315; margin-bottom: 15px; font-size: 1.2em;"><i class="fa-solid fa-bolt"></i> 核心差異：告訴 Agent「如何判斷與使用工具」</h4>
+								<p style="line-height: 1.8;">生成式 AI 只要「寫出文章」就結束了。<br><br>但給 AI Agent 的提示詞，重點在於給予他<strong>「邏輯判斷的規則 (If-Else)」</strong>與<strong>「呼叫外部工具的權限」</strong>。我們不是在寫文章，而是在定義一個工作流程 SOP！</p>
 							</div>
-							<div class="content-col" style="border-left: 2px solid #ddd; padding-left: 20px;">
-								<h4 style="color:#00695c; margin-bottom: 10px; font-size: 1.1em;"><i class="fa-solid fa-code-branch"></i> Agent 專屬提示詞範例</h4>
-								<ul style="background: #e0f2f1; padding: 15px 30px; border-radius: 8px;">
-									<li><strong>[任務]</strong> 每天早上 8 點，擔任班級成績守護者。</li>
-									<li><strong>[工具]</strong> 授權你讀取「Google 雲端出缺席表格」。</li>
-									<li><strong>[限制/邏輯]</strong> 如果發現某學生「連續三天未交作業」，請自動草擬一封關懷 Email，但<span style="color:red; font-weight:bold;">禁止自動發送</span>。</li>
-									<li><strong>[輸出]</strong> 將草稿傳送到我的 LINE 給我審核。</li>
-								</ul>
-							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 情境二：AI Agent (下) -->
+				<section data-background-image="assets/images/prompt_cover_orange.jpg" data-background-opacity="0.5">
+					<div class="glass-panel center">
+						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-code-branch" style="color: #00695c;"></i> Agent 專屬提示詞範例</h3>
+						<div style="text-align: left; background: #e0f2f1; padding: 25px 40px; border-radius: 12px; font-size: 0.95em; line-height: 1.8; border-left: 8px solid #009688;">
+							<ul style="list-style-type: none; padding: 0;">
+								<li style="margin-bottom: 12px;"><strong>[任務]</strong> 每天早上 8 點，擔任班級成績守護者。</li>
+								<li style="margin-bottom: 12px;"><strong>[工具]</strong> 授權你讀取「Google 雲端出缺席表格」。</li>
+								<li style="margin-bottom: 12px;"><strong>[限制/邏輯]</strong> 如果發現某學生「連續三天未交作業」，請自動草擬一封關懷 Email。<br><span style="color:red; font-weight:bold; font-size:1.1em;">(⚠️ 安全限制：絕對禁止自動發送)</span></li>
+								<li style="margin-bottom: 12px;"><strong>[輸出]</strong> 將草稿傳送到我的 LINE 給我審核。</li>
+							</ul>
 						</div>
 					</div>
 				</section>
