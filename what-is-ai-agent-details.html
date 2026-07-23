@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>什麼是 AI Agent？詳細解說與安全準則</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+        
+        :root {
+            --primary: #004d40;
+            --secondary: #0277bd;
+            --bg-color: #f8f9fa;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 頂部導覽列 */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        header p {
+            margin: 5px 0 0 0;
+            color: #b2dfdb;
+        }
+
+        /* 主容器與側邊欄排版 */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            display: flex;
+            gap: 40px;
+            padding: 0 20px;
+        }
+        
+        .sidebar {
+            flex: 0 0 250px;
+            position: sticky;
+            top: 120px;
+            height: fit-content;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .sidebar.collapsed {
+            flex: 0 0 60px;
+            padding: 20px 10px;
+        }
+        .sidebar.collapsed ul, .sidebar.collapsed h3 span {
+            display: none;
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .sidebar.collapsed .sidebar-header {
+            border-bottom: none;
+            justify-content: center;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        .sidebar h3 {
+            margin: 0;
+            color: var(--primary);
+        }
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.collapsed .toggle-btn {
+            transform: rotate(180deg);
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li {
+            margin-bottom: 15px;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .sidebar a:hover {
+            color: var(--secondary);
+        }
+
+        .content {
+            flex: 1;
+            background: white;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        /* 內容區塊排版 */
+        h2 {
+            color: var(--primary);
+            border-left: 5px solid var(--secondary);
+            padding-left: 15px;
+            margin-top: 50px;
+        }
+        h2:first-child { margin-top: 0; }
+        h3 {
+            color: var(--secondary);
+            margin-top: 30px;
+        }
+        
+        .image-banner {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-box {
+            background-color: #e0f7fa;
+            border-left: 4px solid #00acc1;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        .info-box.warning {
+            background-color: #fff3e0;
+            border-color: #e65100;
+        }
+
+        /* 浮動按鈕 */
+        .floating-nav {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            background: #00695c;
+        }
+        .nav-btn.secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .nav-btn.secondary:hover {
+            background: #f5f5f5;
+        }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar { position: relative; top: 0; }
+            .content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>什麼是 AI Agent？</h1>
+        <p>國中小教師實務應用與隱私安全指引 ── 詳細解說版</p>
+    </header>
+
+    <div class="container">
+        <!-- 左側導覽列 -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3><span>目錄導覽</span></h3>
+                <button class="toggle-btn" id="sidebarToggle" title="收合/展開側欄"><i class="fa-solid fa-chevron-left"></i></button>
+            </div>
+            <ul>
+                <li><a href="#intro"><i class="fa-solid fa-gears"></i> AI Agent 核心概念</a></li>
+                <li><a href="#admin"><i class="fa-solid fa-clipboard-user"></i> 領域一：行政與親師溝通</a></li>
+                <li><a href="#tutor"><i class="fa-solid fa-person-chalkboard"></i> 領域二：個人化專屬家教</a></li>
+                <li><a href="#data"><i class="fa-solid fa-chart-line"></i> 領域三：早期預警與追蹤</a></li>
+                <li><a href="#safety"><i class="fa-solid fa-shield-halved"></i> 隱私與安全指引</a></li>
+                <li><a href="#reference"><i class="fa-solid fa-link"></i> 參考文獻與資源</a></li>
+            </ul>
+        </nav>
+
+        <!-- 右側主要內容 -->
+        <main class="content">
+            
+            <section id="intro">
+                <h2>AI Agent 核心概念：長出「手腳」的超級大腦</h2>
+                <p>我們已經知道「生成式 AI」就像是一個無所不知的超級大腦。然而，像 ChatGPT 這樣的工具，它只能「給你建議」，卻沒有辦法「幫你做事」。如果你請它幫你訂火車票，它只會列出訂票步驟，你還是得自己打開網頁、輸入資料。</p>
+                
+                <div class="info-box">
+                    <strong>從「對話」走向「行動」的 AI Agent：</strong><br>
+                    AI Agent (代理智能體) 解決了這個痛點。Agent 不僅擁有生成式 AI 的大腦，還具備了「長期記憶」與「使用工具 (Tool Use)」的能力。當你給 Agent 一個大目標時，它能自行拆解任務步驟、上網查資料、甚至透過 API 自動呼叫其他軟體完成任務，這就是所謂的「自動化助理」。
+                </div>
+                <p>對於國中小教師而言，Agent 是幫助我們從繁雜行政庶務中解脫、將時間還給學生的終極解方。</p>
+            </section>
+
+            <section id="admin">
+                <h2>領域一：行政與親師溝通自動化</h2>
+                <img src="assets/images/agent_admin_bot.jpg" class="image-banner" alt="行政溝通 AI Agent">
+                <p><strong>代表工具：</strong> LINE Bot + Dify / Coze</p>
+                
+                <h3>教學實務痛點與解方：班級專屬客服 Agent</h3>
+                <p>第一線教師常常在下班後，還必須應付家長透過 LINE 群組傳來的各種問題：「老師，明天的午餐費是多少？」、「小明今天有交作業嗎？」。如果是新住民家長，還會因為語言隔閡導致溝通困難，讓老師疲於奔命。</p>
+                
+                <ul>
+                    <li><strong>傳統作法：</strong> 老師必須親自翻找點名表、成績單，手動打字回覆，遇到語言不通還需依賴 Google 翻譯。</li>
+                    <li><strong>Agent 自動化作法：</strong> 透過 Dify 或 Coze 等平台，建立一個串接班級官方 LINE 帳號的 Agent。並將班級的「行事曆」與「出缺席 Excel 表」授權給 Agent 讀取。</li>
+                </ul>
+                <p>當家長在 LINE 詢問時，Agent 會自動讀取 Excel 表格，找到對應學生的資訊，並自動生成回覆。甚至，Agent 能自動偵測家長使用的語言（如印尼文、泰文），直接進行雙向即時翻譯。這將大幅度解放教師下班後的時間。</p>
+            </section>
+
+            <section id="tutor">
+                <h2>領域二：個人化專屬家教 (Socratic Tutor)</h2>
+                <img src="assets/images/agent_socratic_tutor.jpg" class="image-banner" alt="蘇格拉底家教 AI Agent">
+                <p><strong>代表工具：</strong> ChatGPT Custom GPTs / NotebookLM</p>
+                
+                <h3>教學實務痛點與解方：蘇格拉底引導式學習</h3>
+                <p>一個班級有30個學生，程度落差懸殊。當學生在解數學題卡關時，老師分身乏術，無法一對一給予指導。如果讓學生直接使用公開的 ChatGPT，他們往往會偷懶，直接叫 AI 給出最終答案，喪失了學習的意義。</p>
+                
+                <div class="info-box">
+                    <strong>蘇格拉底引導 Agent：</strong><br>
+                    教師可以自行打造一個「客製化 Agent (Custom GPT)」，在後台系統指令 (System Prompt) 中強制規定：<strong>「你是一位蘇格拉底式的家教，絕對不可以給學生直接解答。你必須根據學生的問題，提供引導式的反問與線索，讓學生自己思考出答案。」</strong>
+                </div>
+                <p>透過這樣的設定，AI 不再是幫學生寫作業的作弊工具，而是真正實現「因材施教、適性揚才」的專屬個人家教，陪伴學生度過卡關的挫折期。</p>
+            </section>
+
+            <section id="data">
+                <h2>領域三：早期預警與數據追蹤</h2>
+                <img src="assets/images/agent_concept.jpg" class="image-banner" alt="預警系統 AI Agent">
+                <p><strong>代表工具：</strong> Make / Zapier 搭配教育平台 API</p>
+                
+                <h3>教學實務痛點與解方：學習狀況預警系統</h3>
+                <p>教育現場常見的遺憾是：往往要等到期中考成績公布，老師才驚覺某位學生已經完全放棄學習。平時老師很難每天去檢查每一個線上學習平台（如均一教育平台、因材網）中，每個學生的登入與作答狀況。</p>
+                <p>利用 Agent 結合自動化串接工具 (Make/Zapier)，我們可以建立一套「早期預警系統」。設定 Agent 每天半夜自動爬取線上平台的數據，當發現特定條件觸發時（例如：連續三天未交作業、某個單元答錯率超過 80%），Agent 就會主動發送一封「警示 Email」給老師。這讓老師能防微杜漸，及早介入關心學生的心理或學習狀況，有效降低中輟率。</p>
+            </section>
+
+            <section id="safety">
+                <h2>Agent 導入的隱私與安全指引</h2>
+                <p>將能自主行動的 AI Agent 引入校園，雖然能帶來極大的便利，但也伴隨著更高的風險。教師必須遵守以下的安全規範：</p>
+
+                <h3>1. 資料隱私保護 (符合 FERPA/COPPA)</h3>
+                <p>學生資料的安全性是最高原則。<strong>絕對不可將學生的真實姓名、身分證字號或成績</strong>直接丟給公開版本的 AI 工具處理。如果需要讓 Agent 分析成績，請務必將資料「去識別化」（例如用座號代替姓名），或者學校應採購有資安保證的企業版/教育版 AI 服務。</p>
+
+                <h3>2. 人類必須在迴圈內 (Human-in-the-Loop)</h3>
+                <div class="info-box warning">
+                    <strong>AI 是助理，不是決策者：</strong><br>
+                    無論 Agent 多麼聰明，它都不能代替老師做出最終決定。Agent 只能負責「初步篩選、整理資料、草擬信件」。所有對外發送的家長信件、成績單評語，發出前<strong>絕對需要老師親自閱讀並按下發送鍵</strong>，進行最後把關。
+                </div>
+
+                <h3>3. 小規模測試與循序漸進</h3>
+                <p>不要一開始就試圖用 Agent 取代所有的行政流程。建議先挑選單一、重複性極高且風險低的業務（例如：回答家長關於學校行事曆的常見問題）進行試水溫。確保 Agent 的回答準確率達到 99% 以上，再考慮擴展到其他複雜任務。</p>
+            </section>
+
+            <section id="reference">
+                <h2>參考文獻與延伸資源</h2>
+                <p>以下為本課程參考的 AI Agent 與自動化資源連結，點擊即可前往閱讀原文：</p>
+                <ul>
+                    <li><a href="https://zapier.com/blog/what-is-an-ai-agent/" target="_blank" style="color: #1565c0; font-weight: bold; text-decoration: none;">🔗 Zapier: What is an AI agent?</a></li>
+                    <li><a href="https://www.edutopia.org/article/ai-tools-teacher-productivity" target="_blank" style="color: #1565c0; font-weight: bold; text-decoration: none;">🔗 Edutopia: Using AI to Boost Teacher Productivity</a></li>
+                    <li><a href="https://studentprivacy.ed.gov/" target="_blank" style="color: #1565c0; font-weight: bold; text-decoration: none;">🔗 U.S. Department of Education: Family Educational Rights and Privacy Act (FERPA)</a></li>
+                </ul>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- 浮動按鈕 -->
+    <div class="floating-nav">
+        <a href="what-is-ai-agent.html" class="nav-btn"><i class="fa-solid fa-person-chalkboard"></i> 切換為簡報模式</a>
+        <a href="index.html" class="nav-btn secondary"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+    </script>
+</body>
+</html>
