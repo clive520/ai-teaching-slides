@@ -40,7 +40,7 @@
 				background: rgba(20, 20, 25, 0.7);
 				backdrop-filter: blur(15px);
 				-webkit-backdrop-filter: blur(15px);
-				padding: 40px 50px;
+				padding: 20px 40px;
 				border-radius: 20px;
 				border: 1px solid rgba(255, 184, 108, 0.2);
 				box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6);
@@ -50,6 +50,9 @@
 				justify-content: center;
 				width: 100%;
 				box-sizing: border-box;
+				max-height: 90vh;
+				overflow-y: auto;
+				overflow-x: hidden;
 			}
 			.glass-panel.center {
 				text-align: center;
@@ -160,22 +163,23 @@
 				<!-- 教學實務大車拚 (一)：親師溝通 -->
 				<section data-background-image="assets/images/amber_cover.jpg" data-background-opacity="0.9">
 					<div class="glass-panel">
-						<h3><i class="fa-solid fa-school"></i>教學實務大車拚 (一)：親師溝通</h3>
-						<div class="slide-layout">
+						<h3 style="margin-bottom: 10px;"><i class="fa-solid fa-school"></i>教學實務大車拚 (一)：親師溝通</h3>
+						<img src="assets/images/teacher_ai_parent.jpg" style="width: 100%; height: 260px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255, 184, 108, 0.3);">
+						<div class="slide-layout" style="align-items: flex-start; font-size: 0.9em;">
 							<div class="content-col" style="padding-right: 20px;">
-								<h4 style="color:#f1fa8c; margin-bottom: 15px;"><i class="fa-solid fa-pen-nib"></i> 生成式 AI (寫作助手)</h4>
+								<h4 style="color:#f1fa8c; margin-bottom: 10px;"><i class="fa-solid fa-pen-nib"></i> 生成式 AI (寫作助手)</h4>
 								<ul>
-									<li><strong>老師指令</strong>：幫我寫一篇給家長提醒帶水彩用具的 LINE 訊息。</li>
-									<li><strong>運作結果</strong>：AI 生成一段很棒的草稿文字。</li>
-									<li class="highlight-amber">痛點：老師必須自己「複製文字」→「打開 LINE」→「貼上並送出」。</li>
+									<li><strong>老師指令</strong>：幫寫一篇提醒帶水彩用具的 LINE。</li>
+									<li><strong>結果</strong>：AI 生成草稿。</li>
+									<li class="highlight-amber">痛點：需自己「複製、開 LINE、貼上送出」。</li>
 								</ul>
 							</div>
-							<div class="content-col" style="border-left: 2px solid rgba(255, 184, 108, 0.3); padding-left: 40px;">
-								<h4 style="color:#f1fa8c; margin-bottom: 15px;"><i class="fa-solid fa-user-tie"></i> AI Agent (全能小秘書)</h4>
+							<div class="content-col" style="border-left: 2px solid rgba(255, 184, 108, 0.3); padding-left: 30px;">
+								<h4 style="color:#f1fa8c; margin-bottom: 10px;"><i class="fa-solid fa-user-tie"></i> AI Agent (全能小秘書)</h4>
 								<ul>
-									<li><strong>老師指令</strong>：收信、判斷誰請假，把名單更新到試算表並自動回信。</li>
-									<li><strong>運作結果</strong>：Agent 自主讀信，辨識請假內容，登入 Google 表單打勾。</li>
-									<li class="highlight-amber">優勢：自動撰寫慰問信並「直接寄出 Email」。</li>
+									<li><strong>老師指令</strong>：收信、記出缺席、自動回信。</li>
+									<li><strong>結果</strong>：Agent 自主讀信，登入表單打勾。</li>
+									<li class="highlight-amber">優勢：自動撰寫慰問並「直接寄出Email」。</li>
 								</ul>
 							</div>
 						</div>
@@ -190,22 +194,23 @@
 				<!-- 教學實務大車拚 (二)：學習單出題 -->
 				<section data-background-image="assets/images/amber_agent.jpg" data-background-opacity="0.9">
 					<div class="glass-panel">
-						<h3><i class="fa-solid fa-file-signature"></i>教學實務大車拚 (二)：考卷與命題</h3>
-						<div class="slide-layout">
+						<h3 style="margin-bottom: 10px;"><i class="fa-solid fa-file-signature"></i>教學實務大車拚 (二)：考卷與命題</h3>
+						<img src="assets/images/teacher_ai_test.jpg" style="width: 100%; height: 260px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255, 184, 108, 0.3);">
+						<div class="slide-layout" style="align-items: flex-start; font-size: 0.9em;">
 							<div class="content-col" style="padding-right: 20px;">
-								<h4 style="color:#f1fa8c; margin-bottom: 15px;"><i class="fa-solid fa-lightbulb"></i> 生成式 AI (靈感智庫)</h4>
+								<h4 style="color:#f1fa8c; margin-bottom: 10px;"><i class="fa-solid fa-lightbulb"></i> 生成式 AI (靈感智庫)</h4>
 								<ul>
-									<li><strong>老師指令</strong>：請給我 10 題適合五年級的台灣地理選擇題。</li>
-									<li><strong>運作結果</strong>：AI 在對話框列出 10 題選擇題。</li>
-									<li class="highlight-amber">痛點：老師需要自己複製到 Word，重新排版並列印發送。</li>
+									<li><strong>老師指令</strong>：請給我 10 題台灣地理選擇題。</li>
+									<li><strong>結果</strong>：在對話框列出題目。</li>
+									<li class="highlight-amber">痛點：需自己複製到 Word，排版並列印。</li>
 								</ul>
 							</div>
-							<div class="content-col" style="border-left: 2px solid rgba(255, 184, 108, 0.3); padding-left: 40px;">
-								<h4 style="color:#f1fa8c; margin-bottom: 15px;"><i class="fa-solid fa-cogs"></i> AI Agent (自動出題助理)</h4>
+							<div class="content-col" style="border-left: 2px solid rgba(255, 184, 108, 0.3); padding-left: 30px;">
+								<h4 style="color:#f1fa8c; margin-bottom: 10px;"><i class="fa-solid fa-cogs"></i> AI Agent (自動出題助理)</h4>
 								<ul>
-									<li><strong>老師指令</strong>：讀取課文重點 PDF，產出線上測驗並發布給學生。</li>
-									<li><strong>運作結果</strong>：Agent 讀取檔案、分析重點、自動建立線上表單測驗。</li>
-									<li class="highlight-amber">優勢：自動連線到 Google Classroom 完成作業派發。</li>
+									<li><strong>老師指令</strong>：讀取 PDF，產出測驗並發布。</li>
+									<li><strong>結果</strong>：Agent 分析重點、自動建立表單測驗。</li>
+									<li class="highlight-amber">優勢：自動連線 Classroom 完成作業派發。</li>
 								</ul>
 							</div>
 						</div>
