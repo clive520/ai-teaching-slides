@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>自動化任務的 5 大判準 - 教師實務應用大綱</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/monokai.css">
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+			
+			body {
+				font-family: 'Noto Sans TC', sans-serif;
+				/* 科技紫與深藍色背景 */
+				background: linear-gradient(135deg, #120024 0%, #3a0066 50%, #6a1b9a 100%);
+			}
+			.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+				font-family: 'Noto Sans TC', sans-serif;
+				font-weight: 700;
+				color: #111111; 
+				text-transform: none;
+				text-shadow: none;
+			}
+			.reveal h1 { font-size: 1.8em; color: #6a1b9a; } /* 神秘紫 */
+			.reveal h2 { font-size: 1.5em; color: #7b1fa2; } /* 深紫 */
+			.reveal h3 { font-size: 1.2em; color: #8e24aa; }
+			
+			.reveal p, .reveal li {
+				font-size: 0.85em; 
+				line-height: 1.4;
+				margin-bottom: 10px;
+				color: #222222; 
+			}
+			
+			/* 高對比亮色毛玻璃方框 */
+			.glass-panel {
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(20px);
+				-webkit-backdrop-filter: blur(20px);
+				padding: 25px 40px;
+				border-radius: 20px;
+				border: 1px solid rgba(255, 255, 255, 0.8);
+				box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.4);
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.glass-panel.center {
+				text-align: center;
+				align-items: center;
+			}
+			
+			/* 三欄式橫向排版 */
+			.slide-layout {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				width: 100%;
+				gap: 20px;
+			}
+			.content-col {
+				flex: 1;
+			}
+			
+			/* 強調色 */
+			.highlight-main {
+				color: #8e24aa; /* 紫色 */
+				font-weight: bold;
+			}
+			
+			.reveal-viewport {
+				background: transparent !important;
+			}
+			
+			/* 浮動導覽按鈕群 */
+			.floating-nav {
+				position: fixed;
+				bottom: 15px;
+				right: 15px;
+				z-index: 1000;
+				display: flex;
+				gap: 8px;
+			}
+			.nav-btn {
+				background: rgba(255, 255, 255, 0.9);
+				border: 2px solid #8e24aa;
+				color: #8e24aa;
+				padding: 8px 15px;
+				border-radius: 30px;
+				text-decoration: none;
+				font-family: 'Noto Sans TC', sans-serif;
+				font-weight: bold;
+				font-size: 0.85em;
+				backdrop-filter: blur(5px);
+				transition: all 0.3s ease;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+			}
+			.nav-btn:hover {
+				background: #8e24aa;
+				color: white;
+				transform: translateY(-3px);
+			}
+			.nav-btn.primary {
+				background: #9c27b0;
+				border-color: #9c27b0;
+				color: white;
+			}
+			.nav-btn.primary:hover {
+				background: #7b1fa2;
+			}
+			
+			.reveal a {
+				color: #8e24aa;
+				font-weight: bold;
+			}
+			.reveal a:hover {
+				color: #ab47bc;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<!-- 封面 -->
+				<section data-background-image="assets/images/auto_cover_purple.jpg" data-background-opacity="0.8">
+					<div class="glass-panel center" style="padding: 60px;">
+						<h1><i class="fa-solid fa-scale-balanced" style="color:#8e24aa;"></i> 自動化任務的 5 大判準</h1>
+						<h3 style="color: #444; font-weight: 500; letter-spacing: 1px;">不是什麼事情都該丟給 AI！ ── 教師實務解析</h3>
+						<div style="margin-top: 40px; font-size: 1.2em; color: #7b1fa2; font-weight: bold;">
+							<p>🤔 投資報酬率評估 ｜ ❌ NG 隨機情境 ｜ ✅ 黃金自動化流程</p>
+						</div>
+					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (封面)</h4>
+						<p>老師們，學會寫提示詞跟設定 Agent 後，很容易陷入「什麼都想自動化」的迷思。但寫一個流程可能要 3 小時，如果這個任務你一年只做一次，那根本不划算！今天我們來學怎麼評估投資報酬率。</p>
+					</aside>
+				</section>
+
+				<!-- 定義 -->
+				<section data-background-image="assets/images/auto_cover_purple.jpg" data-background-opacity="0.5">
+					<div class="glass-panel center">
+						<h2><i class="fa-solid fa-list-check" style="color:#8e24aa;"></i> 適合自動化的 5 大判準</h2>
+						<p style="font-size: 1.2em; margin: 20px 0; font-weight: bold;">動手寫 Agent 之前，先問自己這五個問題：</p>
+						<div class="slide-layout" style="margin-top: 10px; text-align: left;">
+							<div class="content-col" style="background: #f3e5f5; padding: 20px; border-radius: 15px; border-left: 5px solid #ab47bc;">
+								<ol style="font-size: 0.9em; font-weight: bold; line-height: 2;">
+									<li><span class="highlight-main">流程固定</span>：有明確的 SOP 嗎？(如：收單 -> 建檔 -> 寄信)</li>
+									<li><span class="highlight-main">輸入明確</span>：一開始給的資料格式固定嗎？(如：統一格式的 Google 表單)</li>
+									<li><span class="highlight-main">成品明確</span>：最後產出的東西有標準嗎？(如：產出 CSV 檔)</li>
+									<li><span class="highlight-main">重複發生</span>：這個任務是不是常常發生？(如：每天早上的請假單)</li>
+									<li><span class="highlight-main">可由人類審核</span>：萬一 AI 做錯了，你能一眼看出來嗎？(如：審核信件草稿)</li>
+								</ol>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 情境一：NG 不適合自動化 -->
+				<section data-background-image="assets/images/auto_cover_purple.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-xmark" style="color:#c62828;"></i> 案例 A：不適合自動化的情境</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.9em;">
+							<div style="flex: 0 0 400px; margin-right: 25px;">
+								<img src="assets/images/auto_bad_example.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666; font-weight:bold;">情境：AI 決定每天的穿搭與午餐</p>
+							</div>
+							<div class="content-col" style="padding-right: 15px;">
+								<h4 style="color:#c62828; margin-bottom: 10px; font-size: 1.2em;">❌ 為什麼這是個壞主意？</h4>
+								<ul style="background: #ffebee; padding: 20px 30px; border-radius: 8px; line-height: 1.8;">
+									<li><strong>沒有流程固定 (SOP)</strong>：穿什麼、吃什麼往往看當天心情，沒有硬性邏輯。</li>
+									<li><strong>沒有明確的驗收標準</strong>：AI 幫你挑了紅襯衫，但你今天就不想穿紅色的，無法定義對錯。</li>
+								</ul>
+								<p style="margin-top:20px;">➡️ <span style="color: #c62828; font-weight:bold;">結論：</span> 這屬於高度主觀、缺乏 SOP 的任務，寫出來的 AI 只會讓你覺得「不好用」，浪費開發時間。</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 情境二：完美適合自動化 -->
+				<section data-background-image="assets/images/auto_cover_purple.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-check" style="color:#2e7d32;"></i> 案例 B：完美適合自動化的情境</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.9em;">
+							<div style="flex: 0 0 400px; margin-right: 25px;">
+								<img src="assets/images/auto_good_example.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+								<p style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666; font-weight:bold;">情境：自動登記紙本請假單 / 健康調查表</p>
+							</div>
+							<div class="content-col" style="padding-right: 15px;">
+								<h4 style="color:#2e7d32; margin-bottom: 15px; font-size: 1.2em;">✅ 符合所有 5 大判準：</h4>
+								<ul style="background: #e8f5e9; padding: 15px 30px; border-radius: 8px; line-height: 1.6;">
+									<li><strong>[流程固定]</strong> 掃描紙本 -> 萃取姓名事由 -> 填入 Excel。</li>
+									<li><strong>[輸入明確]</strong> 統一格式的學校紙本表單。</li>
+									<li><strong>[成品明確]</strong> 輸出成表格資料。</li>
+									<li><strong>[重複發生]</strong> 每天早上都會有幾張，全年無休。</li>
+									<li><strong>[可由人類審核]</strong> 老師只要對照紙本和螢幕，一秒鐘就能確認 AI 有沒有辨識錯誤。</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
+				
+				<!-- 參考文獻與資源 -->
+				<section data-background-image="assets/images/auto_cover_purple.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 25px;"><i class="fa-solid fa-link" style="color:#8e24aa;"></i> 參考文獻與延伸資源</h3>
+						<ul style="line-height: 2; font-size: 0.9em;">
+							<li><a href="https://hbr.org/2019/04/what-jobs-should-you-automate" target="_blank" style="color: #4a148c; font-weight: bold; text-decoration: none;">🔗 Harvard Business Review: What Jobs Should You Automate?</a></li>
+							<li><a href="https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/where-machines-could-replace-humans-and-where-they-cant-yet" target="_blank" style="color: #4a148c; font-weight: bold; text-decoration: none;">🔗 McKinsey: Where machines could replace humans</a></li>
+						</ul>
+					</div>
+				</section>
+
+			</div>
+			
+			<div class="floating-nav">
+				<a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+				<a href="task-automation-details.html" class="nav-btn primary"><i class="fa-solid fa-file-lines"></i> 閱讀詳細網頁版</a>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				width: 1280,
+				height: 720,
+				margin: 0.1,
+                controls: true,
+				plugins: [ RevealNotes ]
+			});
+		</script>
+	</body>
+</html>

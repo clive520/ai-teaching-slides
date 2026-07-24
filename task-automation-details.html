@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自動化任務的 5 大判準 - 詳細教學與國際準則</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8e24aa; /* 紫色 */
+            --primary-dark: #6a1b9a;
+            --primary-light: #e1bee7;
+            --bg-color: #fcfcfc;
+            --text-color: #333333;
+            --text-light: #666666;
+            --sidebar-width: 280px;
+            --border-color: #eeeeee;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        /* 側邊欄樣式 */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #ffffff;
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* 主內容區樣式 */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 50px 80px;
+            max-width: 900px;
+            box-sizing: border-box;
+            transition: margin-left 0.3s ease;
+        }
+
+        .content-header {
+            margin-bottom: 40px;
+        }
+
+        .content-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .content-header p.subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        .article-section {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        .article-section h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .article-section h3 {
+            color: var(--primary-dark);
+            margin-top: 30px;
+        }
+
+        /* 案例對比卡片 */
+        .case-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .case-card {
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .case-card.bad {
+            background-color: #fff8f8;
+            border-left: 5px solid #c62828;
+        }
+        
+        .case-card.good {
+            background-color: #f1f8e9;
+            border-left: 5px solid #2e7d32;
+        }
+        
+        .case-card h4 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .case-card.bad h4 { color: #c62828; }
+        .case-card.good h4 { color: #2e7d32; }
+
+        .image-container {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .highlight-box {
+            background-color: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary);
+            margin: 25px 0;
+        }
+
+        /* 浮動導覽按鈕群 */
+        .floating-nav {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        .nav-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        .nav-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 漢堡選單 (行動版) */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 900px) {
+            .menu-toggle {
+                display: block;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 80px 30px 100px 30px; /* 留上方漢堡按鈕與下方浮動按鈕空間 */
+            }
+            .case-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 行動版漢堡選單 -->
+    <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+
+    <!-- 側邊欄 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-book-open"></i> 教學目錄</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#intro" class="active"><i class="fa-solid fa-compass"></i> 導論：何時該用 AI？</a></li>
+            <li><a href="#criteria"><i class="fa-solid fa-list-check"></i> 5 大判準詳細解析</a></li>
+            <li><a href="#examples"><i class="fa-solid fa-code-compare"></i> 正反情境案例對比</a></li>
+            <li><a href="#roi"><i class="fa-solid fa-chart-line"></i> 投資報酬率 (ROI) 觀念</a></li>
+            <li><a href="#references"><i class="fa-solid fa-link"></i> 國際文獻與資源</a></li>
+        </ul>
+    </aside>
+
+    <!-- 主內容區 -->
+    <main class="main-content">
+        <div class="content-header">
+            <h1>自動化任務的 5 大判準</h1>
+            <p class="subtitle">不是什麼事情都該丟給 AI！教你精準評估教育現場的「自動化投資報酬率」。</p>
+        </div>
+
+        <section id="intro" class="article-section">
+            <h2><i class="fa-solid fa-compass"></i> 導論：何時該用 AI？</h2>
+            <p>當老師們學會了設定 AI Agent 與撰寫提示詞後，很容易產生一種錯覺：「太棒了！以後什麼事情我都要交給 AI 去做！」</p>
+            <p>然而，開發與測試一個 AI 工作流程是需要時間成本的。如果你花了一整個下午建立一個 AI Agent，結果這個 Agent 解決的任務是你一年只會遇到一次、只需要花五分鐘就能手動做完的事情，那麼這就是一筆不划算的投資。</p>
+            <div class="highlight-box">
+                <strong><i class="fa-solid fa-lightbulb"></i> 核心心法：</strong><br>
+                自動化的終極目標不是「炫技」，而是解決<strong>高度重複、枯燥乏味</strong>的行政或批改負擔，把省下來的時間還給「教學設計」與「陪伴學生」。
+            </div>
+        </section>
+
+        <section id="criteria" class="article-section">
+            <h2><i class="fa-solid fa-list-check"></i> 5 大判準詳細解析</h2>
+            <p>在決定是否要把一項任務自動化之前，請務必用以下五個問題來檢驗：</p>
+            
+            <h3>1. 流程固定 (Fixed SOP)</h3>
+            <p>這項任務是否有明確的「標準作業程序」？如果每次處理的步驟都不一樣、需要見機行事，就不適合自動化。<br>
+            <em>範例：將學生的請假紀錄，從信件中抓出名字、日期，並登記到同一份 Excel 報表中，這就是流程固定。</em></p>
+            
+            <h3>2. 輸入明確 (Clear Input)</h3>
+            <p>輸入給 AI 的資料，格式是否夠統一？<br>
+            <em>範例：如果是學校統一格式的請假單單據，AI 很好辨識；但如果是家長用各種不同的口吻在 LINE 群組隨意留言請假，這種「非結構化且極度發散」的輸入，就很容易出錯。</em></p>
+            
+            <h3>3. 成品明確 (Clear Output)</h3>
+            <p>最後你需要的結果是什麼？這個結果的格式有標準嗎？<br>
+            <em>範例：要求 AI 產出一份 CSV 檔，或是將文字整理成固定格式的表格。</em></p>
+            
+            <h3>4. 重複發生 (Highly Repetitive)</h3>
+            <p>這是最關鍵的判準，攸關「投資報酬率」。這個任務是否每天、每週都在發生？<br>
+            <em>範例：每天要批改的聯絡簿、每週要彙整的成績單。頻率越高，自動化的價值越大。</em></p>
+            
+            <h3>5. 可由人類審核 (Human Verifiable)</h3>
+            <p><strong>在教育現場，AI 絕對不能完全取代老師的判斷。</strong>AI 產出的結果，必須能讓老師在 3 秒鐘內快速判斷對錯。<br>
+            <em>範例：AI 辨識紙本考卷並打好分數草稿，老師只要核對一下原本的紙本就能確定分數是否正確。絕對不應該讓 AI 自動把成績直接送出給家長，而跳過老師的審核。</em></p>
+        </section>
+
+        <section id="examples" class="article-section">
+            <h2><i class="fa-solid fa-code-compare"></i> 正反情境案例對比</h2>
+            
+            <div class="case-container">
+                <!-- 壞案例 -->
+                <div class="case-card bad">
+                    <div class="image-container">
+                        <img src="assets/images/auto_bad_example.jpg" alt="AI 幫老師隨機挑衣服">
+                    </div>
+                    <h4><i class="fa-solid fa-xmark"></i> 案例 A：決定明天的穿搭與午餐</h4>
+                    <p>有些老師剛學會用 AI，會試著寫一個 Agent 來「自動安排明天上課的衣服跟要訂什麼午餐」。</p>
+                    <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
+                    <ul style="padding-left: 20px;">
+                        <li><strong>沒有 SOP：</strong> 穿什麼衣服往往看天氣、看心情，甚至看明天有沒有公開授課。</li>
+                        <li><strong>無法審核對錯：</strong> AI 挑了藍色襯衫，但你今天就不想穿藍色。沒有客觀的對錯標準，只會讓你覺得 AI 很難用。</li>
+                    </ul>
+                </div>
+                
+                <!-- 好案例 -->
+                <div class="case-card good">
+                    <div class="image-container">
+                        <img src="assets/images/auto_good_example.jpg" alt="AI 自動整理表單">
+                    </div>
+                    <h4><i class="fa-solid fa-check"></i> 案例 B：自動登記每日紙本請假單</h4>
+                    <p>導師每天早上都會收到幾張紙本的請假單或健康調查表，需要手動登打進教務處的系統。</p>
+                    <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
+                    <ul style="padding-left: 20px;">
+                        <li><strong>高度重複且 SOP 化：</strong> 每天都會發生，步驟永遠是看單子、找名字、找原因、打字輸入。</li>
+                        <li><strong>容易審核：</strong> 老師請 AI Agent 辨識紙本照片後，只要對照一下螢幕跟手上的單子，一秒鐘就能確認有沒有錯字。這是一個完美的自動化案例！</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section id="roi" class="article-section">
+            <h2><i class="fa-solid fa-chart-line"></i> 投資報酬率 (ROI) 觀念</h2>
+            <p>經濟學常提到投資報酬率 (Return on Investment)，這個觀念在推動 AI 教育應用時非常重要。</p>
+            <p><strong>ROI = (未來節省下的總時間) - (現在開發與維護 AI 所花的時間)</strong></p>
+            <p>對於資訊能力較弱的老師來說，學習寫 Agent 或設定自動化工具（如 Zapier, Make）可能需要花費 10 個小時。如果這項任務未來一年只能幫老師省下 1 小時，那老師的學習動機絕對是零。</p>
+            <p>因此，在校園推廣 AI 時，我們必須先幫老師找出那些**「每天吃掉你 30 分鐘，一年吃掉你上百小時」**的痛點，從這些地方下手自動化，老師才能真切感受到 AI 帶來的好處。</p>
+        </section>
+
+        <section id="references" class="article-section">
+            <h2><i class="fa-solid fa-link"></i> 國際文獻與資源</h2>
+            <ul style="line-height: 2.2;">
+                <li><a href="https://hbr.org/2019/04/what-jobs-should-you-automate" target="_blank" style="color: var(--primary); font-weight: 500;">Harvard Business Review (HBR): What Jobs Should You Automate?</a> - 探討企業與組織在面對自動化浪潮時，應該如何評估任務特性。</li>
+                <li><a href="https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/where-machines-could-replace-humans-and-where-they-cant-yet" target="_blank" style="color: var(--primary); font-weight: 500;">McKinsey Global Institute: Where machines could replace humans</a> - 麥肯錫顧問公司的經典報告，分析了哪些工作流程（如資料收集與處理）最容易被機器取代。</li>
+                <li><strong>《AI 時代的教育實務工作指引》</strong> - 台灣相關教育白皮書，強調 AI 在減輕行政負擔的同時，應保持教師在「最終決策 (Human-in-the-loop)」的關鍵角色。</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <div class="floating-nav">
+        <a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+        <a href="task-automation.html" class="nav-btn primary"><i class="fa-solid fa-person-chalkboard"></i> 觀看簡報版</a>
+    </div>
+
+    <!-- 簡易腳本：處理選單高亮與行動版側邊欄 -->
+    <script>
+        // 處理行動版側邊欄開關
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // 點擊側邊欄連結時，如果在行動版，自動收合側邊欄
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 900) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // 滾動時自動高亮當前段落的選單項目
+        const sections = document.querySelectorAll('.article-section');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                // 留一些緩衝高度
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current) && current !== '') {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
