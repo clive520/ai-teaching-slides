@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>結合資料庫的動態網頁 - 詳細圖解教學</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e65100; /* 琥珀橘 */
+            --primary-dark: #bf360c;
+            --primary-light: #ffe0b2;
+            --bg-color: #fcfcfc;
+            --text-color: #333333;
+            --text-light: #666666;
+            --sidebar-width: 280px;
+            --border-color: #eeeeee;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        /* 側邊欄樣式 */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #ffffff;
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* 主內容區樣式 */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 50px 80px;
+            max-width: 950px;
+            box-sizing: border-box;
+            transition: margin-left 0.3s ease;
+        }
+
+        .content-header {
+            margin-bottom: 40px;
+        }
+
+        .content-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .content-header p.subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        .article-section {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        .article-section h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .article-section h3 {
+            color: var(--primary-dark);
+            margin-top: 35px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-box {
+            background-color: #fff3e0;
+            border-left: 5px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .image-banner {
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .image-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .card {
+            background: #fafafa;
+            border: 1px solid #eee;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .card.pro { border-top: 4px solid #4caf50; }
+        .card.con { border-top: 4px solid #f44336; }
+
+        /* 浮動導覽按鈕群 */
+        .floating-nav {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        .nav-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        .nav-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 漢堡選單 (行動版) */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 900px) {
+            .menu-toggle {
+                display: block;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 80px 30px 100px 30px;
+            }
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-book-open"></i> 教學目錄</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#intro" class="active"><i class="fa-solid fa-database"></i> 為什麼需要資料庫？</a></li>
+            <li><a href="#gas"><i class="fa-solid fa-table"></i> 2-1 GAS 試算表後端</a></li>
+            <li><a href="#supabase"><i class="fa-solid fa-warehouse"></i> 2-2 Supabase 關聯庫</a></li>
+            <li><a href="#firebase"><i class="fa-solid fa-fire"></i> 2-3 Firebase 即時庫</a></li>
+            <li><a href="#docker"><i class="fa-brands fa-docker"></i> 2-4 容器化與自架庫</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>結合資料庫的動態網頁</h1>
+            <p class="subtitle">告別死板的靜態海報，讓網頁擁有「大腦」來記住使用者的互動！</p>
+        </div>
+
+        <section id="intro" class="article-section">
+            <h2><i class="fa-solid fa-database"></i> 為什麼需要資料庫？</h2>
+            <p>在上一單元中，我們學會了把「靜態網頁」部署到網路上。但靜態網頁就像一張海報，它不會因為誰來看就改變內容。</p>
+            <p>如果今天你想做一個<strong>「班級留言板」</strong>或<strong>「線上報名系統」</strong>，當家長在網頁上按下「送出」時，這些資料必須要被「記下來」。這時候，你的網頁就需要一個<strong>大腦 (資料庫 Database)</strong>。</p>
+            <p>我們精選了 4 種目前業界與教育現場最熱門的資料庫解決方案，並用最白話的比喻介紹給大家！</p>
+        </section>
+
+        <!-- 2-1 GAS -->
+        <section id="gas" class="article-section">
+            <h2><i class="fa-solid fa-table"></i> 2-1 辦公室大黑板：GAS + Google Sheets</h2>
+            
+            <div class="image-banner">
+                <img src="assets/images/db_gas_board.jpg" alt="GAS 與試算表比喻">
+            </div>
+
+            <p>對非資訊背景的老師來說，這絕對是最好上手的第一選擇！</p>
+            <p><strong>生活比喻：</strong> 想像辦公室裡有一塊「公佈大黑板」。大家都知道怎麼在黑板上的格子裡寫字（這就是 Google 試算表）。而 GAS (Google Apps Script) 就是一位萬能小秘書，你可以請他 24 小時守在網頁前，只要有人留言，秘書就會自動幫你抄在黑板上。</p>
+
+            <div class="comparison-grid">
+                <div class="card pro">
+                    <h4 style="color: #4caf50; margin-top:0;"><i class="fa-solid fa-check"></i> 優點</h4>
+                    <ul>
+                        <li>完全免費，只要有 Google 帳號就能用。</li>
+                        <li>老師本來就很熟悉 Excel/試算表，不會有排斥感。</li>
+                        <li>資料匯出與二次統計非常方便。</li>
+                    </ul>
+                </div>
+                <div class="card con">
+                    <h4 style="color: #f44336; margin-top:0;"><i class="fa-solid fa-xmark"></i> 缺點</h4>
+                    <ul>
+                        <li>讀寫速度比較慢，不適合需要「瞬間秒殺」的系統（例如搶課系統）。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="feature-box">
+                <strong>👨‍🏫 適合的教學場景：</strong> 家長聯絡簿表單填寫、段考成績查詢系統、班級圖書借閱登記表。
+            </div>
+        </section>
+
+        <!-- 2-2 Supabase -->
+        <section id="supabase" class="article-section">
+            <h2><i class="fa-solid fa-warehouse"></i> 2-2 現代物流中心：Vercel + Supabase</h2>
+            
+            <div class="image-banner">
+                <img src="assets/images/db_supabase_warehouse.jpg" alt="Supabase 物流中心比喻">
+            </div>
+
+            <p>如果你要做的系統很龐大、很嚴謹，不能容許一點錯誤，那你就需要主流的「關聯式資料庫 (PostgreSQL)」。目前最紅的組合就是 Vercel (前端) 搭配 Supabase (後端資料庫)。</p>
+            
+            <p><strong>生活比喻：</strong> 想像一座<strong>高度自動化的現代物流中心</strong>。裡面有一區專門放「學生資料」，另一區專門放「成績單」。透過「學號」這個條碼，機器人可以精準地把這兩區的資料關聯起來。任何不符合規定的貨物（例如格式錯誤）都會在門口被拒絕進入。</p>
+
+            <div class="feature-box">
+                <strong>👨‍🏫 適合的教學場景：</strong> 大型校務行政系統、需要嚴格身分登入與權限控管的線上測驗平台。
+            </div>
+        </section>
+
+        <!-- 2-3 Firebase -->
+        <section id="firebase" class="article-section">
+            <h2><i class="fa-solid fa-fire"></i> 2-3 無邊際便利貼牆：Firebase</h2>
+            
+            <div class="image-banner">
+                <img src="assets/images/db_firebase_wall.jpg" alt="Firebase 便利貼牆比喻">
+            </div>
+
+            <p>Firebase 是 Google 提供的強大工具，它最知名的特點是「NoSQL」與「即時同步 (Real-time)」。</p>
+            
+            <p><strong>生活比喻：</strong> 想像有一面巨大的<strong>魔法便利貼牆</strong>。你不需要規定字型或格式，想到什麼就寫在便利貼上貼上去 (NoSQL 的自由度)。最神奇的是，只要有一個人撕下或修改了便利貼，所有看著這面牆的人，眼前的便利貼也會「瞬間跟著改變」 (即時同步)。</p>
+
+            <div class="feature-box">
+                <strong>👨‍🏫 適合的教學場景：</strong> 課堂即時搶答系統 (像 Kahoot 那樣)、多人在線協作白板、師生即時聊天室。
+            </div>
+        </section>
+
+        <!-- 2-4 Docker / Render -->
+        <section id="docker" class="article-section">
+            <h2><i class="fa-brands fa-docker"></i> 2-4 空貨櫃 / 商辦大樓：Render / Zeabur</h2>
+            
+            <div class="image-banner">
+                <img src="assets/images/db_docker_container.jpg" alt="Docker 容器化空貨櫃比喻">
+            </div>
+
+            <p>前面介紹的服務，都是別人幫你管理好底層設施（俗稱 Serverless）。但有時候，你可能會想要自己掌控一切。</p>
+            
+            <p><strong>生活比喻：</strong> 想像你向雲端公司租了一個<strong>「空的貨櫃箱 (Container)」</strong>。這個貨櫃非常乾淨，你可以自己在裡面牽水電、裝潢，把它變成餐廳或電影院。這在資訊界叫做「容器化 (Docker)」。你可以把你寫好的程式碼、需要的資料庫 (如 PostgreSQL)、各種環境設定，全部打包進這個貨櫃，然後丟到 Render 或 Zeabur 這類平台上讓它跑。</p>
+
+            <div class="feature-box">
+                <strong>👨‍🏫 適合的教學場景：</strong> 學校資訊組長想自己架設一台專屬的 WordPress 網站，或是老師想要跑自己開發的 AI 伺服器模型（需要特殊環境安裝）。
+            </div>
+        </section>
+
+    </main>
+
+    <div class="floating-nav">
+        <a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+        <a href="dynamic-hosting.html" class="nav-btn primary"><i class="fa-solid fa-person-chalkboard"></i> 觀看簡報版</a>
+    </div>
+
+    <script>
+        // 處理行動版側邊欄開關
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 900) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // 滾動高亮
+        const sections = document.querySelectorAll('.article-section');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current) && current !== '') {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

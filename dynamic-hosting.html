@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>結合資料庫的動態網頁 - 白話文圖解教學</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.css" id="theme">
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+			
+			body {
+				font-family: 'Noto Sans TC', sans-serif;
+				/* 琥珀橘與暖陽橘背景 */
+				background: linear-gradient(135deg, #3e1f00 0%, #e65100 50%, #ff8f00 100%);
+			}
+			.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+				font-family: 'Noto Sans TC', sans-serif;
+				font-weight: 700;
+				color: #111111; 
+				text-transform: none;
+				text-shadow: none;
+			}
+			.reveal h1 { font-size: 1.8em; color: #e65100; } /* 深橘色 */
+			.reveal h2 { font-size: 1.5em; color: #ef6c00; }
+			.reveal h3 { font-size: 1.2em; color: #bf360c; }
+			
+			.reveal p, .reveal li {
+				font-size: 0.85em; 
+				line-height: 1.5;
+				margin-bottom: 10px;
+				color: #222222; 
+			}
+			
+			/* 高對比亮色毛玻璃方框 */
+			.glass-panel {
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(20px);
+				-webkit-backdrop-filter: blur(20px);
+				padding: 20px 30px;
+				border-radius: 20px;
+				border: 1px solid rgba(255, 255, 255, 0.8);
+				box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.5);
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.glass-panel.center {
+				text-align: center;
+				align-items: center;
+			}
+			
+			/* 三欄式橫向排版 */
+			.slide-layout {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				width: 100%;
+				gap: 15px;
+			}
+			.content-col {
+				flex: 1;
+			}
+			
+			.reveal-viewport {
+				background: transparent !important;
+			}
+			
+			/* 浮動導覽按鈕群 */
+			.floating-nav {
+				position: fixed;
+				bottom: 15px;
+				right: 15px;
+				z-index: 1000;
+				display: flex;
+				gap: 8px;
+			}
+			.nav-btn {
+				background: rgba(255, 255, 255, 0.9);
+				border: 2px solid #e65100;
+				color: #e65100;
+				padding: 8px 15px;
+				border-radius: 30px;
+				text-decoration: none;
+				font-family: 'Noto Sans TC', sans-serif;
+				font-weight: bold;
+				font-size: 0.85em;
+				backdrop-filter: blur(5px);
+				transition: all 0.3s ease;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+			}
+			.nav-btn:hover {
+				background: #e65100;
+				color: white;
+				transform: translateY(-3px);
+			}
+			.nav-btn.primary {
+				background: #ef6c00;
+				border-color: #ef6c00;
+				color: white;
+			}
+			.nav-btn.primary:hover {
+				background: #bf360c;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<!-- 封面 -->
+				<section data-background-image="assets/images/db_cover_orange.jpg" data-background-opacity="0.8">
+					<div class="glass-panel center" style="padding: 50px;">
+						<h1><i class="fa-solid fa-database" style="color:#e65100;"></i> 結合資料庫的動態網頁</h1>
+						<h3 style="color: #444; font-weight: 500; letter-spacing: 1px;">給新手的白話文圖解教學</h3>
+						<div style="margin-top: 30px; font-size: 1.1em; color: #bf360c; font-weight: bold;">
+							<p>GAS ｜ Supabase ｜ Firebase ｜ Zeabur/Render</p>
+						</div>
+					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (封面)</h4>
+						<p>老師們，上一節課我們學會了發布「靜態海報 (網頁)」。但如果我們想要做一個「線上測驗系統」或「家長留言板」，網頁就需要有「大腦」來記住誰考了幾分、誰留了什麼言。這就是「資料庫與動態網頁」。這堂課，我們用四個超好懂的比喻，帶你認識目前最紅的四種資料庫工具！</p>
+					</aside>
+				</section>
+
+				<!-- 2-1：GAS + Sheets -->
+				<section data-background-image="assets/images/db_cover_orange.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 10px;"><i class="fa-solid fa-table" style="color:#bf360c;"></i> 2-1 辦公室大黑板：GAS + Google Sheets</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
+							<div style="flex: 0 0 380px; margin-right: 20px;">
+								<img src="assets/images/db_gas_board.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+								<p style="text-align: center; margin-top: 5px; font-size: 0.85em; color: #666; font-weight:bold;">最親民的試算表後端</p>
+							</div>
+							<div class="content-col" style="padding-right: 10px;">
+								<h4 style="color:#e65100; margin-bottom: 10px; font-size: 1.1em;">把 Excel 變成你的資料庫</h4>
+								<ul style="background: #fff3e0; padding: 15px 20px; border-radius: 8px; line-height: 1.6;">
+									<li style="margin-bottom: 8px;"><strong>比喻：</strong> 就像辦公室裡的「公佈大黑板」。每個人都會寫字（填格子），非常平易近人。你可以請一位萬能秘書 (Google Apps Script) 幫你把網頁上的留言抄到黑板上。</li>
+									<li style="margin-bottom: 8px;"><strong>特色：</strong> 學習門檻極低！只要你有 Google 帳號就能免費使用。</li>
+									<li><strong>教學應用：</strong> 家長聯絡簿表單、簡單的學生簽到系統、段考成績查詢。</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 2-2：Vercel + Supabase -->
+				<section data-background-image="assets/images/db_cover_orange.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 10px;"><i class="fa-solid fa-warehouse" style="color:#bf360c;"></i> 2-2 現代物流中心：Vercel + Supabase</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
+							<div class="content-col" style="padding-right: 15px; padding-left: 10px;">
+								<h4 style="color:#e65100; margin-bottom: 10px; font-size: 1.1em;">最嚴謹、主流的全端方案 (PostgreSQL)</h4>
+								<ul style="background: #fff3e0; padding: 15px 20px; border-radius: 8px; line-height: 1.6;">
+									<li style="margin-bottom: 8px;"><strong>比喻：</strong> 就像一座**「高度自動化的現代物流中心」**。所有的貨物（資料）都必須嚴格分類，放在專屬的貨架上，不能亂塞。</li>
+									<li style="margin-bottom: 8px;"><strong>特色：</strong> 這叫做「關聯式資料庫」。學生資料表與成績單資料表可以透過學號互相連結。資料一致性極高，不容許出錯。</li>
+									<li><strong>教學應用：</strong> 大型校務行政系統、需要嚴格權限控管的線上測驗平台。</li>
+								</ul>
+							</div>
+							<div style="flex: 0 0 350px; margin-left: 20px;">
+								<img src="assets/images/db_supabase_warehouse.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 2-3：Firebase -->
+				<section data-background-image="assets/images/db_cover_orange.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 10px;"><i class="fa-solid fa-fire" style="color:#bf360c;"></i> 2-3 無邊際便利貼牆：Firebase</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
+							<div style="flex: 0 0 380px; margin-right: 20px;">
+								<img src="assets/images/db_firebase_wall.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+							</div>
+							<div class="content-col" style="padding-right: 10px;">
+								<h4 style="color:#e65100; margin-bottom: 10px; font-size: 1.1em;">靈活自由的即時 NoSQL 資料庫</h4>
+								<ul style="background: #fff3e0; padding: 15px 20px; border-radius: 8px; line-height: 1.6;">
+									<li style="margin-bottom: 8px;"><strong>比喻：</strong> 就像一面巨大的**「便利貼牆」**。你不需要在意格式，想到什麼就寫在便利貼上貼上去。而且如果有人撕下或更改便利貼，所有看著這面牆的人會**瞬間看到變化**！</li>
+									<li style="margin-bottom: 8px;"><strong>特色：</strong> 擁有極強的「即時同步 (Real-time)」功能，且資料格式非常自由。</li>
+									<li><strong>教學應用：</strong> 課堂即時搶答系統 (Kahoot)、多人在線協作白板、師生即時聊天室。</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 2-4：Render / Zeabur -->
+				<section data-background-image="assets/images/db_cover_orange.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 10px;"><i class="fa-brands fa-docker" style="color:#bf360c;"></i> 2-4 空貨櫃 / 商辦大樓：Render / Zeabur</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
+							<div class="content-col" style="padding-right: 15px; padding-left: 10px;">
+								<h4 style="color:#e65100; margin-bottom: 10px; font-size: 1.1em;">絕對自由的容器化部署</h4>
+								<ul style="background: #fff3e0; padding: 15px 20px; border-radius: 8px; line-height: 1.6;">
+									<li style="margin-bottom: 8px;"><strong>比喻：</strong> 你向雲端公司租了一個**「空的貨櫃」**。你可以把貨櫃佈置成餐廳、也可以佈置成電影院。</li>
+									<li style="margin-bottom: 8px;"><strong>特色：</strong> 這就是所謂的**容器化 (Docker)**。你可以把程式碼、設定環境、資料庫全部打包在一個貨櫃裡丟到網路上跑。自由度最高，但也最需要技術基礎。</li>
+									<li><strong>教學應用：</strong> 學校想自己架設一台 WordPress 部落格，或是跑自己開發的 AI 伺服器模型。</li>
+								</ul>
+							</div>
+							<div style="flex: 0 0 350px; margin-left: 20px;">
+								<img src="assets/images/db_docker_container.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+							</div>
+						</div>
+					</div>
+				</section>
+
+			</div>
+			
+			<div class="floating-nav">
+				<a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+				<a href="dynamic-hosting-details.html" class="nav-btn primary"><i class="fa-solid fa-file-lines"></i> 閱讀詳細網頁版</a>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				width: 1280,
+				height: 720,
+				margin: 0.1,
+                controls: true,
+				plugins: [ RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
