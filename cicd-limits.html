@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>CI/CD 自動化與平台限制 - 白話文圖解教學</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.css" id="theme">
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+			
+			body {
+				font-family: 'Noto Sans TC', sans-serif;
+				/* 科技藍與鋼鐵藍背景 */
+				background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%);
+			}
+			.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+				font-family: 'Noto Sans TC', sans-serif;
+				font-weight: 700;
+				color: #111111; 
+				text-transform: none;
+				text-shadow: none;
+			}
+			.reveal h1 { font-size: 1.8em; color: #1b263b; } /* 深藍 */
+			.reveal h2 { font-size: 1.5em; color: #0d1b2a; }
+			.reveal h3 { font-size: 1.2em; color: #415a77; }
+			
+			.reveal p, .reveal li {
+				font-size: 0.85em; 
+				line-height: 1.5;
+				margin-bottom: 10px;
+				color: #222222; 
+			}
+			
+			/* 高對比亮色毛玻璃方框 */
+			.glass-panel {
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(20px);
+				-webkit-backdrop-filter: blur(20px);
+				padding: 20px 30px;
+				border-radius: 20px;
+				border: 1px solid rgba(255, 255, 255, 0.8);
+				box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.5);
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.glass-panel.center {
+				text-align: center;
+				align-items: center;
+			}
+			
+			/* 三欄式橫向排版 */
+			.slide-layout {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				width: 100%;
+				gap: 15px;
+			}
+			.content-col {
+				flex: 1;
+			}
+			
+			.reveal-viewport {
+				background: transparent !important;
+			}
+			
+			/* 浮動導覽按鈕群 */
+			.floating-nav {
+				position: fixed;
+				bottom: 15px;
+				right: 15px;
+				z-index: 1000;
+				display: flex;
+				gap: 8px;
+			}
+			.nav-btn {
+				background: rgba(255, 255, 255, 0.9);
+				border: 2px solid #415a77;
+				color: #415a77;
+				padding: 8px 15px;
+				border-radius: 30px;
+				text-decoration: none;
+				font-family: 'Noto Sans TC', sans-serif;
+				font-weight: bold;
+				font-size: 0.85em;
+				backdrop-filter: blur(5px);
+				transition: all 0.3s ease;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+			}
+			.nav-btn:hover {
+				background: #415a77;
+				color: white;
+				transform: translateY(-3px);
+			}
+			.nav-btn.primary {
+				background: #1b263b;
+				border-color: #1b263b;
+				color: white;
+			}
+			.nav-btn.primary:hover {
+				background: #0d1b2a;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<!-- 封面 -->
+				<section data-background-image="assets/images/cicd_cover_blue.jpg" data-background-opacity="0.8">
+					<div class="glass-panel center" style="padding: 50px;">
+						<h1><i class="fa-solid fa-gears" style="color:#1b263b;"></i> 3. CI/CD 自動化與各平台限制</h1>
+						<h3 style="color: #444; font-weight: 500; letter-spacing: 1px;">給新手的防坑指南：免費的最貴？</h3>
+						<div style="margin-top: 30px; font-size: 1.1em; color: #415a77; font-weight: bold;">
+							<p>自動化工廠 ｜ 吃到飽餐廳的隱藏規定 ｜ 休眠與冷啟動</p>
+						</div>
+					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (封面)</h4>
+						<p>老師們，我們前面學了把網頁放到網路上，也學了加資料庫。但你一定聽過一句話：「免費的最貴」。這些大公司為什麼願意免費提供服務？因為他們都有「隱藏限制」。今天我們要來破除 CI/CD 的迷思，並把各大平台的「致命限制」一次講清楚，讓你以後架站不踩雷！</p>
+					</aside>
+				</section>
+
+				<!-- 3-1：什麼是 CI/CD -->
+				<section data-background-image="assets/images/cicd_cover_blue.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 10px;"><i class="fa-solid fa-robot" style="color:#1b263b;"></i> 3-1 什麼是 CI/CD 自動化？</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
+							<div style="flex: 0 0 380px; margin-right: 20px;">
+								<img src="assets/images/cicd_conveyor.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+								<p style="text-align: center; margin-top: 5px; font-size: 0.85em; color: #666; font-weight:bold;">自動化輸送帶與品管機器人</p>
+							</div>
+							<div class="content-col" style="padding-right: 10px;">
+								<h4 style="color:#1b263b; margin-bottom: 10px; font-size: 1.1em;">把網頁更新交給機器人</h4>
+								<ul style="background: #e3f2fd; padding: 15px 20px; border-radius: 8px; line-height: 1.6;">
+									<li style="margin-bottom: 8px;"><strong>比喻：</strong> 想像一條**「全自動工廠輸送帶」**。過去，工程師要把程式碼打包、搭飛機送到伺服器、手動替換舊檔案。現在，有了 CI/CD，你只要把寫好的程式碼丟進門口的籃子 (GitHub)。</li>
+									<li style="margin-bottom: 8px;"><strong>自動化流程：</strong> 機器人會自動幫你檢查程式碼有沒有錯 (CI, 持續整合)，然後自動打包送上雲端替換舊網頁 (CD, 持續部署)。</li>
+									<li><strong>好處：</strong> 省下大量的重複性工作，減少人為失誤，這也是 Vercel 等現代平台深受歡迎的原因。</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 3-2：靜態網頁限制 -->
+				<section data-background-image="assets/images/cicd_cover_blue.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 10px;"><i class="fa-solid fa-file-code" style="color:#1b263b;"></i> 3-2 靜態網頁空間的限制</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
+							<div class="content-col" style="padding-right: 15px; padding-left: 10px;">
+								<h4 style="color:#1b263b; margin-bottom: 10px; font-size: 1.1em;">吃到飽餐廳的隱藏規定</h4>
+								<ul style="background: #e3f2fd; padding: 15px 20px; border-radius: 8px; line-height: 1.6;">
+									<li style="margin-bottom: 8px;"><strong>GitHub Pages：</strong> 雖然免費，但它**「嚴禁商業行為」**，且每個月流量不能超過 100GB。這就像餐廳讓你免費吃，但不能打包出去賣。</li>
+									<li style="margin-bottom: 8px;"><strong>Vercel (免費版)：</strong> 最大限制是它背後的「無伺服器函數 (Serverless Function)」**最多只能跑 10 秒鐘**！如果你的網頁需要跑複雜的 AI 運算，超過 10 秒就會直接斷線報錯 (Timeout)。</li>
+								</ul>
+							</div>
+							<div style="flex: 0 0 350px; margin-left: 20px;">
+								<img src="assets/images/cicd_buffet.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 3-3：動態資料庫限制 -->
+				<section data-background-image="assets/images/cicd_cover_blue.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 10px;"><i class="fa-solid fa-database" style="color:#1b263b;"></i> 3-3 動態資料庫的致命限制</h3>
+						<p style="font-size: 0.95em; line-height: 1.5; margin-bottom: 15px;">初學者最常踩到的坑，就是沒注意到這些「資料庫休眠規則」！</p>
+						
+						<div class="slide-layout" style="margin-top: 10px; text-align: left; align-items: stretch;">
+							<div class="content-col" style="background: #fff; padding: 15px 25px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+								<h4 style="color: #c62828;"><i class="fa-solid fa-triangle-exclamation"></i> Supabase 的「7天休眠」魔咒</h4>
+								<p style="color: #444; font-size: 0.9em;">免費專案只要**連續 7 天沒有人訪問**，官方就會直接把你的資料庫「暫停 (Pause)」。此時網頁連線會全盤崩潰！你必須手動登入後台把它喚醒。</p>
+							</div>
+							<div class="content-col" style="background: #fff; padding: 15px 25px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+								<h4 style="color: #f57c00;"><i class="fa-solid fa-fire"></i> Firebase 兩大天花板</h4>
+								<ul style="color: #444; font-size: 0.85em; padding-left: 15px; margin-top: 5px;">
+									<li><strong>連線人數上限 (100人)</strong>：如果是全校朝會 500 人同時掃 QR Code 進入，第 101 個學生就會看到一片白畫面進不去。</li>
+									<li style="margin-top: 5px;"><strong>讀寫配額限制</strong>：如果你的首頁預設抓取 50 筆資料，只要有 1000 個訪客打開首頁，你一天的 5 萬次免費額度就會瞬間耗盡，導致網站當機。</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 3-4：容器化與 GAS 限制 -->
+				<section data-background-image="assets/images/cicd_cover_blue.jpg" data-background-opacity="0.5">
+					<div class="glass-panel center">
+						<h3 style="margin-bottom: 15px;"><i class="fa-brands fa-docker" style="color:#1b263b;"></i> 3-4 容器化與 GAS 的限制</h3>
+						
+						<div class="slide-layout" style="margin-top: 10px; text-align: left; align-items: stretch;">
+							<div class="content-col" style="background: #fff; padding: 15px 25px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+								<h4 style="color: #1b263b;"><i class="fa-solid fa-snowflake"></i> Render / Zeabur 的「冷啟動」</h4>
+								<p style="color: #444; font-size: 0.9em; margin-bottom: 10px;">免費方案的機器只要發呆超過 15 分鐘，就會自己關機省電。當下一個使用者點開網頁時，機器要重新開機，這叫做**「冷啟動 (Cold Start)」**。這會導致使用者必須對著白畫面發呆 1~2 分鐘，體驗極差。</p>
+							</div>
+							<div class="content-col" style="background: #fff; padding: 15px 25px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+								<h4 style="color: #1b263b;"><i class="fa-solid fa-stopwatch"></i> GAS 的「6分鐘時限」</h4>
+								<p style="color: #444; font-size: 0.9em;">Google Apps Script 雖然親民，但它規定**每一次執行程式絕對不能超過 6 分鐘**。此外，免費帳號一天寄出的自動信件也不能超過 100 封。</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			</div>
+			
+			<div class="floating-nav">
+				<a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+				<a href="cicd-limits-details.html" class="nav-btn primary"><i class="fa-solid fa-file-lines"></i> 閱讀詳細防坑指南</a>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				width: 1280,
+				height: 720,
+				margin: 0.1,
+                controls: true,
+				plugins: [ RevealNotes ]
+			});
+		</script>
+	</body>
+</html>

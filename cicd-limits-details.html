@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/CD 自動化與平台限制 - 防坑指南</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1b263b; /* 鋼鐵藍 */
+            --primary-dark: #0d1b2a;
+            --primary-light: #778da9;
+            --bg-color: #fcfcfc;
+            --text-color: #333333;
+            --text-light: #666666;
+            --sidebar-width: 280px;
+            --border-color: #eeeeee;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        /* 側邊欄樣式 */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #ffffff;
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        /* 主內容區樣式 */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 50px 80px;
+            max-width: 950px;
+            box-sizing: border-box;
+            transition: margin-left 0.3s ease;
+        }
+
+        .content-header {
+            margin-bottom: 40px;
+        }
+
+        .content-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .content-header p.subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        .article-section {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        .article-section h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-box {
+            background-color: #e0f7fa;
+            border-left: 5px solid #00bcd4;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .alert-box {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .tip-box {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .image-banner {
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .image-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+            color: var(--primary-dark);
+        }
+
+        /* 浮動導覽按鈕群 */
+        .floating-nav {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        .nav-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        .nav-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 漢堡選單 (行動版) */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 900px) {
+            .menu-toggle {
+                display: block;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 80px 30px 100px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-book-open"></i> 教學目錄</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#intro" class="active"><i class="fa-solid fa-robot"></i> 3-1 什麼是 CI/CD？</a></li>
+            <li><a href="#static-limits"><i class="fa-solid fa-file-code"></i> 3-2 靜態網頁空間限制</a></li>
+            <li><a href="#db-limits"><i class="fa-solid fa-database"></i> 3-3 動態資料庫的魔咒</a></li>
+            <li><a href="#container-limits"><i class="fa-brands fa-docker"></i> 3-4 容器化與 GAS 限制</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>CI/CD 自動化與各平台限制</h1>
+            <p class="subtitle">免費的最貴？徹底了解各大雲端服務的「隱藏規則」與防坑指南。</p>
+        </div>
+
+        <!-- 3-1 CI/CD -->
+        <section id="intro" class="article-section">
+            <h2><i class="fa-solid fa-robot"></i> 3-1 什麼是 CI/CD 自動化？</h2>
+            
+            <div class="image-banner">
+                <img src="assets/images/cicd_conveyor.jpg" alt="CI/CD 自動化輸送帶比喻">
+            </div>
+
+            <p>在學習部署時，你一定會常聽到 <strong>CI/CD</strong> 這個詞。它的全名是 Continuous Integration / Continuous Deployment (持續整合與持續部署)。</p>
+            
+            <div class="feature-box">
+                <p><strong>生活比喻：全自動輸送帶</strong><br>
+                想像你是一位工廠設計師。過去，你畫好設計圖後，必須自己拿螺絲起子把產品組裝起來，再親自開車把產品送到店面櫥窗上。非常累人且容易出錯。<br><br>
+                有了 CI/CD 後，你只要把設計圖丟進工廠門口的籃子 (Push to GitHub)。工廠裡的機器人就會自動讀取圖紙、自動組裝、自動測試產品會不會爆炸 (CI)，然後自動把你店面櫥窗裡的舊產品替換成最新的產品 (CD)。</p>
+            </div>
+            <p>只要體驗過這種「按下存檔，網頁就自動更新」的魔力，你就再也回不去了！這也是 Vercel 與 GitHub Pages 如此受歡迎的原因。</p>
+        </section>
+
+        <!-- 3-2 靜態限制 -->
+        <section id="static-limits" class="article-section">
+            <h2><i class="fa-solid fa-file-code"></i> 3-2 靜態網頁空間的限制</h2>
+            
+            <div class="image-banner">
+                <img src="assets/images/cicd_buffet.jpg" alt="吃到飽餐廳的限制比喻">
+            </div>
+
+            <p>大公司願意提供免費資源給我們使用，就像是開了一間「免費的吃到飽餐廳」。但餐廳絕對有隱藏的規定：</p>
+            
+            <table>
+                <tr>
+                    <th>平台</th>
+                    <th>最致命的免費限制</th>
+                </tr>
+                <tr>
+                    <td><strong>GitHub Pages</strong></td>
+                    <td>
+                        1. <strong>嚴禁商業用途</strong>：如果放廣告營利可能被鎖帳號。<br>
+                        2. <strong>流量限制</strong>：每月不能超過 100GB。
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Vercel</strong></td>
+                    <td>
+                        1. <strong>10 秒無伺服器限制</strong>：Vercel 免費版 (Hobby) 的後端函數 (Serverless Function) 只要跑超過 10 秒鐘，系統就會強制把它中斷。不能用來跑複雜的 AI 運算。<br>
+                        2. <strong>也是嚴禁商業用途</strong>。
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- 3-3 資料庫限制 -->
+        <section id="db-limits" class="article-section">
+            <h2><i class="fa-solid fa-database"></i> 3-3 動態資料庫的魔咒 (Pause)</h2>
+            <p>這大概是所有初學者最常踩到的坑：網頁做好了，過了個寒假回來，結果網頁壞了！</p>
+            
+            <div class="alert-box">
+                <h4><i class="fa-solid fa-triangle-exclamation"></i> Supabase 的「7天休眠」魔咒</h4>
+                <p>為了節省伺服器資源，Supabase 免費專案只要<strong>連續 7 天沒有任何人連線</strong>，官方就會強制把你的資料庫進入「休眠狀態 (Paused)」。</p>
+                <p>此時，你的網頁只要一存取資料庫就會直接報錯。你必須手動登入 Supabase 後台，按下「Restore (喚醒)」，等待幾分鐘後才會恢復正常。</p>
+            </div>
+
+            <div class="alert-box">
+                <h4><i class="fa-solid fa-fire"></i> Firebase 的連線天花板</h4>
+                <p>Firebase 免費的 Spark 方案，最大的限制是<strong>「同時連線人數上限：100 人」</strong>。</p>
+                <p><strong>👉 實際範例：什麼是同時連線人數限制？</strong><br>
+                假設你開發了一個超好玩的「全校朝會即時搶答系統」。當校長一喊開始，全校 500 個學生「在同一秒鐘」拿起手機掃描 QR Code 進入你的網頁。<br>
+                因為免費版限制 100 人，所以只有前 100 個手速最快的學生進得去，<strong>第 101 個學生開始，網頁就會一直轉圈圈或顯示一片空白</strong>。這就是所謂的到達連線限制。</p>
+            </div>
+            
+            <div class="alert-box">
+                <h4><i class="fa-solid fa-chart-line"></i> 容易被忽略的「讀寫次數配額」</h4>
+                <p>幾乎所有免費資料庫，每天都有「讀取」與「寫入」的總次數上限（例如 Firebase 每天限制 5 萬次讀取）。</p>
+                <p><strong>👉 實際範例：怎樣會不小心超過配額？</strong><br>
+                假設你的網頁首頁，會自動抓取資料庫裡的「最新 50 筆留言」顯示出來。<br>
+                這代表<strong>只要有 1 個訪客打開你的網頁，資料庫就會被讀取 50 次</strong>。<br>
+                如果今天你的網頁爆紅，有 1001 個人打開你的網頁（1001 x 50 = 50,050 次），你的 5 萬次免費配額在一天內就會瞬間耗盡！一旦超過配額，當天晚上的訪客就完全看不到留言了。</p>
+            </div>
+            
+            <div class="tip-box">
+                <strong><i class="fa-solid fa-lightbulb"></i> Pro Tip (進階防坑技巧)：</strong><br>
+                1. <strong>防休眠</strong>：許多工程師會使用免費的定時任務服務（例如 <code>Cron-job.org</code>），設定每隔 6 天自動去戳一下 Supabase 的資料庫，假裝有人在用，藉此繞過 7 天休眠的限制！<br>
+                2. <strong>防讀寫超標</strong>：設計網頁時，不要一次抓出所有資料。可以設計成「預設只顯示前 5 筆」，使用者按下「載入更多」才去抓下一批，藉此大幅節省讀取次數。
+            </div>
+        </section>
+
+        <!-- 3-4 容器化與 GAS -->
+        <section id="container-limits" class="article-section">
+            <h2><i class="fa-brands fa-docker"></i> 3-4 容器化與 GAS 的限制</h2>
+            
+            <div class="alert-box">
+                <h4><i class="fa-solid fa-snowflake"></i> Render / Zeabur 的「冷啟動 (Cold Start)」</h4>
+                <p>在免費的容器化平台 (如 Render)，只要你的網頁超過 15 分鐘沒人看，伺服器就會自動「關機睡覺」。</p>
+                <p>當下一位訪客點開你的網址時，伺服器必須要<strong>「重新開機」</strong>，這個過程稱為<strong>冷啟動 (Cold Start)</strong>，大約需要 1 到 2 分鐘。在這段時間內，訪客只會看到轉圈圈或白畫面，非常考驗耐性。</p>
+            </div>
+
+            <div class="alert-box">
+                <h4><i class="fa-solid fa-stopwatch"></i> GAS 的「6分鐘時限」</h4>
+                <p>Google Apps Script 雖然是免費神器，但它有兩大鐵則：</p>
+                <ul>
+                    <li>單次程式執行<strong>絕對不能超過 6 分鐘</strong>。超過就會直接中斷。</li>
+                    <li>免費帳號每天自動寄信的上限是 <strong>100 封</strong>。如果有 150 個家長填表單，剩下的 50 個人會收不到確認信。</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="floating-nav">
+        <a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+        <a href="cicd-limits.html" class="nav-btn primary"><i class="fa-solid fa-person-chalkboard"></i> 觀看簡報版</a>
+    </div>
+
+    <script>
+        // 處理行動版側邊欄開關
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 900) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // 滾動高亮
+        const sections = document.querySelectorAll('.article-section');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current) && current !== '') {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
