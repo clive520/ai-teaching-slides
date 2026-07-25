@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實用 AI Agent 案例 - 詳細教學與國際準則</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0277bd; /* 星空藍 */
+            --primary-dark: #01579b;
+            --primary-light: #b3e5fc;
+            --bg-color: #fcfcfc;
+            --text-color: #333333;
+            --text-light: #666666;
+            --sidebar-width: 280px;
+            --border-color: #eeeeee;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        /* 側邊欄樣式 */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #ffffff;
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* 主內容區樣式 */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 50px 80px;
+            max-width: 950px;
+            box-sizing: border-box;
+            transition: margin-left 0.3s ease;
+        }
+
+        .content-header {
+            margin-bottom: 40px;
+        }
+
+        .content-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .content-header p.subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        .article-section {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        .article-section h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .article-section h3 {
+            color: var(--primary-dark);
+            margin-top: 35px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-box {
+            background-color: #f1f8e9;
+            border-left: 5px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .feature-box.blue {
+            background-color: #e1f5fe;
+            border-left: 5px solid #03a9f4;
+        }
+
+        .image-banner {
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .image-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 浮動導覽按鈕群 */
+        .floating-nav {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        .nav-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        .nav-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 漢堡選單 (行動版) */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 900px) {
+            .menu-toggle {
+                display: block;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 80px 30px 100px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-book-open"></i> 教學目錄</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#intro" class="active"><i class="fa-solid fa-rocket"></i> 為什麼需要現成 Agent？</a></li>
+            <li><a href="#antigravity"><i class="fa-solid fa-laptop-code"></i> Google Antigravity</a></li>
+            <li><a href="#data-analysis"><i class="fa-solid fa-chart-pie"></i> ChatGPT 資料分析</a></li>
+            <li><a href="#open-code"><i class="fa-solid fa-shield-halved"></i> 本機端開源 Agent</a></li>
+            <li><a href="#summary"><i class="fa-solid fa-lightbulb"></i> 課後總結</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>實用 AI Agent 案例展示</h1>
+            <p class="subtitle">站在巨人的肩膀上：在自己動手寫程式之前，先看看市面上強大的現成工具。</p>
+        </div>
+
+        <section id="intro" class="article-section">
+            <h2><i class="fa-solid fa-rocket"></i> 為什麼需要現成 Agent？</h2>
+            <p>在前面的課程中，我們學會了評估「什麼任務值得自動化」。許多有熱忱的老師，第一時間會想打開 Python 或 Zapier，嘗試自己寫一個 Agent 串接各種系統。</p>
+            <p>但**「避免重複造輪子」**是資訊科學中非常重要的一環。目前科技巨頭與開源社群已經開發出許多極度強大的通用型 Agent，它們可以直接授權存取你的電腦檔案、幫你寫程式、甚至幫你整理幾萬筆的 Excel 資料。</p>
+            <p>這堂課，我們將介紹三種不同定位的實用 Agent，幫助你在教育現場發揮最大的生產力。</p>
+        </section>
+
+        <section id="antigravity" class="article-section">
+            <h2><i class="fa-solid fa-laptop-code"></i> Google Antigravity：強大的開發助理</h2>
+            
+            <div class="image-banner">
+                <img src="assets/images/agent_admin_bot.jpg" alt="Google Antigravity 開發助理">
+            </div>
+
+            <p><strong>Google Antigravity</strong> 是目前非常先進的開發型 Agent（也是我們製作這整套教學網站所使用的核心工具！）。它有別於只能「陪你聊天」的 ChatGPT，它具有真正的「執行力」。</p>
+
+            <h3><i class="fa-solid fa-bolt" style="color: #ffb300;"></i> 它能做到什麼？</h3>
+            <ul>
+                <li><strong>存取本機檔案系統：</strong> 它可以直接讀取你資料夾裡的檔案，了解整個專案的架構。</li>
+                <li><strong>自動編寫與修改程式碼：</strong> 當你說「幫我把網頁上的按鈕變小」，它能自己找到該修改的 HTML 與 CSS 檔案並直接覆寫。</li>
+                <li><strong>終端機執行權限：</strong> 它可以代替你在終端機 (Terminal) 中輸入指令，例如自動呼叫 Git 把網頁上傳到 GitHub Pages。</li>
+            </ul>
+
+            <div class="feature-box blue">
+                <strong>👨‍🏫 教學現場應用情境：</strong><br>
+                如果資訊老師想要帶領學生做一個「線上測驗系統」專案。老師不需要從頭手把手教每一行 HTML，可以指導學生如何擔任「專案經理 (PM)」，用自然語言對 Antigravity 下達架構指令，讓 Agent 負責繁瑣的底層程式碼撰寫，學生則專注在系統邏輯與介面設計上。這正是未來軟體開發的新型態！
+            </div>
+        </section>
+
+        <section id="data-analysis" class="article-section">
+            <h2><i class="fa-solid fa-chart-pie"></i> ChatGPT 資料分析 (原 Code Interpreter)</h2>
+            
+            <div class="image-banner">
+                <img src="assets/images/agent_data_analysis.jpg" alt="資料分析自動化">
+            </div>
+
+            <p>過去，老師如果要統計全校學生的「健康體適能成績」或「段考分數分布」，通常需要熟練 Excel 的各種樞紐分析表，甚至要學會寫 Python 爬蟲。現在，**ChatGPT 的「資料分析 (Data Analysis)」功能就是一個專為資料處理而生的 Agent**。</p>
+
+            <h3><i class="fa-solid fa-magnifying-glass-chart" style="color: #4caf50;"></i> 背後的運作原理</h3>
+            <p>當你上傳一份 Excel 並要求「畫出數學成績低於 60 分的學生比例長條圖」時，ChatGPT 並不是「猜測」結果。它的背後隱藏了一個沙盒 (Sandbox) 環境：</p>
+            <ol>
+                <li>Agent 會自動理解你的需求，並寫出一段 Python 資料處理程式碼。</li>
+                <li>Agent 在背景實際執行這段程式碼。</li>
+                <li>如果程式碼報錯 (Error)，Agent 會自己發現、自己 Debug、自己重寫。</li>
+                <li>最後將正確產出的圖表與 CSV 檔案回傳給老師。</li>
+            </ol>
+
+            <div class="feature-box">
+                <strong>👨‍🏫 教學現場應用情境：</strong><br>
+                學期末的「教學評鑑問卷」往往包含大量文字回饋與量表分數。老師可以直接將原始 CSV 丟給 Agent，請它：「幫我過濾掉無效填答，統計各項目的平均分數，並將文字回饋整理成正向與反向的文字雲圖表，最後輸出成一份 PDF 報告。」
+            </div>
+        </section>
+
+        <section id="open-code" class="article-section">
+            <h2><i class="fa-solid fa-shield-halved"></i> 注重隱私的本機端開源 Agent</h2>
+            
+            <p>教育現場最大的痛點之一，就是「學生個資與輔導紀錄絕對不可以上傳到公有雲端」。這意味著即使 ChatGPT 再強大，老師也不能把含有學生名字或家庭狀況的 Excel 丟給它分析。</p>
+
+            <h3><i class="fa-solid fa-server" style="color: #0277bd;"></i> 本機端 Agent (Local Agent) 解決方案</h3>
+            <p>這時候，我們就需要依賴像是 <strong>Open Code</strong> 這類的開源專案。它們允許你將大語言模型 (例如 Llama 3 或 Gemma) 下載到學校自己的伺服器，或老師自己性能較好的筆電上執行。</p>
+
+            <ul>
+                <li><strong>完全斷網執行 (Offline-first)：</strong> 在沒有網路的情況下依然能運作，資料完全不外流。</li>
+                <li><strong>客製化流程：</strong> 可以針對學校內部的特殊表單，客製化專屬的自動化流程。</li>
+                <li><strong>安全性極高：</strong> 非常適合用來協助分析「輔導室的學生訪談紀錄」或「特教班的 IEP 個別化教育計畫」等高度敏感資料。</li>
+            </ul>
+        </section>
+
+        <section id="summary" class="article-section">
+            <h2><i class="fa-solid fa-lightbulb"></i> 課後總結</h2>
+            <p>透過這三個案例，我們可以看到 AI Agent 在不同維度上對教學現場的幫助：</p>
+            <ul>
+                <li>如果你需要**建置系統或開發教材** 👉 找 <strong>Antigravity</strong> 等開發型 Agent。</li>
+                <li>如果你需要**處理龐大的報表與圖表** 👉 找 <strong>ChatGPT 資料分析</strong>。</li>
+                <li>如果你處理的是**機敏個資** 👉 考慮建置 <strong>本機端開源 Agent</strong>。</li>
+            </ul>
+            <p>老師不需要成為工程師，而是要成為一個**「善用各種頂尖 Agent 的超級 PM (專案經理)」**！</p>
+        </section>
+
+    </main>
+
+    <div class="floating-nav">
+        <a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+        <a href="agent-cases.html" class="nav-btn primary"><i class="fa-solid fa-person-chalkboard"></i> 觀看簡報版</a>
+    </div>
+
+    <script>
+        // 處理行動版側邊欄開關
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 900) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // 滾動高亮
+        const sections = document.querySelectorAll('.article-section');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current) && current !== '') {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
