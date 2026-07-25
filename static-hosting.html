@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>靜態網頁部署空間 - 白話文圖解教學</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.css" id="theme">
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+			
+			body {
+				font-family: 'Noto Sans TC', sans-serif;
+				/* 翡翠綠與雲端白背景 */
+				background: linear-gradient(135deg, #00332a 0%, #00695c 50%, #4db6ac 100%);
+			}
+			.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+				font-family: 'Noto Sans TC', sans-serif;
+				font-weight: 700;
+				color: #111111; 
+				text-transform: none;
+				text-shadow: none;
+			}
+			.reveal h1 { font-size: 1.8em; color: #00796b; } /* 深翡翠綠 */
+			.reveal h2 { font-size: 1.5em; color: #00695c; }
+			.reveal h3 { font-size: 1.2em; color: #004d40; }
+			
+			.reveal p, .reveal li {
+				font-size: 0.85em; 
+				line-height: 1.5;
+				margin-bottom: 10px;
+				color: #222222; 
+			}
+			
+			/* 高對比亮色毛玻璃方框 */
+			.glass-panel {
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(20px);
+				-webkit-backdrop-filter: blur(20px);
+				padding: 20px 30px;
+				border-radius: 20px;
+				border: 1px solid rgba(255, 255, 255, 0.8);
+				box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.5);
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.glass-panel.center {
+				text-align: center;
+				align-items: center;
+			}
+			
+			/* 三欄式橫向排版 */
+			.slide-layout {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				width: 100%;
+				gap: 15px;
+			}
+			.content-col {
+				flex: 1;
+			}
+			
+			/* 強調色 */
+			.highlight-main {
+				color: #00695c; /* 綠色 */
+				font-weight: bold;
+			}
+			
+			.reveal-viewport {
+				background: transparent !important;
+			}
+			
+			/* 浮動導覽按鈕群 */
+			.floating-nav {
+				position: fixed;
+				bottom: 15px;
+				right: 15px;
+				z-index: 1000;
+				display: flex;
+				gap: 8px;
+			}
+			.nav-btn {
+				background: rgba(255, 255, 255, 0.9);
+				border: 2px solid #00897b;
+				color: #00897b;
+				padding: 8px 15px;
+				border-radius: 30px;
+				text-decoration: none;
+				font-family: 'Noto Sans TC', sans-serif;
+				font-weight: bold;
+				font-size: 0.85em;
+				backdrop-filter: blur(5px);
+				transition: all 0.3s ease;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+			}
+			.nav-btn:hover {
+				background: #00897b;
+				color: white;
+				transform: translateY(-3px);
+			}
+			.nav-btn.primary {
+				background: #00796b;
+				border-color: #00796b;
+				color: white;
+			}
+			.nav-btn.primary:hover {
+				background: #004d40;
+			}
+			
+			.reveal a {
+				color: #00897b;
+				font-weight: bold;
+			}
+			.reveal a:hover {
+				color: #26a69a;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				
+				<!-- 封面 -->
+				<section data-background-image="assets/images/deploy_cover_green.jpg" data-background-opacity="0.8">
+					<div class="glass-panel center" style="padding: 50px;">
+						<h1><i class="fa-solid fa-cloud-arrow-up" style="color:#00796b;"></i> 網頁與服務部署空間</h1>
+						<h3 style="color: #444; font-weight: 500; letter-spacing: 1px;">給新手的白話文圖解教學</h3>
+						<div style="margin-top: 30px; font-size: 1.1em; color: #00695c; font-weight: bold;">
+							<p>🏠 為什麼我的網頁別人看不到？ ｜ 📌 學校公佈欄：GitHub Pages ｜ 🚀 數位看板：Vercel</p>
+						</div>
+					</div>
+					<aside class="notes">
+						<h4>👉 教學指引 (封面)</h4>
+						<p>老師與同學們，我們用 AI 寫好了精美的 HTML 跟 CSS，在自己的電腦上點開來看覺得超有成就感，但當你把那串網址傳給朋友時，對方卻只看到「無法連線」？這就是為什麼我們需要學習「部署 (Deployment)」。</p>
+					</aside>
+				</section>
+
+				<!-- 頁面 1：為什麼別人看不到？ -->
+				<section data-background-image="assets/images/deploy_cover_green.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 10px;"><i class="fa-solid fa-house-lock" style="color:#004d40;"></i> 為什麼我的網頁別人看不到？</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
+							<div style="flex: 0 0 380px; margin-right: 20px;">
+								<img src="assets/images/deploy_lego_room.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+								<p style="text-align: center; margin-top: 5px; font-size: 0.85em; color: #666; font-weight:bold;">自己房間 VS. 公開展覽館</p>
+							</div>
+							<div class="content-col" style="padding-right: 10px;">
+								<h4 style="color:#00695c; margin-bottom: 10px; font-size: 1.1em;">把網頁當作「樂高模型」</h4>
+								<ul style="background: #e0f2f1; padding: 15px 20px; border-radius: 8px; line-height: 1.6;">
+									<li style="margin-bottom: 8px;"><strong>本機開發 (Localhost)：</strong> 就像你在**自己房間**組好了一座超酷的樂高。你自己看得很開心，但你的朋友沒鑰匙進不來你的房間。</li>
+									<li style="margin-bottom: 8px;"><strong>部署 (Deployment)：</strong> 就是把這個樂高模型，搬到**公開的展覽館** (伺服器)，並申請一個展場號碼 (網址 Domain)。</li>
+									<li>這樣全世界只要輸入展場號碼，就可以隨時隨地看到你的作品！</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<aside class="notes">
+						<p>跟學生強調：你電腦上的 C槽 路徑，別人是絕對點不開的。這是一個非常常見的新手痛點。</p>
+					</aside>
+				</section>
+
+				<!-- 頁面 2：靜態網頁概念 -->
+				<section data-background-image="assets/images/deploy_cover_green.jpg" data-background-opacity="0.5">
+					<div class="glass-panel center">
+						<h3 style="margin-bottom: 15px;"><i class="fa-solid fa-file-image" style="color:#004d40;"></i> 什麼是「靜態」網頁？</h3>
+						<p style="font-size: 0.95em; line-height: 1.5; margin-bottom: 15px;">靜態網頁 (Static Website) 就像是一張**「印刷好的海報」**。</p>
+						
+						<div class="slide-layout" style="margin-top: 10px; text-align: left; align-items: stretch;">
+							<div class="content-col" style="background: #fff; padding: 15px 25px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+								<ul style="color: #444; line-height: 1.6; font-size: 0.95em; margin-top: 5px;">
+									<li style="margin-bottom: 10px;">不管今天是小明來看、還是小華來看，海報上的內容都長得**一模一樣**。</li>
+									<li style="margin-bottom: 10px;">它只有 HTML, CSS, JavaScript，沒有資料庫 (不能留言、不能登入帳號)。</li>
+									<li><strong>優點：</strong> 非常安全、速度極快，而且有很多大公司提供**「免費」**的展覽館讓我們放這種海報！</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 頁面 3：GitHub Pages -->
+				<section data-background-image="assets/images/deploy_cover_green.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 10px;"><i class="fa-brands fa-github" style="color:#004d40;"></i> 第一種展覽館：GitHub Pages</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
+							<div class="content-col" style="padding-right: 15px; padding-left: 10px;">
+								<h4 style="color:#00695c; margin-bottom: 10px; font-size: 1.1em;">學校的經典免費佈告欄</h4>
+								<ul style="background: #e0f2f1; padding: 15px 20px; border-radius: 8px; line-height: 1.6;">
+									<li style="margin-bottom: 8px;"><strong>特色：</strong> 最老牌、最經典。幾乎全世界的工程師都有一個 GitHub 帳號。</li>
+									<li style="margin-bottom: 8px;"><strong>比喻：</strong> 就像學校穿堂的佈告欄，你只要把作品貼上去，它就會穩穩地在那邊讓大家看。</li>
+									<li><strong>適合誰：</strong> 想要交學校期末作業、展示個人靜態作品集、學習 Git 版控的新手。</li>
+								</ul>
+								<p style="margin-top: 10px; color: #d84315; font-weight: bold;"><i class="fa-solid fa-triangle-exclamation"></i> 缺點：更新速度有時比較慢，介面稍微硬核一點。</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- 頁面 4：Vercel -->
+				<section data-background-image="assets/images/deploy_cover_green.jpg" data-background-opacity="0.5">
+					<div class="glass-panel">
+						<h3 style="margin-bottom: 10px;"><i class="fa-solid fa-bolt-lightning" style="color:#004d40;"></i> 第二種展覽館：Vercel</h3>
+						<div class="slide-layout" style="align-items: center; font-size: 0.85em;">
+							<div style="flex: 0 0 350px; margin-right: 20px;">
+								<img src="assets/images/deploy_digital_board.jpg" style="width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+								<p style="text-align: center; margin-top: 5px; font-size: 0.85em; color: #666; font-weight:bold;">自動更新的數位看板</p>
+							</div>
+							<div class="content-col" style="padding-right: 10px;">
+								<h4 style="color:#00695c; margin-bottom: 10px; font-size: 1.1em;">現代極速高鐵，懶人福音</h4>
+								<ul style="background: #e0f2f1; padding: 15px 20px; border-radius: 8px; line-height: 1.6;">
+									<li style="margin-bottom: 8px;"><strong>特色：</strong> 目前全球前端工程師最愛用的服務，介面超美、速度極快。</li>
+									<li style="margin-bottom: 8px;"><strong>比喻：</strong> 它是一台**「連線的數位看板」**。你只要把新的檔案放進信箱，這台機器就會在一秒內「自動幫你把新海報換上去」(這就叫做 CI/CD)。</li>
+									<li><strong>適合誰：</strong> 想要無痛更新網頁、使用現代框架 (如 React/Next.js) 的開發者。</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			</div>
+			
+			<div class="floating-nav">
+				<a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+				<a href="static-hosting-details.html" class="nav-btn primary"><i class="fa-solid fa-file-lines"></i> 閱讀詳細網頁版</a>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				width: 1280,
+				height: 720,
+				margin: 0.1,
+                controls: true,
+				plugins: [ RevealNotes ]
+			});
+		</script>
+	</body>
+</html>

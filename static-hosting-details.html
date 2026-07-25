@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>靜態網頁部署空間 - 詳細教學</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00796b; /* 翡翠綠 */
+            --primary-dark: #004d40;
+            --primary-light: #b2dfdb;
+            --bg-color: #fcfcfc;
+            --text-color: #333333;
+            --text-light: #666666;
+            --sidebar-width: 280px;
+            --border-color: #eeeeee;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        /* 側邊欄樣式 */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #ffffff;
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* 主內容區樣式 */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 50px 80px;
+            max-width: 950px;
+            box-sizing: border-box;
+            transition: margin-left 0.3s ease;
+        }
+
+        .content-header {
+            margin-bottom: 40px;
+        }
+
+        .content-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .content-header p.subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        .article-section {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        .article-section h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .article-section h3 {
+            color: var(--primary-dark);
+            margin-top: 35px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-box {
+            background-color: #f1f8e9; /* 淺綠 */
+            border-left: 5px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .image-banner {
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .image-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .step-list {
+            padding-left: 20px;
+        }
+        .step-list li {
+            margin-bottom: 15px;
+        }
+        .step-list strong {
+            color: var(--primary-dark);
+        }
+
+        /* 浮動導覽按鈕群 */
+        .floating-nav {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        .nav-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        .nav-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 漢堡選單 (行動版) */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 900px) {
+            .menu-toggle {
+                display: block;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 80px 30px 100px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fa-solid fa-book-open"></i> 教學目錄</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#intro" class="active"><i class="fa-solid fa-house-lock"></i> 什麼是網頁部署？</a></li>
+            <li><a href="#github-pages"><i class="fa-brands fa-github"></i> 學校公佈欄：GitHub Pages</a></li>
+            <li><a href="#vercel"><i class="fa-solid fa-bolt-lightning"></i> 數位看板：Vercel</a></li>
+            <li><a href="#summary"><i class="fa-solid fa-lightbulb"></i> 課後總結</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1>靜態網頁部署空間 - 詳細圖解教學</h1>
+            <p class="subtitle">完全零基礎！把你的網頁作品，從自己房間推向全世界的舞台。</p>
+        </div>
+
+        <section id="intro" class="article-section">
+            <h2><i class="fa-solid fa-house-lock"></i> 為什麼我的網頁別人看不到？</h2>
+            
+            <div class="image-banner">
+                <img src="assets/images/deploy_lego_room.jpg" alt="樂高模型比喻：本機開發與公開展覽館">
+            </div>
+
+            <p>這大概是所有剛接觸網頁設計的學生最常問的問題：「老師，我用 AI 寫好了一個超炫的網頁，為什麼我把上面那串 <code>C:\Users\Desktop\index.html</code> 複製給同學，他們都說打不開？」</p>
+            <p><strong>讓我們用一個生動的比喻來解釋：</strong></p>
+            
+            <div class="feature-box">
+                <p><strong>本機開發 (Localhost)：</strong><br>
+                就像你在<strong>「自己的房間」</strong>裡，用心組好了一座巨大的樂高模型。你自己每天看著它很開心，但因為這個模型放在你家，別人沒有你家的鑰匙，當然看不到這座模型。</p>
+                <p><strong>網頁部署 (Deployment)：</strong><br>
+                為了讓大家都能欣賞你的作品，你需要把這座模型搬出房間，放到一個<strong>「公開的展覽館 (伺服器)」</strong>裡面。這個展覽館是 24 小時開放的，並且會配發一個專屬的<strong>「展場門牌號碼 (網址/Domain)」</strong>給你。從此以後，只要把門牌號碼給朋友，任何人都可以隨時走進展覽館欣賞你的網頁！</p>
+            </div>
+        </section>
+
+        <section id="github-pages" class="article-section">
+            <h2><i class="fa-brands fa-github"></i> 第一種展覽館：GitHub Pages</h2>
+            
+            <p>GitHub 是全世界最大的工程師社交平台，它提供了一個完全免費的展覽館服務，叫做 <strong>GitHub Pages</strong>。</p>
+            <p>你可以把它想像成<strong>「學校穿堂的免費公開佈告欄」</strong>。它非常穩定、經典，只要你願意把海報 (程式碼) 貼在上面，大家就能看到。</p>
+
+            <h3><i class="fa-solid fa-list-ol"></i> GitHub Pages 新手上架 5 步驟</h3>
+            <p>雖然介面全是英文，但其實只要按幾個按鈕就能完成：</p>
+            <ol class="step-list">
+                <li><strong>建立倉庫 (Repository)：</strong> 在 GitHub 首頁點擊右上角的 <code>+</code> 號，選擇 <code>New repository</code>。把這個想成是「申請一塊空的佈告欄」。</li>
+                <li><strong>設定名稱與公開：</strong> 幫你的網頁取個英文名字 (例如 <code>my-first-web</code>)，並務必確認設定為 <strong>Public (公開)</strong>。</li>
+                <li><strong>上傳檔案：</strong> 點擊 <code>Upload files</code>，把你在電腦裡寫好的 <code>index.html</code> 和所有圖片資料夾一起拖曳進去，按下綠色的 <strong>Commit changes</strong> 按鈕。</li>
+                <li><strong>開啟 Pages 功能：</strong> 這是最重要的一步！點擊專案上方的 <strong>Settings (設定)</strong> 齒輪，在左邊側邊欄找到 <strong>Pages</strong>。</li>
+                <li><strong>發布 (Deploy)：</strong> 在 Source 的 Branch 選單中，選擇 <code>main</code> 分支，然後按下 <strong>Save</strong>。等待約兩分鐘，頁面上方就會出現你專屬的網址了！</li>
+            </ol>
+        </section>
+
+        <section id="vercel" class="article-section">
+            <h2><i class="fa-solid fa-bolt-lightning"></i> 第二種展覽館：Vercel</h2>
+            
+            <div class="image-banner">
+                <img src="assets/images/deploy_digital_board.jpg" alt="自動更新的數位看板 Vercel">
+            </div>
+
+            <p>如果你覺得每次修改網頁，都要手動上傳檔案到 GitHub 很麻煩，那麼你一定會愛上 <strong>Vercel</strong>。</p>
+            <p>Vercel 是一個現代化的部署平台，我們可以把它比喻成一個<strong>「擁有自動化系統的高級數位看板」</strong>。</p>
+
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> 什麼是 CI/CD (持續整合與部署)？</h3>
+            <div class="feature-box">
+                <p>假設你把 Vercel (數位看板) 和你的 GitHub (原始檔信箱) 綁定在一起。</p>
+                <p>未來，只要你在電腦上修改了網頁，並把新的程式碼推送到 GitHub 信箱裡，<strong>Vercel 這個數位看板就會在 1 秒鐘內自動感應到！</strong> 它會自動把你新的程式碼抓過來、重新編譯、然後無縫把舊網頁替換成新的網頁。</p>
+                <p>這個「只要改程式，網頁就自動更新」的魔法，在資訊界就叫做 <strong>CI/CD (Continuous Integration / Continuous Deployment)</strong>。它能為我們省下大量的繁瑣操作，是目前前端業界最流行的做法。</p>
+            </div>
+        </section>
+
+        <section id="summary" class="article-section">
+            <h2><i class="fa-solid fa-lightbulb"></i> 課後總結</h2>
+            <p>對初學者來說，第一次成功把網頁部署到網路上，並用手機點開專屬網址的那一刻，是非常有成就感的！</p>
+            <ul>
+                <li>如果你是帶領學生做<strong>簡單的期末作業</strong> 👉 推薦使用 <strong>GitHub Pages</strong>，免費穩定且能順便學習版控。</li>
+                <li>如果你想自己架設<strong>會頻繁更新的教學網站或部落格</strong> 👉 強烈推薦綁定 <strong>Vercel</strong>，體驗「按個存檔網頁就更新」的極速快感。</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <div class="floating-nav">
+        <a href="index.html" class="nav-btn"><i class="fa-solid fa-house"></i> 回到主目錄</a>
+        <a href="static-hosting.html" class="nav-btn primary"><i class="fa-solid fa-person-chalkboard"></i> 觀看簡報版</a>
+    </div>
+
+    <script>
+        // 處理行動版側邊欄開關
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 900) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // 滾動高亮
+        const sections = document.querySelectorAll('.article-section');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current) && current !== '') {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
