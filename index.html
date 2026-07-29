@@ -356,10 +356,30 @@
 					</div>
 				</section>
 
-                <!-- 三、 教師備課 -->
 				<section data-background-image="assets/images/second_brain.jpg" data-background-opacity="1">
 					<div class="glass-panel center">
 						<h2><i class="fa-solid fa-book-open-reader"></i>三、 專屬教師的備課範例</h2>
+					</div>
+				</section>
+
+				<!-- RDQ Section -->
+				<section data-background-image="assets/images/second_brain.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-clipboard-question"></i>需求探索 (RDQ)</h3>
+							<ul>
+								<li><strong>AI 亂做怎麼辦？</strong> 先用四象限釐清再動工。</li>
+								<li><strong>避免無效來回</strong>：從「邊做邊改」變成「確認規格再做」。</li>
+							</ul>
+							<div style="margin-top: 15px;">
+								<a href="rdq-presentation.html" target="_blank" style="display:inline-block; padding: 10px 20px; background: #1b263b; color: white; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 0.8em; box-shadow: 0 4px 15px rgba(27, 38, 59, 0.4); margin-bottom: 10px;"><i class="fa-solid fa-chalkboard-user"></i> 觀看專屬簡報：RDQ 教學</a>
+								<br>
+								<button onclick="startRdqExperience()" style="display:inline-block; padding: 10px 20px; background: #ff007f; color: white; border: none; border-radius: 30px; font-weight: bold; font-size: 0.8em; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4); cursor: pointer;"><i class="fa-solid fa-hand-pointer"></i> 體驗 RDQ 訪談</button>
+							</div>
+						</div>
+						<div class="img-col">
+							<img src="assets/images/rdq_concept.jpg" class="spot-img" alt="RDQ">
+						</div>
 					</div>
 				</section>
 
@@ -419,6 +439,39 @@
 
 			</div>
 		</div>
+
+		<!-- SweetAlert2 for RDQ Experience -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script>
+			async function startRdqExperience() {
+				const { value: answer } = await Swal.fire({
+					title: '【象限 III: 訪談追問】',
+					text: '請問這份教學簡報，最後是誰會看？',
+					icon: 'question',
+					input: 'radio',
+					inputOptions: {
+						'a': '只有我會看，只要關鍵字即可',
+						'b': '會發給別的老師上課用，需要逐字稿',
+						'c': '給學生下課後自己複習，必須圖文並茂'
+					},
+					inputValidator: (value) => {
+						if (!value) return '這是一題紅燈題（影響架構），請務必選擇！';
+					},
+					confirmButtonText: '送出回答',
+					confirmButtonColor: '#3186FF'
+				});
+
+				if (answer) {
+					Swal.fire({
+						title: '【規格確立】',
+						text: '太棒了！如果不先問清楚，AI 可能會做出一份「給學生自學卻只有關鍵字」的廢產出！這就是 RDQ 先對焦需求的重要性。',
+						icon: 'success',
+						confirmButtonText: '原來如此！',
+						confirmButtonColor: '#ff007f'
+					});
+				}
+			}
+		</script>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
