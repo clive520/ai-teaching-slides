@@ -16,15 +16,22 @@
 		body {
 			font-family: 'Inter', 'Noto Sans TC', sans-serif;
 		}
+		.reveal {
+			font-size: 38px; /* 加大基礎字體 */
+		}
 		.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
 			font-family: 'Inter', 'Noto Sans TC', sans-serif;
 			font-weight: 700;
 			text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+			margin-bottom: 25px;
 		}
+		.reveal h2 { font-size: 2.2em; }
+		.reveal h3 { font-size: 1.6em; }
+		
 		.glass-panel {
 			background: rgba(40, 42, 54, 0.85);
 			border-radius: 20px;
-			padding: 40px;
+			padding: 50px; /* 增加留白 */
 			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 			backdrop-filter: blur(10px);
 			border: 1px solid rgba(255,255,255,0.1);
@@ -41,7 +48,7 @@
 		.slide-layout {
 			display: flex;
 			align-items: center;
-			gap: 40px;
+			gap: 50px; /* 加大間距 */
 			justify-content: space-between;
 		}
 		.content-col {
@@ -55,10 +62,15 @@
 			width: 100%;
 			border-radius: 15px;
 			box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+			border: 2px solid rgba(255,255,255,0.2);
 		}
 		ul {
 			line-height: 1.8;
-			font-size: 0.9em;
+			font-size: 1.1em; /* 加大列表字體 */
+		}
+		p {
+			font-size: 1.1em; /* 加大段落字體 */
+			line-height: 1.6;
 		}
 	</style>
 </head>
@@ -71,7 +83,7 @@
 				<div class="glass-panel center">
 					<h2><i class="fa-solid fa-compass-drafting" style="color: #ff007f;"></i> RDQ 需求探索法</h2>
 					<h3>給老師的 AI 防坑指南</h3>
-					<p style="margin-top: 30px; font-size: 0.8em; color: #aaa;">從「邊做邊改」到「確認規格再做」</p>
+					<p style="margin-top: 30px; font-size: 1em; color: #aaa;">從「邊做邊改」到「確認規格再做」</p>
 				</div>
 			</section>
 
@@ -85,12 +97,15 @@
 			<section>
 				<div class="glass-panel slide-layout">
 					<div class="content-col">
-						<h3><i class="fa-solid fa-face-dizzy"></i> 常見痛點 1：難以溝通</h3>
+						<h3><i class="fa-solid fa-face-dizzy"></i> 痛點 1：難以溝通</h3>
 						<ul>
 							<li>「幫我做一份二年級的數學簡報！」</li>
 							<li>AI 給了一堆生硬的文字，沒有圖片，沒有互動。</li>
 							<li>老師：<span class="highlight-neon">「這根本不能在台上用啊！」</span></li>
 						</ul>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/rdq_frustrated.jpg" class="spot-img" alt="Frustrated Teacher">
 					</div>
 				</div>
 			</section>
@@ -98,21 +113,29 @@
 			<section>
 				<div class="glass-panel slide-layout">
 					<div class="content-col">
-						<h3><i class="fa-solid fa-face-dizzy"></i> 常見痛點 2：越改越糟</h3>
+						<h3><i class="fa-solid fa-face-dizzy"></i> 痛點 2：越改越糟</h3>
 						<ul>
 							<li>「把上一份簡報改得更活潑一點。」</li>
 							<li>AI 加上了一堆奇怪的笑話，把原本正確的公式刪掉了。</li>
-							<li>老師：<span class="highlight-neon">「怎麼連原本對的地方都弄壞了！」</span></li>
+							<li>老師：<span class="highlight-neon">「怎麼連對的地方都弄壞了！」</span></li>
 						</ul>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/rdq_frustrated.jpg" class="spot-img" alt="Frustrated Teacher">
 					</div>
 				</div>
 			</section>
 
 			<section>
-				<div class="glass-panel center">
-					<h2>為什麼會翻車？</h2>
-					<h3 class="highlight-neon">因為我們沒有做「需求工程」</h3>
-					<p>AI 不懂教學現場的「常識」，必須把「隱性知識」化為「顯性規格」。</p>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h2 style="font-size:1.8em;">為什麼會翻車？</h2>
+						<h3 class="highlight-neon">因為我們沒做「需求工程」</h3>
+						<p>AI 不懂教學現場的「常識」，必須把「隱性知識」化為「顯性規格」。</p>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/rdq_iceberg.jpg" class="spot-img" alt="Iceberg">
+					</div>
 				</div>
 			</section>
 
@@ -124,26 +147,36 @@
 			</section>
 
 			<section>
-				<div class="glass-panel">
-					<h3><i class="fa-solid fa-table-cells-large"></i> 什麼是 RDQ？</h3>
-					<p>將溝通分為四個象限，一步步釐清需求：</p>
-					<ul>
-						<li><strong style="color: #42b983;">Ⅰ 已明說的 (Known Knowns)</strong>：你已經明確告訴 AI 的條件。</li>
-						<li><strong style="color: #ffb86c;">Ⅱ 想問的 (Known Unknowns)</strong>：你主動問 AI 該怎麼做的問題。</li>
-						<li><strong class="highlight-neon">Ⅲ 知道卻沒說的 (Unknown Knowns)</strong>：你的行業常識，但 AI 不知道 (最容易翻車)。</li>
-						<li><strong style="color: #bd93f9;">Ⅳ 沒想到的 (Unknown Unknowns)</strong>：你沒想到，但 AI 可以主動提議的亮點。</li>
-					</ul>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h3><i class="fa-solid fa-table-cells-large"></i> 什麼是 RDQ？</h3>
+						<p>將溝通分為四個象限，一步步釐清：</p>
+						<ul style="font-size: 0.9em;">
+							<li><strong style="color: #42b983;">Ⅰ 已明說的</strong>：你已告訴 AI 的條件。</li>
+							<li><strong style="color: #ffb86c;">Ⅱ 想問的</strong>：你主動問 AI 該怎麼做。</li>
+							<li><strong class="highlight-neon">Ⅲ 知道卻沒說</strong>：你的常識，但 AI 不知。</li>
+							<li><strong style="color: #bd93f9;">Ⅳ 沒想到的</strong>：AI 主動提議的亮點。</li>
+						</ul>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/rdq_concept.jpg" class="spot-img" alt="RDQ">
+					</div>
 				</div>
 			</section>
 
 			<section>
-				<div class="glass-panel">
-					<h3><i class="fa-solid fa-triangle-exclamation"></i> 象限 Ⅲ：最可怕的地雷區</h3>
-					<ul>
-						<li>你以為：<span class="highlight-neon">「教學簡報當然要有互動跟大字體啊！」</span></li>
-						<li>AI 以為：<span style="color: #aaa;">「簡報就是把文字條列式貼上去。」</span></li>
-					</ul>
-					<p style="margin-top:20px;">**解法**：讓 AI 扮演「訪談者」，主動追問這些關鍵問題！</p>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h3><i class="fa-solid fa-triangle-exclamation"></i> 象限 Ⅲ：最可怕地雷</h3>
+						<ul>
+							<li>你以為：<span class="highlight-neon">「簡報當然要有互動跟大字體啊！」</span></li>
+							<li>AI 以為：<span style="color: #aaa;">「簡報就是把文字貼上去。」</span></li>
+						</ul>
+						<p style="margin-top:20px; font-weight:bold;">解法：讓 AI 扮演「訪談者」，主動追問關鍵問題！</p>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/rdq_iceberg.jpg" class="spot-img" alt="Iceberg">
+					</div>
 				</div>
 			</section>
 
@@ -155,26 +188,36 @@
 			</section>
 
 			<section>
-				<div class="glass-panel">
-					<h3><i class="fa-solid fa-comments"></i> 備課情境：AI 主動追問</h3>
-					<p>當你對 AI 說：「幫我生一份小學三年級的昆蟲教材。」</p>
-					<p>擁有 RDQ 技能的 AI 不會馬上亂寫，而是會先問：</p>
-					<ul>
-						<li class="fragment"><strong>問題 1：</strong> 這份教材最後是以講義印出來，還是用網頁互動？(決定排版)</li>
-						<li class="fragment"><strong>問題 2：</strong> 學生之前學過植物單元了嗎？(決定難度與起點)</li>
-						<li class="fragment"><strong>問題 3：</strong> 需要附上課堂小測驗嗎？(決定架構)</li>
-					</ul>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h3><i class="fa-solid fa-comments"></i> 備課情境：AI 追問</h3>
+						<p>你：「幫我生一份小三的昆蟲教材。」</p>
+						<p>擁有 RDQ 技能的 AI 會先問：</p>
+						<ul style="font-size: 0.9em;">
+							<li class="fragment"><strong>1.</strong> 是印出來還是網頁？(排版)</li>
+							<li class="fragment"><strong>2.</strong> 學生學過植物了嗎？(起點)</li>
+							<li class="fragment"><strong>3.</strong> 需要附測驗嗎？(架構)</li>
+						</ul>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/rdq_interviewer.jpg" class="spot-img" alt="AI Interviewer">
+					</div>
 				</div>
 			</section>
 
 			<section>
-				<div class="glass-panel">
-					<h3><i class="fa-solid fa-gift"></i> 象限 Ⅳ：主動端出好菜</h3>
-					<p>除了追問，AI 還會根據你的情境，提出你可能沒想到的好點子 (建議菜單)：</p>
-					<ul>
-						<li>💡 「要不要幫你出一份『**給家長看的下課複習單**』？」</li>
-						<li>💡 「要不要安插一個『**抓錯活動**』讓學生找碴？」</li>
-					</ul>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h3><i class="fa-solid fa-gift"></i> 象限 Ⅳ：主動端出好菜</h3>
+						<p>AI 還會根據情境提出好點子：</p>
+						<ul>
+							<li>💡 「要不要出一份給家長看的複習單？」</li>
+							<li>💡 「要不要安插一個『抓錯活動』？」</li>
+						</ul>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/rdq_ai_waiter.jpg" class="spot-img" alt="AI Waiter">
+					</div>
 				</div>
 			</section>
 
@@ -186,11 +229,16 @@
 			</section>
 
 			<section>
-				<div class="glass-panel center">
-					<h3><i class="fa-solid fa-file-contract"></i> 最終產出：需求規格卡</h3>
-					<p>訪談結束後，AI 會先寫好一份「需求規格卡」，列出所有的目標、受眾、邊界。</p>
-					<h3 class="highlight-neon" style="margin-top: 30px;">確認無誤，才准開工！</h3>
-					<p>這就是保證產出品質，告別「越改越糟」的終極心法。</p>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h3><i class="fa-solid fa-file-contract"></i> 產出：需求規格卡</h3>
+						<p>訪談後，AI 會寫好「需求規格卡」，列出所有的目標與受眾。</p>
+						<h3 class="highlight-neon" style="margin-top: 30px;">確認無誤，才准開工！</h3>
+						<p>這就是保證品質的終極心法。</p>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/rdq_spec_card.jpg" class="spot-img" alt="Spec Card">
+					</div>
 				</div>
 			</section>
 
