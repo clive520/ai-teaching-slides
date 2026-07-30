@@ -444,32 +444,78 @@
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script>
 			async function startRdqExperience() {
-				const { value: answer } = await Swal.fire({
-					title: '【象限 III: 訪談追問】',
-					text: '請問這份教學簡報，最後是誰會看？',
+				// Q1
+				const q1 = await Swal.fire({
+					title: '【問題 1/3】',
+					text: '請問這份「昆蟲教材」最後是以講義印出來，還是用網頁互動？',
 					icon: 'question',
 					input: 'radio',
 					inputOptions: {
-						'a': '只有我會看，只要關鍵字即可',
-						'b': '會發給別的老師上課用，需要逐字稿',
-						'c': '給學生下課後自己複習，必須圖文並茂'
+						'A4 黑白講義 (要留白讓學生寫)': 'A4 黑白講義 (要留白讓學生寫)',
+						'課堂投影用的簡報 (字要大)': '課堂投影用的簡報 (字要大)',
+						'學生帶回家的自學互動網頁': '學生帶回家的自學互動網頁'
 					},
 					inputValidator: (value) => {
-						if (!value) return '這是一題紅燈題（影響架構），請務必選擇！';
+						if (!value) return '這是影響排版的紅燈題，請務必選擇！';
 					},
-					confirmButtonText: '送出回答',
+					confirmButtonText: '下一步',
 					confirmButtonColor: '#3186FF'
 				});
+				if (!q1.value) return; 
 
-				if (answer) {
-					Swal.fire({
-						title: '【規格確立】',
-						text: '太棒了！如果不先問清楚，AI 可能會做出一份「給學生自學卻只有關鍵字」的廢產出！這就是 RDQ 先對焦需求的重要性。',
-						icon: 'success',
-						confirmButtonText: '原來如此！',
-						confirmButtonColor: '#ff007f'
-					});
-				}
+				// Q2
+				const q2 = await Swal.fire({
+					title: '【問題 2/3】',
+					text: '學生目前的起點在哪裡？',
+					icon: 'question',
+					input: 'radio',
+					inputOptions: {
+						'完全沒碰過，第一次學': '完全沒碰過，第一次學',
+						'已經教過植物單元，可做對比': '已經教過植物單元，可做對比',
+						'這是期末複習，要有難度': '這是期末複習，要有難度'
+					},
+					inputValidator: (value) => {
+						if (!value) return '這會影響內容深淺，請務必選擇！';
+					},
+					confirmButtonText: '下一步',
+					confirmButtonColor: '#3186FF'
+				});
+				if (!q2.value) return;
+
+				// Q3
+				const q3 = await Swal.fire({
+					title: '【問題 3/3】',
+					text: '需要順便為這個教材附上課堂測驗嗎？',
+					icon: 'question',
+					input: 'radio',
+					inputOptions: {
+						'不用，純教材即可': '不用，純教材即可',
+						'附上 3 題簡單的選擇題': '附上 3 題簡單的選擇題',
+						'附上一份完整的考卷 (含簡答)': '附上一份完整的考卷 (含簡答)'
+					},
+					inputValidator: (value) => {
+						if (!value) return '這會影響產出架構，請務必選擇！';
+					},
+					confirmButtonText: '完成訪談',
+					confirmButtonColor: '#3186FF'
+				});
+				if (!q3.value) return;
+
+				// Summary
+				Swal.fire({
+					title: '【需求規格卡確立】',
+					html: `
+						<div style="text-align: left; background: rgba(0,0,0,0.05); padding: 20px; border-radius: 10px; margin-top: 15px; border: 1px solid #ddd;">
+							<p style="margin-bottom: 10px;"><strong>🎯 產出形式：</strong><br><span style="color: #ff007f;">${q1.value}</span></p>
+							<p style="margin-bottom: 10px;"><strong>🌱 學生起點：</strong><br><span style="color: #ff007f;">${q2.value}</span></p>
+							<p style="margin-bottom: 0;"><strong>📝 測驗需求：</strong><br><span style="color: #ff007f;">${q3.value}</span></p>
+						</div>
+						<p style="margin-top: 20px; font-size: 0.9em; color: #555;">有了這張規格卡當作防呆機制，AI 就不會亂做一通了！這就是 RDQ 的威力。</p>
+					`,
+					icon: 'success',
+					confirmButtonText: '太棒了！',
+					confirmButtonColor: '#ff007f'
+				});
 			}
 		</script>
 
