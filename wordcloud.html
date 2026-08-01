@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <title>即時文字雲互動大廳</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --theme-color: #ff007f;
+            --theme-blue: #3186FF;
+            --bg-color: #1a1a2e;
+            --panel-bg: rgba(30, 30, 50, 0.85);
+        }
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-color);
+            background-image: radial-gradient(circle at top right, #3186FF33, transparent 40%),
+                              radial-gradient(circle at bottom left, #ff007f33, transparent 40%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            width: 100%;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2em;
+            color: var(--theme-blue);
+            text-shadow: 0 0 10px rgba(49, 134, 255, 0.5);
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 30px;
+            gap: 20px;
+        }
+        .input-panel {
+            background: var(--panel-bg);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .input-panel input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 30px;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-panel input:focus {
+            border-color: var(--theme-color);
+        }
+        .input-panel button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: var(--theme-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
+            transition: transform 0.2s;
+        }
+        .input-panel button:hover {
+            transform: scale(1.05);
+        }
+        .canvas-panel {
+            flex: 1;
+            background: var(--panel-bg);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+            position: relative;
+        }
+        #wordcloud-canvas {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+        }
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .status-badge.local { background: #ff9800; color: #fff; }
+        .status-badge.firebase { background: #4caf50; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fa-solid fa-cloud"></i> 即時文字雲互動大廳</h1>
+        <p style="margin: 10px 0 0 0; color: #aaa;">大家一起輸入關鍵字，見證文字雲即時成形！</p>
+    </header>
+
+    <div class="container">
+        <div class="input-panel">
+            <input type="text" id="word-input" placeholder="請輸入您對 AI 的一個形容詞（例如：神奇、好用...）" maxlength="15">
+            <button onclick="submitWord()"><i class="fa-solid fa-paper-plane"></i> 送出</button>
+        </div>
+
+        <div class="canvas-panel">
+            <div id="status" class="status-badge local">⚠️ 本機展示模式 (未連結資料庫)</div>
+            <canvas id="wordcloud-canvas"></canvas>
+        </div>
+    </div>
+
+    <!-- 載入 WordCloud2.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
+    
+    <!-- 載入 Firebase (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <script>
+        // ==========================================
+        // 教師請注意：如果您要讓全班手機連線，請替換為您的 Firebase 設定檔
+        // ==========================================
+        const firebaseConfig = {
+            // apiKey: "AIzaSy...",
+            // authDomain: "your-project.firebaseapp.com",
+            // databaseURL: "https://your-project.firebaseio.com",
+            // projectId: "your-project",
+        };
+
+        let wordsArray = [];
+        let isFirebaseActive = false;
+
+        // 初始化
+        function init() {
+            if (firebaseConfig.apiKey) {
+                // 方案 A：Firebase 即時連線
+                firebase.initializeApp(firebaseConfig);
+                const db = firebase.database();
+                isFirebaseActive = true;
+                document.getElementById('status').className = 'status-badge firebase';
+                document.getElementById('status').innerHTML = '✅ Firebase 即時連線中';
+
+                // 監聽雲端資料變動
+                db.ref('wordcloud').on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        wordsArray = Object.values(data).map(item => item.text);
+                        renderWordCloud();
+                    }
+                });
+            } else {
+                // 方案 B：本機 LocalStorage 展示 (雙視窗可見)
+                document.getElementById('status').className = 'status-badge local';
+                document.getElementById('status').innerHTML = '⚠️ 本機展示模式 (請補上 Firebase 設定以啟用多人連線)';
+                
+                const localData = localStorage.getItem('localWordCloud');
+                if(localData) wordsArray = JSON.parse(localData);
+                renderWordCloud();
+
+                // 監聽同一台電腦其他分頁的變更
+                window.addEventListener('storage', (e) => {
+                    if (e.key === 'localWordCloud') {
+                        wordsArray = JSON.parse(e.newValue || '[]');
+                        renderWordCloud();
+                    }
+                });
+            }
+            
+            // 處理 Enter 鍵
+            document.getElementById('word-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') submitWord();
+            });
+        }
+
+        // 送出文字
+        function submitWord() {
+            const inputElement = document.getElementById('word-input');
+            const word = inputElement.value.trim();
+            if (!word) return;
+
+            if (isFirebaseActive) {
+                // 寫入 Firebase
+                firebase.database().ref('wordcloud').push({ text: word });
+            } else {
+                // 寫入 LocalStorage
+                wordsArray.push(word);
+                localStorage.setItem('localWordCloud', JSON.stringify(wordsArray));
+                renderWordCloud();
+            }
+
+            inputElement.value = '';
+        }
+
+        // 繪製文字雲
+        function renderWordCloud() {
+            const canvas = document.getElementById('wordcloud-canvas');
+            // 設定高解析度畫布
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            // 計算詞頻
+            const counts = {};
+            wordsArray.forEach(word => {
+                counts[word] = (counts[word] || 0) + 1;
+            });
+
+            // 轉為 wordcloud2.js 格式 [ [字, 權重], ... ]
+            const list = Object.keys(counts).map(word => [word, counts[word] * 15 + 20]); // 放大權重
+
+            WordCloud(canvas, {
+                list: list,
+                fontFamily: 'Inter, Noto Sans TC, sans-serif',
+                fontWeight: 'bold',
+                color: function (word, weight) {
+                    // 隨機科技感顏色
+                    const colors = ['#3186FF', '#ff007f', '#42b983', '#bd93f9', '#ffb86c'];
+                    return colors[Math.floor(Math.random() * colors.length)];
+                },
+                rotateRatio: 0.3,
+                backgroundColor: 'transparent',
+                shrinkToFit: true,
+                drawOutOfBound: false,
+                gridSize: 10
+            });
+        }
+
+        // 視窗大小改變時重繪
+        window.addEventListener('resize', () => {
+            setTimeout(renderWordCloud, 300);
+        });
+
+        // 啟動
+        init();
+    </script>
+</body>
+</html>
