@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+	<meta charset="utf-8">
+	<title>Firebase 即時資料庫 - 連線教學指南</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/dracula.css" id="theme">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<style>
+		:root {
+			--theme-color: #ffb86c;
+			--theme-blue: #3186FF;
+		}
+		body {
+			font-family: 'Inter', 'Noto Sans TC', sans-serif;
+		}
+		.reveal {
+			font-size: 38px;
+		}
+		.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+			font-family: 'Inter', 'Noto Sans TC', sans-serif;
+			font-weight: 700;
+			text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+			margin-bottom: 25px;
+		}
+		.reveal h2 { font-size: 2.2em; }
+		.reveal h3 { font-size: 1.6em; }
+		
+		.glass-panel {
+			background: rgba(40, 42, 54, 0.85);
+			border-radius: 20px;
+			padding: 50px;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(255,255,255,0.1);
+			text-align: left;
+		}
+		.glass-panel.center {
+			text-align: center;
+		}
+		.highlight-neon {
+			color: var(--theme-color);
+			font-weight: bold;
+			text-shadow: 0 0 10px rgba(255, 184, 108, 0.5);
+		}
+		.slide-layout {
+			display: flex;
+			align-items: center;
+			gap: 50px;
+			justify-content: space-between;
+		}
+		.content-col {
+			flex: 1;
+		}
+		.img-col {
+			flex: 0 0 45%;
+			text-align: center;
+		}
+		.spot-img {
+			width: 100%;
+			border-radius: 15px;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+			border: 2px solid rgba(255,255,255,0.2);
+		}
+		ul {
+			line-height: 1.8;
+			font-size: 1.1em;
+		}
+		p {
+			font-size: 1.1em;
+			line-height: 1.6;
+		}
+		.step-number {
+			display: inline-block;
+			width: 45px;
+			height: 45px;
+			background: var(--theme-color);
+			color: #282a36;
+			border-radius: 50%;
+			text-align: center;
+			line-height: 45px;
+			margin-right: 15px;
+			font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+	<div class="reveal">
+		<div class="slides">
+
+			<!-- 封面 -->
+			<section data-background-image="assets/images/cover_bg.jpg" data-background-opacity="0.8">
+				<div class="glass-panel center">
+					<h2><i class="fa-solid fa-fire" style="color: #ffb86c;"></i> Firebase 即時連線教學</h2>
+					<h3>為您的網頁接上真正的資料庫</h3>
+					<p style="margin-top: 30px; font-size: 1em; color: #aaa;">從靜態展示到全班即時互動的最後一哩路</p>
+				</div>
+			</section>
+
+			<!-- 概念介紹 -->
+			<section>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h3><i class="fa-solid fa-lightbulb"></i> 為什麼需要 Firebase？</h3>
+						<ul>
+							<li><strong>靜態網頁的痛點</strong>：GitHub Pages 只能「展示」，不能「儲存」學生的輸入。</li>
+							<li><strong>Firebase 是什麼？</strong> Google 提供的強大後端服務，就像一面<span class="highlight-neon">「所有人都能即時看到變化的便利貼牆」</span>。</li>
+							<li><strong>效果</strong>：台下學生一按下送出，大螢幕的文字雲立刻長出新字！</li>
+						</ul>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/firebase_logo_concept.jpg" class="spot-img" alt="Firebase Logo">
+					</div>
+				</div>
+			</section>
+
+			<!-- 實作步驟 1 -->
+			<section>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h3><span class="step-number">1</span> 建立專案與應用程式</h3>
+						<ul style="font-size: 0.95em;">
+							<li>前往 <strong>Firebase Console</strong>，點擊「新增專案」。</li>
+							<li>為專案取名 (例如 `my-ai-class`) 並完成建立。</li>
+							<li>在專案首頁，點擊畫面中央的 <span class="highlight-neon">「&lt;/&gt;」(Web 圖示)</span> 來註冊一個網頁應用程式。</li>
+						</ul>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/firebase_web_app.jpg" class="spot-img" alt="Web App Registration">
+					</div>
+				</div>
+			</section>
+
+			<!-- 實作步驟 2 -->
+			<section>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h3><span class="step-number">2</span> 取得您的設定碼 (身分證)</h3>
+						<p>註冊完應用程式後，畫面會給您一段程式碼。</p>
+						<p>請找到裡面包含 <strong>`firebaseConfig`</strong> 的大括號 <code>{ ... }</code> 區塊，把它<span class="highlight-neon">完整複製下來</span>。</p>
+						<div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.7em; margin-top: 15px; color: #8be9fd;">
+							const firebaseConfig = {<br>
+							&nbsp;&nbsp;apiKey: "AIzaSy...",<br>
+							&nbsp;&nbsp;authDomain: "...",<br>
+							&nbsp;&nbsp;databaseURL: "...",<br>
+							&nbsp;&nbsp;...<br>
+							};
+						</div>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/firebase_web_app.jpg" class="spot-img" alt="Config Code">
+					</div>
+				</div>
+			</section>
+
+			<!-- 實作步驟 3 -->
+			<section>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h3><span class="step-number">3</span> 開啟即時資料庫</h3>
+						<ul style="font-size: 0.95em;">
+							<li>在左側選單點擊 <strong>建構 (Build)</strong> > <span class="highlight-neon">Realtime Database</span>。</li>
+							<li>點擊「建立資料庫」。</li>
+							<li><strong>【關鍵安全設定】</strong>：在安全規則那一步，請務必選擇 <strong style="color: #ff5555;">「以測試模式啟動 (Test mode)」</strong>。</li>
+							<li>這樣學生才能直接把字寫進資料庫裡！</li>
+						</ul>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/firebase_realtime_db.jpg" class="spot-img" alt="Realtime DB">
+					</div>
+				</div>
+			</section>
+
+			<!-- 實作步驟 4 -->
+			<section>
+				<div class="glass-panel slide-layout">
+					<div class="content-col">
+						<h3><span class="step-number">4</span> 貼入代碼，完成連線！</h3>
+						<p>打開我們的 <code>wordcloud.html</code> 檔案，將剛剛複製的 <code>firebaseConfig</code> 貼到約第 112 行的位置，取代掉原本空的大括號。</p>
+						<h3 class="highlight-neon" style="margin-top: 30px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 魔法完成！</h3>
+						<p>存檔並上傳後，您的文字雲就升級為「全網即時連線」版本了！</p>
+					</div>
+					<div class="img-col">
+						<img src="assets/images/firebase_realtime_db.jpg" class="spot-img" alt="Connection Complete">
+					</div>
+				</div>
+			</section>
+
+		</div>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+	<script>
+		Reveal.initialize({
+			width: 1280,
+			height: 720,
+			margin: 0.1,
+			hash: true,
+			transition: 'slide',
+			backgroundTransition: 'fade'
+		});
+	</script>
+</body>
+</html>
