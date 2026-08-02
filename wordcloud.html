@@ -117,6 +117,63 @@
         }
         .status-badge.local { background: #ff9800; color: #fff; }
         .status-badge.firebase { background: #4caf50; color: #fff; }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .action-buttons button {
+            background: transparent;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+        .btn-import, .btn-export { border: 1px solid #4caf50; color: #4caf50; }
+        .btn-import:hover, .btn-export:hover { background: rgba(76, 175, 80, 0.2); }
+        .btn-qrcode { border: 1px solid #ff007f; color: #ff007f; }
+        .btn-qrcode:hover { background: rgba(255, 0, 127, 0.2); }
+        .btn-reset { border: 1px solid #ff5555; color: #ff5555; }
+        .btn-reset:hover { background: rgba(255, 85, 85, 0.2); }
+
+        #nickname-input { flex: 0 0 120px; }
+
+        /* RWD 響應式設計 */
+        @media (max-width: 768px) {
+            .input-panel {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+            #nickname-input, #word-input, .input-panel button {
+                width: 100%;
+                flex: auto;
+                box-sizing: border-box;
+            }
+            .action-buttons {
+                justify-content: center;
+            }
+            .action-buttons button {
+                flex: 1 1 45%;
+                padding: 10px 5px;
+            }
+            h1 { font-size: 1.5em; }
+            .status-badge {
+                position: static;
+                display: inline-block;
+                margin-bottom: 10px;
+            }
+            .canvas-panel {
+                flex-direction: column;
+                min-height: 400px;
+            }
+            #wordcloud-canvas { min-height: 400px; }
+        }
     </style>
 </head>
 <body>
@@ -128,17 +185,17 @@
 
     <div class="container">
         <div class="input-panel">
-            <input type="text" id="nickname-input" placeholder="您的暱稱" maxlength="10" style="width: 120px; margin-right: 10px; border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 30px; padding: 15px 25px; font-size: 1.1em; background: rgba(0, 0, 0, 0.3); color: white;">
-            <input type="text" id="word-input" placeholder="對 AI 的一個形容詞（例如：神奇、好用...）" maxlength="15" style="flex: 1; border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 30px; padding: 15px 25px; font-size: 1.1em; background: rgba(0, 0, 0, 0.3); color: white; margin-right: 10px;">
+            <input type="text" id="nickname-input" placeholder="您的暱稱" maxlength="10">
+            <input type="text" id="word-input" placeholder="對 AI 的一個形容詞（如：神奇...）" maxlength="15">
             <button onclick="submitWord()"><i class="fa-solid fa-paper-plane"></i> 送出</button>
         </div>
 
-        <div style="text-align: right; margin-top: 10px;">
+        <div class="action-buttons">
             <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="handleCSVImport(event)">
-            <button onclick="importCSV()" style="background: transparent; border: 1px solid #4caf50; color: #4caf50; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 10px;"><i class="fa-solid fa-file-import"></i> 匯入 CSV</button>
-            <button onclick="exportCSV()" style="background: transparent; border: 1px solid #4caf50; color: #4caf50; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 10px;"><i class="fa-solid fa-file-export"></i> 匯出 CSV</button>
-            <button onclick="showQRCode()" style="background: transparent; border: 1px solid #ff007f; color: #ff007f; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 10px;"><i class="fa-solid fa-qrcode"></i> 顯示 QR Code</button>
-            <button onclick="askResetPassword()" style="background: transparent; border: 1px solid #ff5555; color: #ff5555; padding: 5px 15px; border-radius: 20px; cursor: pointer;"><i class="fa-solid fa-trash-can"></i> 重置資料</button>
+            <button onclick="importCSV()" class="btn-import"><i class="fa-solid fa-file-import"></i> 匯入 CSV</button>
+            <button onclick="exportCSV()" class="btn-export"><i class="fa-solid fa-file-export"></i> 匯出 CSV</button>
+            <button onclick="showQRCode()" class="btn-qrcode"><i class="fa-solid fa-qrcode"></i> 顯示 QR Code</button>
+            <button onclick="askResetPassword()" class="btn-reset"><i class="fa-solid fa-trash-can"></i> 重置資料</button>
         </div>
 
         <div class="canvas-panel">
