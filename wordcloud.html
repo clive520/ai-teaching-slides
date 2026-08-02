@@ -174,6 +174,8 @@
 
         let wordsArray = [];
         let isFirebaseActive = false;
+        let isInitialLoad = true;
+        let seenKeys = new Set();
 
         // 初始化
         function init() {
@@ -191,6 +193,34 @@
                     if (data) {
                         wordsArray = Object.values(data);
                         renderWordCloud();
+                        if (isInitialLoad) {
+                            Object.keys(data).forEach(key => seenKeys.add(key));
+                            isInitialLoad = false;
+                        }
+                    } else {
+                        if (isInitialLoad) isInitialLoad = false;
+                    }
+                });
+
+                // 監聽新增資料 (全域推播提示)
+                db.ref('wordcloud').on('child_added', (snapshot) => {
+                    if (isInitialLoad) return;
+                    const key = snapshot.key;
+                    if (!seenKeys.has(key)) {
+                        seenKeys.add(key);
+                        const item = snapshot.val();
+                        const nickname = item.nickname || 'Unknown';
+                        const word = item.text || '';
+                        
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: `${nickname} 送出了：${word}`,
+                            showConfirmButton: false,
+                            timer: 2000,
+                            timerProgressBar: true
+                        });
                     }
                 });
             } else {
@@ -243,28 +273,28 @@
             localStorage.setItem('wordcloud_nickname', nickname);
 
             if (isFirebaseActive) {
-                // 寫入 Firebase (加上暱稱紀錄)
+                // 寫入 Firebase (加上暱稱紀錄)，全域推播交給 child_added 處理
                 firebase.database().ref('wordcloud').push({ text: word, nickname: nickname, timestamp: firebase.database.ServerValue.TIMESTAMP });
             } else {
                 // 寫入 LocalStorage
                 wordsArray.push({ text: word, nickname: nickname });
                 localStorage.setItem('localWordCloud', JSON.stringify(wordsArray));
                 renderWordCloud();
+                
+                // 本機模式直接顯示小提示
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: `${nickname} 送出了：${word}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true
+                });
             }
 
             // 清空單字輸入框，保留暱稱
             inputElement.value = '';
-            
-            // 顯示小提示
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: `${nickname} 送出了：${word}`,
-                showConfirmButton: false,
-                timer: 1500,
-                timerProgressBar: true
-            });
         }
 
         // 繪製文字雲
