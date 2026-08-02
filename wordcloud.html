@@ -132,6 +132,11 @@
             <button onclick="submitWord()"><i class="fa-solid fa-paper-plane"></i> 送出</button>
         </div>
 
+        <div style="text-align: right; margin-top: 10px;">
+            <button onclick="showQRCode()" style="background: transparent; border: 1px solid #ff007f; color: #ff007f; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 10px;"><i class="fa-solid fa-qrcode"></i> 顯示 QR Code</button>
+            <button onclick="askResetPassword()" style="background: transparent; border: 1px solid #ff5555; color: #ff5555; padding: 5px 15px; border-radius: 20px; cursor: pointer;"><i class="fa-solid fa-trash-can"></i> 重置資料</button>
+        </div>
+
         <div class="canvas-panel">
             <div id="status" class="status-badge local">⚠️ 本機展示模式 (未連結資料庫)</div>
             <canvas id="wordcloud-canvas"></canvas>
@@ -140,6 +145,9 @@
 
     <!-- 載入 WordCloud2.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
+    
+    <!-- 載入 SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <!-- 載入 Firebase (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -261,6 +269,60 @@
         window.addEventListener('resize', () => {
             setTimeout(renderWordCloud, 300);
         });
+
+        // ==========================================
+        // 功能：重置密碼檢查與清空資料
+        // ==========================================
+        async function askResetPassword() {
+            const { value: password } = await Swal.fire({
+                title: '清空文字雲資料',
+                input: 'password',
+                inputLabel: '請輸入重置密碼 (預設：520)',
+                inputPlaceholder: '請輸入密碼',
+                showCancelButton: true,
+                confirmButtonColor: '#ff5555',
+                cancelButtonColor: '#555',
+                confirmButtonText: '確認清空',
+                cancelButtonText: '取消'
+            });
+
+            if (password) {
+                if (password === '520') { // 可以改成您想要的密碼
+                    if (isFirebaseActive) {
+                        firebase.database().ref('wordcloud').remove().then(() => {
+                            Swal.fire('已清空!', '雲端資料已重置。', 'success');
+                            wordsArray = [];
+                            renderWordCloud();
+                        });
+                    } else {
+                        localStorage.removeItem('wordcloud_data');
+                        wordsArray = [];
+                        renderWordCloud();
+                        Swal.fire('已清空!', '本機資料已重置。', 'success');
+                    }
+                } else {
+                    Swal.fire('密碼錯誤', '無法清空資料。', 'error');
+                }
+            }
+        }
+
+        // ==========================================
+        // 功能：顯示 QR Code
+        // ==========================================
+        function showQRCode() {
+            const currentUrl = window.location.href;
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(currentUrl)}`;
+            Swal.fire({
+                title: '掃描加入文字雲大廳',
+                text: '拿起手機掃描，立刻一起互動！',
+                imageUrl: qrCodeUrl,
+                imageWidth: 250,
+                imageHeight: 250,
+                imageAlt: 'QR Code',
+                confirmButtonColor: '#ff007f',
+                confirmButtonText: '關閉'
+            });
+        }
 
         // 啟動
         init();
