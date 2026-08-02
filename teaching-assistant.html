@@ -676,8 +676,20 @@
             });
 
             if (!response.ok) {
-                const err = await response.json().catch(()=>({}));
-                throw new Error(err.error?.message || `HTTP ${response.status}`);
+                let errorMsg = `API 請求失敗 (狀態碼: ${response.status})`;
+                if (response.status === 529) {
+                    errorMsg = "這個模型目前太多人使用，伺服器大塞車囉 (Error 529)！建議您可以點擊右上角設定，切換成其他的模型試試看！";
+                } else if (response.status === 401) {
+                    errorMsg = "API Key 似乎無效或過期了，請檢查您的設定！";
+                } else if (response.status === 429) {
+                    errorMsg = "請求太頻繁，您可能已經達到免費額度上限，請稍後再試！";
+                } else {
+                    const errData = await response.json().catch(() => ({}));
+                    if (errData.error && errData.error.message) {
+                        errorMsg += `: ${errData.error.message}`;
+                    }
+                }
+                throw new Error(errorMsg);
             }
 
             const data = await response.json();
