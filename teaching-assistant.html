@@ -276,6 +276,12 @@
             background-size: 12px auto;
         }
 
+        /* 解決 Windows 等系統預設選單出現白底白字的問題 */
+        select.form-control option {
+            background-color: #282a36;
+            color: #f8f8f2;
+        }
+
         .form-control:focus {
             outline: none;
             border-color: #bd93f9;
