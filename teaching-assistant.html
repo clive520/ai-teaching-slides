@@ -592,9 +592,16 @@
             else if (provider === 'opencode') endpoint = getEndpointByModel(model);
             else if (provider === 'custom') endpoint = localStorage.getItem('ta_endpoint');
 
+            // 【CORS 解決方案】因為是純前端網頁，直接發送 API 會被 CORS 阻擋
+            // 這裡使用免費的 corsproxy.io 作為中繼轉發。
+            // ⚠️ 警告：這僅適合教學展示用。在正式商業環境中，第三方 Proxy 會有洩漏 API Key 的風險，必須自己架設後端伺服器轉發。
+            const fetchUrl = (provider === 'openai' || provider === 'nvidia' || provider === 'opencode' || provider === 'custom') 
+                             ? 'https://corsproxy.io/?' + encodeURIComponent(endpoint) 
+                             : endpoint;
+
             const messages = [{role: "system", content: sysPrompt}, ...messageHistory];
 
-            const response = await fetch(endpoint, {
+            const response = await fetch(fetchUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
