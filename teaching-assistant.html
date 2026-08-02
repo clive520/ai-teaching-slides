@@ -517,30 +517,39 @@
             
             // 設定各平台的推薦模型清單
             const models = {
-                'openai': ['gpt-4o-mini', 'gpt-4o'],
-                'gemini': ['gemini-2.5-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.1-pro', 'gemini-2.5-pro'],
+                'openai': [
+                    {id: 'gpt-4o-mini', label: 'gpt-4o-mini (支援圖片)'},
+                    {id: 'gpt-4o', label: 'gpt-4o (支援圖片)'}
+                ],
+                'gemini': [
+                    {id: 'gemini-2.5-flash', label: 'gemini-2.5-flash (支援圖片)'},
+                    {id: 'gemini-3.5-flash', label: 'gemini-3.5-flash (支援圖片)'},
+                    {id: 'gemini-3.5-flash-lite', label: 'gemini-3.5-flash-lite (純文字)'},
+                    {id: 'gemini-3.1-pro', label: 'gemini-3.1-pro (支援圖片)'},
+                    {id: 'gemini-2.5-pro', label: 'gemini-2.5-pro (支援圖片)'}
+                ],
                 'nvidia': [
-                    'deepseek-ai/deepseek-v4-flash',
-                    'meta/llama-3.3-70b-instruct',
-                    'qwen/qwen2.5-72b-instruct',
-                    'mistralai/mistral-large',
-                    'deepseek-ai/deepseek-v4-pro',
-                    'nvidia/nemotron-4-340b-instruct'
+                    {id: 'deepseek-ai/deepseek-v4-flash', label: 'deepseek-v4-flash (純文字)'},
+                    {id: 'meta/llama-3.3-70b-instruct', label: 'llama-3.3-70b (純文字)'},
+                    {id: 'qwen/qwen2.5-72b-instruct', label: 'qwen2.5-72b (純文字)'},
+                    {id: 'mistralai/mistral-large', label: 'mistral-large (純文字)'},
+                    {id: 'deepseek-ai/deepseek-v4-pro', label: 'deepseek-v4-pro (純文字)'},
+                    {id: 'nvidia/nemotron-4-340b-instruct', label: 'nemotron-4-340b (純文字)'}
                 ],
                 'opencode': [
-                    'deepseek-v4-flash',
-                    'qwen3.7-plus',
-                    'glm-5.1',
-                    'kimi-k2.7-code',
-                    'deepseek-coder',
-                    'glm-5.2',
-                    'kimi-k3',
-                    'minimax-m3',
-                    'mimo-v2.5-pro',
-                    'qwen3.7-max',
-                    'deepseek-v4-pro',
-                    'grok-4.5',
-                    'gpt-5.6-luna'
+                    {id: 'deepseek-v4-flash', label: 'deepseek-v4-flash (純文字)'},
+                    {id: 'qwen3.7-plus', label: 'qwen3.7-plus (支援圖片)'},
+                    {id: 'glm-5.1', label: 'glm-5.1 (支援圖片)'},
+                    {id: 'kimi-k2.7-code', label: 'kimi-k2.7-code (純文字)'},
+                    {id: 'deepseek-coder', label: 'deepseek-coder (純文字)'},
+                    {id: 'glm-5.2', label: 'glm-5.2 (支援圖片)'},
+                    {id: 'kimi-k3', label: 'kimi-k3 (支援圖片)'},
+                    {id: 'minimax-m3', label: 'minimax-m3 (純文字)'},
+                    {id: 'mimo-v2.5-pro', label: 'mimo-v2.5-pro (純文字)'},
+                    {id: 'qwen3.7-max', label: 'qwen3.7-max (支援圖片)'},
+                    {id: 'deepseek-v4-pro', label: 'deepseek-v4-pro (純文字)'},
+                    {id: 'grok-4.5', label: 'grok-4.5 (支援圖片)'},
+                    {id: 'gpt-5.6-luna', label: 'gpt-5.6-luna (支援圖片)'}
                 ],
                 'custom': []
             };
@@ -557,8 +566,8 @@
             const currentModels = models[provider] || [];
             currentModels.forEach(m => {
                 const option = document.createElement('option');
-                option.value = m;
-                option.textContent = m;
+                option.value = m.id;
+                option.textContent = m.label;
                 modelSelect.appendChild(option);
             });
 
@@ -569,7 +578,7 @@
             modelSelect.appendChild(customOption);
 
             // 自動選擇第一個推薦模型
-            modelSelect.value = currentModels[0] || 'custom_model_input';
+            modelSelect.value = currentModels.length > 0 ? currentModels[0].id : 'custom_model_input';
             toggleCustomModel();
         }
 
