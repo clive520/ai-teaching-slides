@@ -215,6 +215,54 @@
             </div>
         </div>
 
+        <!-- 後續迭代擴充 -->
+        <div class="chat-block" style="animation-delay: 1.0s;">
+            <div class="msg-wrapper human-turn">
+                <div class="avatar human"><i class="fa-solid fa-user"></i></div>
+                <div class="bubble">
+                    <p>網頁上線後遇到跨網域 (CORS) 阻擋！還有模型選單不太好用。</p>
+                    <p>而且，教學助手需要能夠**上傳檔案**，不管是 PDF 講義還是手寫考卷的照片都要能上傳給 AI 看！</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block" style="animation-delay: 1.2s;">
+            <div class="msg-wrapper">
+                <div class="avatar ai"><i class="fa-solid fa-robot"></i></div>
+                <div class="bubble">
+                    <h4>【除錯與功能升級】純前端架構的極限挑戰</h4>
+                    <p>這是一個非常有挑戰性的純前端改版，我們完成了：</p>
+                    <ul>
+                        <li><strong>繞過 CORS</strong>：整合 <code>corsproxy.io</code> 解決了前端直連 API 的跨網域限制。</li>
+                        <li><strong>選單優化</strong>：將容易被瀏覽器自動過濾的 <code>datalist</code> 改為標準的 <code>select</code>。</li>
+                        <li><strong>多模態視覺 (Vision)</strong>：將圖片轉為 Base64，無縫傳送給支援看圖的旗艦模型 (如 Gemini, GPT-4o)。</li>
+                        <li><strong>前端 PDF 解析</strong>：為了解決多數模型不吃 PDF 的問題，載入 <code>pdf.js</code> 讓瀏覽器瞬間榨出純文字，所有模型都能看懂講義了！</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block" style="animation-delay: 1.4s;">
+            <div class="msg-wrapper human-turn">
+                <div class="avatar human"><i class="fa-solid fa-user"></i></div>
+                <div class="bubble">
+                    <p>我上傳圖片後測試，結果發生錯誤 <code>unknown variant image_url, expected text</code>！這是怎麼回事？</p>
+                    <p>順便請你在每一個模型選項的後面，標註支援文字還是圖片，讓使用者不會選錯。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block" style="animation-delay: 1.6s;">
+            <div class="msg-wrapper">
+                <div class="avatar ai"><i class="fa-solid fa-robot"></i></div>
+                <div class="bubble">
+                    <h4>【防呆機制】貼心標示上線</h4>
+                    <p>報錯是因為選到了「純文字」的模型（它沒長眼睛看不懂圖片）！</p>
+                    <p>我已經在下拉式選單中為每個模型加上了 <strong>(支援圖片)</strong> 與 <strong>(純文字)</strong> 的標籤。現在一眼就能看出誰有視覺能力了，這絕對能大幅降低課堂上的錯誤率！</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 </body>
 </html>
