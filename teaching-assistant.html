@@ -442,7 +442,7 @@
             };
 
             // 處理 Endpoint 顯示與預設值
-            if (provider === 'custom' || provider === 'opencode') {
+            if (provider === 'custom') {
                 endpointGroup.style.display = 'block';
             } else {
                 endpointGroup.style.display = 'none';
@@ -459,11 +459,6 @@
 
             // 如果目前輸入框是空的，或者切換平台，自動填入第一個推薦模型
             modelInput.value = currentModels[0] || '';
-            
-            // 若為 OpenCode，根據模型自動設定正確的 Endpoint
-            if (provider === 'opencode') {
-                endpointInput.value = getEndpointByModel(modelInput.value);
-            }
         }
 
         // OpenCode: 根據模型判斷對應的 Endpoint URL
@@ -482,14 +477,6 @@
                 return 'https://opencode.ai/zen/go/v1/chat/completions';
             }
         }
-
-        // 監聽模型輸入框變化，即時更新 Endpoint (針對 OpenCode)
-        document.getElementById('config-model').addEventListener('input', function() {
-            const provider = document.getElementById('config-provider').value;
-            if (provider === 'opencode') {
-                document.getElementById('config-endpoint').value = getEndpointByModel(this.value);
-            }
-        });
 
         function loadSettings() {
             if(localStorage.getItem('ta_persona')) document.getElementById('config-persona').value = localStorage.getItem('ta_persona');
@@ -602,7 +589,8 @@
             let endpoint = '';
             if (provider === 'openai') endpoint = 'https://api.openai.com/v1/chat/completions';
             else if (provider === 'nvidia') endpoint = 'https://integrate.api.nvidia.com/v1/chat/completions';
-            else if (provider === 'opencode' || provider === 'custom') endpoint = localStorage.getItem('ta_endpoint');
+            else if (provider === 'opencode') endpoint = getEndpointByModel(model);
+            else if (provider === 'custom') endpoint = localStorage.getItem('ta_endpoint');
 
             const messages = [{role: "system", content: sysPrompt}, ...messageHistory];
 
