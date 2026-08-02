@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 專屬教學助手</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4caf50;
+            --bg-color: #1a1a2e;
+            --glass-bg: rgba(25, 25, 45, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f8f8f2;
+            --user-msg-bg: rgba(76, 175, 80, 0.2);
+            --ai-msg-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: url('assets/images/cover_bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 900px;
+            height: 85vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .persona-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .btn-settings {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-settings:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-right: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.3s;
+        }
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 15px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--user-msg-bg);
+            border-bottom-right-radius: 0;
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: var(--ai-msg-bg);
+            border: 1px solid var(--glass-border);
+            border-bottom-left-radius: 0;
+        }
+
+        .message p { margin: 0 0 10px 0; }
+        .message p:last-child { margin: 0; }
+        .message pre { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; overflow-x: auto; }
+
+        .chat-input-area {
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            background: rgba(76, 175, 80, 0.15);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #81c784;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .quick-btn:hover {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-send {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 50px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s;
+        }
+
+        .btn-send:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-send:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #282a36;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .modal-title {
+            margin-top: 0;
+            color: #f8f8f2;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #bd93f9;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+            box-sizing: border-box;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%22//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 12px auto;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #bd93f9;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 12px;
+            background: #bd93f9;
+            color: #282a36;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-save:hover {
+            background: #cba6f7;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="header-title">
+                <a href="index.html#/12" class="btn-back"><i class="fa-solid fa-arrow-left"></i> 返回簡報</a>
+                <i class="fa-solid fa-robot"></i> 專屬教學助手 <span class="persona-badge" id="ui-persona-badge">未設定</span>
+            </div>
+            <button class="btn-settings" id="btn-settings"><i class="fa-solid fa-gear"></i> 設定</button>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="message ai">
+                <p>你好！我是你的專屬教學助手。請點擊右上角「設定」輸入 API Key，或是直接在下方問我問題！</p>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="sendQuickMessage('請幫我統整這個單元的重點。')"><i class="fa-solid fa-bolt"></i> 幫我統整重點</button>
+                <button class="quick-btn" onclick="sendQuickMessage('這題我卡住了，可以給我一點提示嗎？')"><i class="fa-solid fa-lightbulb"></i> 給我一點提示</button>
+                <button class="quick-btn" onclick="sendQuickMessage('可以出一道練習題讓我測試一下觀念嗎？')"><i class="fa-solid fa-pen"></i> 出題測驗</button>
+            </div>
+            <div class="input-group">
+                <input type="text" id="chat-input" class="chat-input" placeholder="輸入問題..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button class="btn-send" id="btn-send" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content">
+            <h3 class="modal-title"><i class="fa-solid fa-gear"></i> 助手後台設定</h3>
+            
+            <div class="form-group">
+                <label>助手人設 (Persona)</label>
+                <select id="config-persona" class="form-control">
+                    <option value="knowledge">📚 課程知識庫 (精準回答不瞎掰)</option>
+                    <option value="socrates">🦉 蘇格拉底導師 (引導思考不給直接答案)</option>
+                    <option value="assistant">💪 萬能助教 (出題、提示、摘要一把罩)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>API 平台</label>
+                <select id="config-provider" class="form-control" onchange="toggleEndpointField()">
+                    <option value="openai">ChatGPT (OpenAI)</option>
+                    <option value="gemini">Google Gemini</option>
+                    <option value="nvidia">NVIDIA (Free API)</option>
+                    <option value="custom">OpenCode / 自訂 (OpenAI 相容)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="group-endpoint" style="display: none;">
+                <label>自訂 Endpoint URL</label>
+                <input type="text" id="config-endpoint" class="form-control" placeholder="https://api.opencode.com/v1/chat/completions">
+            </div>
+            
+            <div class="form-group" id="group-model">
+                <label>模型名稱 (Model)</label>
+                <input type="text" id="config-model" class="form-control" placeholder="gpt-4o-mini">
+            </div>
+
+            <div class="form-group">
+                <label>API Key</label>
+                <input type="password" id="config-apikey" class="form-control" placeholder="sk-...">
+            </div>
+
+            <button class="btn-save" onclick="saveSettings()">儲存並開始 <i class="fa-solid fa-check"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // System Prompts
+        const SYSTEM_PROMPTS = {
+            'knowledge': "你是一個專業的課程知識庫助手。請根據現有知識精準、簡潔地回答學生的問題。若不清楚請直接說不知道，絕對不要瞎掰。回答請使用繁體中文。",
+            'socrates': "你是一個蘇格拉底式的教學導師。當學生遇到困難時，絕對不要直接給出最終答案，而是透過反問、給予步驟提示的方式，一步步引導學生自己思考出答案。語氣要充滿啟發性。使用繁體中文。",
+            'assistant': "你是一個親切的萬能教學助教。你可以幫忙摘要重點、出測驗題、給予學習建議，並解答學生的各種疑惑。語氣要熱情、鼓勵。使用繁體中文。"
+        };
+        
+        const PERSONA_NAMES = {
+            'knowledge': "課程知識庫",
+            'socrates': "蘇格拉底導師",
+            'assistant': "萬能助教"
+        };
+
+        // DOM Elements
+        const modal = document.getElementById('settings-modal');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const btnSend = document.getElementById('btn-send');
+        const uiPersonaBadge = document.getElementById('ui-persona-badge');
+        
+        let messageHistory = [];
+
+        // Initialization
+        window.onload = () => {
+            loadSettings();
+            if (!localStorage.getItem('ta_apikey')) {
+                modal.style.display = 'flex';
+            }
+        };
+
+        document.getElementById('btn-settings').onclick = () => {
+            loadSettings();
+            modal.style.display = 'flex';
+        };
+
+        function toggleEndpointField() {
+            const provider = document.getElementById('config-provider').value;
+            document.getElementById('group-endpoint').style.display = (provider === 'custom') ? 'block' : 'none';
+            
+            // Auto-fill models
+            const modelInput = document.getElementById('config-model');
+            if(provider === 'openai') modelInput.value = 'gpt-4o-mini';
+            else if(provider === 'gemini') modelInput.value = 'gemini-1.5-flash';
+            else if(provider === 'nvidia') modelInput.value = 'meta/llama-3.1-8b-instruct';
+            else if(provider === 'custom') modelInput.value = '';
+        }
+
+        function loadSettings() {
+            if(localStorage.getItem('ta_persona')) document.getElementById('config-persona').value = localStorage.getItem('ta_persona');
+            if(localStorage.getItem('ta_provider')) {
+                document.getElementById('config-provider').value = localStorage.getItem('ta_provider');
+                toggleEndpointField();
+            }
+            if(localStorage.getItem('ta_endpoint')) document.getElementById('config-endpoint').value = localStorage.getItem('ta_endpoint');
+            if(localStorage.getItem('ta_model')) document.getElementById('config-model').value = localStorage.getItem('ta_model');
+            if(localStorage.getItem('ta_apikey')) document.getElementById('config-apikey').value = localStorage.getItem('ta_apikey');
+            
+            updateUI();
+        }
+
+        function saveSettings() {
+            const persona = document.getElementById('config-persona').value;
+            localStorage.setItem('ta_persona', persona);
+            localStorage.setItem('ta_provider', document.getElementById('config-provider').value);
+            localStorage.setItem('ta_endpoint', document.getElementById('config-endpoint').value);
+            localStorage.setItem('ta_model', document.getElementById('config-model').value);
+            localStorage.setItem('ta_apikey', document.getElementById('config-apikey').value);
+            
+            modal.style.display = 'none';
+            updateUI();
+            
+            // Reset chat history when persona changes
+            messageHistory = [];
+            chatMessages.innerHTML = `<div class="message ai"><p>設定已更新！我現在是您的「${PERSONA_NAMES[persona]}」。有什麼我可以幫忙的嗎？</p></div>`;
+        }
+
+        function updateUI() {
+            const persona = localStorage.getItem('ta_persona') || '未設定';
+            uiPersonaBadge.textContent = PERSONA_NAMES[persona] || persona;
+        }
+
+        function sendQuickMessage(text) {
+            chatInput.value = text;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            
+            const apikey = localStorage.getItem('ta_apikey');
+            if(!apikey) {
+                alert("請先點擊右上角設定 API Key！");
+                modal.style.display = 'flex';
+                return;
+            }
+
+            // Add user message
+            appendMessage('user', text);
+            chatInput.value = '';
+            btnSend.disabled = true;
+            btnSend.innerHTML = '<div class="loading"></div>';
+            
+            // Add placeholder for AI
+            const aiMsgId = 'msg-' + Date.now();
+            appendMessage('ai', '<div class="loading" style="border-width: 2px; width: 15px; height: 15px; border-top-color: var(--primary-color);"></div>', aiMsgId);
+
+            try {
+                const responseText = await callAI(text);
+                document.getElementById(aiMsgId).innerHTML = marked.parse(responseText);
+            } catch (err) {
+                document.getElementById(aiMsgId).innerHTML = `<span style="color: #ff5555;"><i class="fa-solid fa-triangle-exclamation"></i> 錯誤：${err.message}</span>`;
+            }
+
+            btnSend.disabled = false;
+            btnSend.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+            scrollToBottom();
+        }
+
+        function appendMessage(role, content, id = null) {
+            const div = document.createElement('div');
+            div.className = `message ${role}`;
+            if(id) div.id = id;
+            div.innerHTML = role === 'user' ? `<p>${escapeHTML(content)}</p>` : content;
+            chatMessages.appendChild(div);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag] || tag));
+        }
+
+        async function callAI(userText) {
+            const provider = localStorage.getItem('ta_provider');
+            const apikey = localStorage.getItem('ta_apikey');
+            const model = localStorage.getItem('ta_model');
+            const persona = localStorage.getItem('ta_persona');
+            const sysPrompt = SYSTEM_PROMPTS[persona] || SYSTEM_PROMPTS['assistant'];
+
+            messageHistory.push({role: "user", content: userText});
+
+            if (provider === 'gemini') {
+                return await callGemini(apikey, model, sysPrompt);
+            } else {
+                return await callOpenAICompatible(provider, apikey, model, sysPrompt);
+            }
+        }
+
+        async function callOpenAICompatible(provider, apikey, model, sysPrompt) {
+            let endpoint = '';
+            if (provider === 'openai') endpoint = 'https://api.openai.com/v1/chat/completions';
+            else if (provider === 'nvidia') endpoint = 'https://integrate.api.nvidia.com/v1/chat/completions';
+            else if (provider === 'custom') endpoint = localStorage.getItem('ta_endpoint');
+
+            const messages = [{role: "system", content: sysPrompt}, ...messageHistory];
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apikey}`
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: messages,
+                    temperature: 0.7
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json().catch(()=>({}));
+                throw new Error(err.error?.message || `HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            messageHistory.push({role: "assistant", content: reply});
+            return reply;
+        }
+
+        async function callGemini(apikey, model, sysPrompt) {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apikey}`;
+            
+            // Convert history to Gemini format
+            const contents = messageHistory.map(m => ({
+                role: m.role === 'user' ? 'user' : 'model',
+                parts: [{ text: m.content }]
+            }));
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    systemInstruction: { parts: [{ text: sysPrompt }] },
+                    contents: contents,
+                    generationConfig: { temperature: 0.7 }
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json().catch(()=>({}));
+                throw new Error(err.error?.message || `HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            const reply = data.candidates[0].content.parts[0].text;
+            messageHistory.push({role: "assistant", content: reply});
+            return reply;
+        }
+    </script>
+</body>
+</html>

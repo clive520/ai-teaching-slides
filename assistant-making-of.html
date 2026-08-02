@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幕後花絮：助手是如何誕生的</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --glass-bg: rgba(25, 25, 45, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f8f8f2;
+            --ai-color: #1f6feb;
+            --human-color: #4caf50;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: url('assets/images/cover_bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .btn-back {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.3s;
+        }
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 { margin: 0 0 10px 0; color: #fff; }
+        .header p { color: #aaa; margin: 0; font-size: 0.95rem; line-height: 1.5; }
+        .highlight { color: #ff79c6; font-weight: bold; }
+
+        .chat-block {
+            margin-bottom: 25px;
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .chat-block:nth-child(1) { animation-delay: 0.2s; }
+        .chat-block:nth-child(2) { animation-delay: 0.4s; }
+        .chat-block:nth-child(3) { animation-delay: 0.6s; }
+        .chat-block:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .avatar.human { background: var(--human-color); }
+        .avatar.ai { background: var(--ai-color); }
+
+        .msg-wrapper {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .bubble {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            padding: 15px 20px;
+            border-radius: 0 15px 15px 15px;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .msg-wrapper.human-turn .bubble {
+            border-radius: 15px 15px 15px 0;
+            background: rgba(76, 175, 80, 0.1);
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+        
+        .msg-wrapper.human-turn {
+            flex-direction: row-reverse;
+        }
+
+        .bubble h4 { margin: 0 0 10px 0; font-size: 1rem; opacity: 0.8; }
+        .bubble p { margin: 0 0 10px 0; }
+        .bubble p:last-child { margin: 0; }
+        
+        .rdq-card {
+            background: rgba(31, 111, 235, 0.15);
+            border: 1px solid rgba(31, 111, 235, 0.4);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .rdq-card ul { margin: 5px 0 0 0; padding-left: 20px; }
+        .rdq-card li { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <a href="index.html#/12" class="btn-back"><i class="fa-solid fa-arrow-left"></i> 返回簡報</a>
+            <h1><i class="fa-solid fa-code-branch"></i> 幕後花絮：專屬教學助手</h1>
+            <p>這一次，我們沒有直接開始寫程式。<br>我們採用了 <span class="highlight">RDQ 需求四象限法 (Requirements Discovery Quadrant)</span> 進行了精準的需求訪談，確保開發方向百分之百切中要害。</p>
+        </div>
+
+        <div class="chat-block">
+            <div class="msg-wrapper human-turn">
+                <div class="avatar human"><i class="fa-solid fa-user"></i></div>
+                <div class="bubble">
+                    <p>我們先來討論一下「專屬教學助手」這個部分該如何呈現，以及它要做的工作會是什麼？</p>
+                    <p>先跑一次「RDQ (需求探索四象限法) 需求訪談」。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block">
+            <div class="msg-wrapper">
+                <div class="avatar ai"><i class="fa-solid fa-robot"></i></div>
+                <div class="bubble">
+                    <h4>【象限 III & IV】AI 發動結構化訪談</h4>
+                    <p>太棒了！為了最快幫您收斂想法並聚焦功能，請回答以下 3 個問題：</p>
+                    <ol>
+                        <li><strong>實作深度：</strong>您希望做到 真實串接 API 還是 介面模擬？</li>
+                        <li><strong>助手人設：</strong>職責偏向 課程知識庫、蘇格拉底導師、還是 萬能助教？</li>
+                        <li><strong>建議菜單 (可複選)：</strong>加入預設提問按鈕？加入字數限制？</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block">
+            <div class="msg-wrapper human-turn">
+                <div class="avatar human"><i class="fa-solid fa-user"></i></div>
+                <div class="bubble">
+                    <p>1. 要真實串接各項 AI 的 API，我想做後臺的輸入... 可以輸入 OpenCode、ChatGPT、NVIDIA、Gemini 的 API。</p>
+                    <p>2. 我想做出選項，在老師呼叫這位教學助手前，可以設定他是屬於哪一類型的，因為這三類型在課堂上都會用到。</p>
+                    <p>3. 採網頁輸入 API Key，可以先不管詢問次數。但可以給預設提問按鈕。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block">
+            <div class="msg-wrapper">
+                <div class="avatar ai"><i class="fa-solid fa-robot"></i></div>
+                <div class="bubble">
+                    <h4>【產出規格】AI 自動產生規格卡</h4>
+                    <p>收到！您的需求非常明確，因為是讓老師自備金鑰，所以我們不需要擔心被刷爆費用的問題！以下是為您整理的需求規格卡：</p>
+                    <div class="rdq-card">
+                        <strong>📌 核心定位</strong><br>
+                        打造一個可在課堂上靈活切換角色，支援多模型串接的 AI 教學助手網頁。<br><br>
+                        <strong>📝 具體規格</strong>
+                        <ul>
+                            <li><strong>後台設定</strong>：支援 ChatGPT, NVIDIA, Gemini, OpenCode 的金鑰與 Endpoint 設定。</li>
+                            <li><strong>三大人設切換</strong>：課程知識庫、蘇格拉底導師、萬能助教。</li>
+                            <li><strong>前端互動</strong>：附帶「快速提問按鈕」降低發問門檻。</li>
+                        </ul>
+                    </div>
+                    <p style="margin-top: 15px; color: #4caf50; font-weight: bold;"><i class="fa-solid fa-check-circle"></i> 確認規格後，AI 僅花了不到 1 分鐘，就生成了完整的 HTML/JS/CSS，並完成 4 種不同 AI API 的串接邏輯！</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
