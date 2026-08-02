@@ -361,19 +361,23 @@
                 <select id="config-provider" class="form-control" onchange="toggleEndpointField()">
                     <option value="openai">ChatGPT (OpenAI)</option>
                     <option value="gemini">Google Gemini</option>
-                    <option value="nvidia">NVIDIA (Free API)</option>
-                    <option value="custom">OpenCode / 自訂 (OpenAI 相容)</option>
+                    <option value="nvidia">NVIDIA NIM (免費 API)</option>
+                    <option value="opencode">OpenCode (Go 方案)</option>
+                    <option value="custom">其他自訂 (OpenAI 相容)</option>
                 </select>
             </div>
 
             <div class="form-group" id="group-endpoint" style="display: none;">
-                <label>自訂 Endpoint URL</label>
-                <input type="text" id="config-endpoint" class="form-control" placeholder="https://api.opencode.com/v1/chat/completions">
+                <label>API Endpoint URL</label>
+                <input type="text" id="config-endpoint" class="form-control" placeholder="https://api.openai.com/v1/chat/completions">
             </div>
             
             <div class="form-group" id="group-model">
-                <label>模型名稱 (Model)</label>
-                <input type="text" id="config-model" class="form-control" placeholder="gpt-4o-mini">
+                <label>模型名稱 (Model) <span style="font-size: 0.8em; font-weight: normal;">(可下拉選擇或自行輸入)</span></label>
+                <input type="text" id="config-model" list="model-list" class="form-control" placeholder="請選擇或輸入模型">
+                <datalist id="model-list">
+                    <!-- 動態生成 -->
+                </datalist>
             </div>
 
             <div class="form-group">
@@ -423,14 +427,41 @@
 
         function toggleEndpointField() {
             const provider = document.getElementById('config-provider').value;
-            document.getElementById('group-endpoint').style.display = (provider === 'custom') ? 'block' : 'none';
-            
-            // Auto-fill models
+            const endpointGroup = document.getElementById('group-endpoint');
+            const endpointInput = document.getElementById('config-endpoint');
             const modelInput = document.getElementById('config-model');
-            if(provider === 'openai') modelInput.value = 'gpt-4o-mini';
-            else if(provider === 'gemini') modelInput.value = 'gemini-1.5-flash';
-            else if(provider === 'nvidia') modelInput.value = 'meta/llama-3.1-8b-instruct';
-            else if(provider === 'custom') modelInput.value = '';
+            const modelList = document.getElementById('model-list');
+            
+            // 設定各平台的推薦模型清單
+            const models = {
+                'openai': ['gpt-4o-mini', 'gpt-4o'],
+                'gemini': ['gemini-1.5-flash', 'gemini-1.5-pro'],
+                'nvidia': ['meta/llama-3.1-70b-instruct', 'meta/llama-3.1-405b-instruct', 'meta/llama-3.1-8b-instruct', 'mistralai/mixtral-8x22b-instruct-v0.1'],
+                'opencode': ['deepseek-chat', 'glm-4', 'qwen-max', 'moonshot-v1-32k'],
+                'custom': []
+            };
+
+            // 處理 Endpoint 顯示與預設值
+            if (provider === 'custom' || provider === 'opencode') {
+                endpointGroup.style.display = 'block';
+                if (provider === 'opencode' && !endpointInput.value) {
+                    endpointInput.value = 'https://api.opencode.co/v1/chat/completions';
+                }
+            } else {
+                endpointGroup.style.display = 'none';
+            }
+            
+            // 更新 datalist 選項
+            modelList.innerHTML = '';
+            const currentModels = models[provider] || [];
+            currentModels.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m;
+                modelList.appendChild(option);
+            });
+
+            // 如果目前輸入框是空的，或者切換平台，自動填入第一個推薦模型
+            modelInput.value = currentModels[0] || '';
         }
 
         function loadSettings() {
@@ -544,7 +575,7 @@
             let endpoint = '';
             if (provider === 'openai') endpoint = 'https://api.openai.com/v1/chat/completions';
             else if (provider === 'nvidia') endpoint = 'https://integrate.api.nvidia.com/v1/chat/completions';
-            else if (provider === 'custom') endpoint = localStorage.getItem('ta_endpoint');
+            else if (provider === 'opencode' || provider === 'custom') endpoint = localStorage.getItem('ta_endpoint');
 
             const messages = [{role: "system", content: sysPrompt}, ...messageHistory];
 
