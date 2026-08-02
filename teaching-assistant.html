@@ -437,16 +437,13 @@
                 'openai': ['gpt-4o-mini', 'gpt-4o'],
                 'gemini': ['gemini-1.5-flash', 'gemini-1.5-pro'],
                 'nvidia': ['meta/llama-3.1-70b-instruct', 'meta/llama-3.1-405b-instruct', 'meta/llama-3.1-8b-instruct', 'mistralai/mixtral-8x22b-instruct-v0.1'],
-                'opencode': ['deepseek-chat', 'glm-4', 'qwen-max', 'moonshot-v1-32k'],
+                'opencode': ['deepseek-v4-pro', 'kimi-k3', 'glm-5.2', 'grok-4.5', 'gpt-5.6-luna', 'qwen3.7-max', 'minimax-m3'],
                 'custom': []
             };
 
             // 處理 Endpoint 顯示與預設值
             if (provider === 'custom' || provider === 'opencode') {
                 endpointGroup.style.display = 'block';
-                if (provider === 'opencode' && !endpointInput.value) {
-                    endpointInput.value = '請填寫您實際的 OpenCode API 網址';
-                }
             } else {
                 endpointGroup.style.display = 'none';
             }
@@ -462,7 +459,37 @@
 
             // 如果目前輸入框是空的，或者切換平台，自動填入第一個推薦模型
             modelInput.value = currentModels[0] || '';
+            
+            // 若為 OpenCode，根據模型自動設定正確的 Endpoint
+            if (provider === 'opencode') {
+                endpointInput.value = getEndpointByModel(modelInput.value);
+            }
         }
+
+        // OpenCode: 根據模型判斷對應的 Endpoint URL
+        function getEndpointByModel(modelName) {
+            modelName = (modelName || '').toLowerCase();
+            // 1. Anthropic / Messages 格式模型
+            if (modelName.startsWith('qwen') || modelName.startsWith('minimax')) {
+                return 'https://opencode.ai/zen/go/v1/messages';
+            } 
+            // 2. OpenAI Responses 格式模型
+            else if (modelName.includes('luna') || modelName === 'gpt-5.6-luna') {
+                return 'https://opencode.ai/zen/go/v1/responses';
+            } 
+            // 3. 預設為一般 Chat Completions
+            else {
+                return 'https://opencode.ai/zen/go/v1/chat/completions';
+            }
+        }
+
+        // 監聽模型輸入框變化，即時更新 Endpoint (針對 OpenCode)
+        document.getElementById('config-model').addEventListener('input', function() {
+            const provider = document.getElementById('config-provider').value;
+            if (provider === 'opencode') {
+                document.getElementById('config-endpoint').value = getEndpointByModel(this.value);
+            }
+        });
 
         function loadSettings() {
             if(localStorage.getItem('ta_persona')) document.getElementById('config-persona').value = localStorage.getItem('ta_persona');
