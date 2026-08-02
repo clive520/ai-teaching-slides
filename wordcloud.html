@@ -133,6 +133,9 @@
         </div>
 
         <div style="text-align: right; margin-top: 10px;">
+            <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="handleCSVImport(event)">
+            <button onclick="importCSV()" style="background: transparent; border: 1px solid #4caf50; color: #4caf50; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 10px;"><i class="fa-solid fa-file-import"></i> 匯入 CSV</button>
+            <button onclick="exportCSV()" style="background: transparent; border: 1px solid #4caf50; color: #4caf50; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 10px;"><i class="fa-solid fa-file-export"></i> 匯出 CSV</button>
             <button onclick="showQRCode()" style="background: transparent; border: 1px solid #ff007f; color: #ff007f; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 10px;"><i class="fa-solid fa-qrcode"></i> 顯示 QR Code</button>
             <button onclick="askResetPassword()" style="background: transparent; border: 1px solid #ff5555; color: #ff5555; padding: 5px 15px; border-radius: 20px; cursor: pointer;"><i class="fa-solid fa-trash-can"></i> 重置資料</button>
         </div>
@@ -277,7 +280,7 @@
             const { value: password } = await Swal.fire({
                 title: '清空文字雲資料',
                 input: 'password',
-                inputLabel: '請輸入重置密碼 (預設：520)',
+                inputLabel: '請輸入重置密碼',
                 inputPlaceholder: '請輸入密碼',
                 showCancelButton: true,
                 confirmButtonColor: '#ff5555',
@@ -322,6 +325,73 @@
                 confirmButtonColor: '#ff007f',
                 confirmButtonText: '關閉'
             });
+        }
+
+        // ==========================================
+        // 功能：匯出與匯入 CSV
+        // ==========================================
+        function exportCSV() {
+            if (wordsArray.length === 0) {
+                Swal.fire('沒有資料', '目前沒有文字可以匯出。', 'info');
+                return;
+            }
+            const csvContent = "\uFEFF" + wordsArray.join('\n'); // 加入 BOM，確保 Excel 開啟時不亂碼
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "wordcloud_data.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importCSV() {
+            document.getElementById('csv-file-input').click();
+        }
+
+        function handleCSVImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let content = e.target.result;
+                if (content.charCodeAt(0) === 0xFEFF) {
+                    content = content.substr(1);
+                }
+                const lines = content.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+                
+                if (lines.length === 0) {
+                    Swal.fire('匯入失敗', '檔案中沒有有效的文字。', 'error');
+                    return;
+                }
+
+                if (isFirebaseActive) {
+                    const db = firebase.database();
+                    const updates = {};
+                    const timestamp = Date.now();
+                    lines.forEach((word, index) => {
+                        const newKey = db.ref('wordcloud').push().key;
+                        updates['/wordcloud/' + newKey] = {
+                            text: word,
+                            timestamp: timestamp + index
+                        };
+                    });
+                    db.ref().update(updates).then(() => {
+                        Swal.fire('匯入成功', `成功匯入 ${lines.length} 筆文字！`, 'success');
+                    }).catch((error) => {
+                        Swal.fire('匯入失敗', error.message, 'error');
+                    });
+                } else {
+                    wordsArray = wordsArray.concat(lines);
+                    localStorage.setItem('wordcloud_data', JSON.stringify(wordsArray));
+                    renderWordCloud();
+                    Swal.fire('匯入成功', `成功匯入 ${lines.length} 筆文字！`, 'success');
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
         }
 
         // 啟動
