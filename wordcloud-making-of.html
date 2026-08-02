@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字雲開發實錄：人機協作 (Human-AI Collaboration)</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --panel-bg: rgba(22, 27, 34, 0.8);
+            --user-bubble: #238636;
+            --ai-bubble: rgba(48, 54, 61, 0.9);
+            --text-main: #c9d1d9;
+            --highlight: #58a6ff;
+            --neon-pink: #ff007f;
+            --neon-green: #39ff14;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #0d1117, #161b22);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: var(--highlight);
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+        }
+
+        .subtitle {
+            margin: 5px 0 0 0;
+            font-size: 0.9em;
+            color: #8b949e;
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 40px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            padding-bottom: 50px;
+        }
+
+        .message {
+            display: flex;
+            gap: 15px;
+            max-width: 85%;
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message.ai {
+            align-self: flex-start;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .user .avatar {
+            background: var(--user-bubble);
+            color: white;
+        }
+
+        .ai .avatar {
+            background: linear-gradient(135deg, #1f6feb, #8957e5);
+            color: white;
+        }
+
+        .bubble {
+            padding: 15px 20px;
+            border-radius: 18px;
+            font-size: 1.05em;
+            line-height: 1.6;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .user .bubble {
+            background: var(--user-bubble);
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        .ai .bubble {
+            background: var(--ai-bubble);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-top-left-radius: 4px;
+        }
+
+        .ai .bubble strong {
+            color: var(--highlight);
+        }
+        
+        .ai .bubble .highlight-text {
+            color: var(--neon-pink);
+            font-weight: bold;
+        }
+
+        /* 延遲動畫效果 */
+        .msg-1 { animation-delay: 0.1s; }
+        .msg-2 { animation-delay: 0.8s; }
+        .msg-3 { animation-delay: 1.5s; }
+        .msg-4 { animation-delay: 2.2s; }
+        .msg-5 { animation-delay: 2.9s; }
+        .msg-6 { animation-delay: 3.6s; }
+        .msg-7 { animation-delay: 4.3s; }
+        .msg-8 { animation-delay: 5.0s; }
+        .msg-9 { animation-delay: 5.7s; }
+        .msg-10 { animation-delay: 6.4s; }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .back-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 0, 127, 0.8);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.5);
+            transition: transform 0.3s, background 0.3s;
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255, 0, 127, 1);
+        }
+
+        .step-label {
+            text-align: center;
+            color: #8b949e;
+            font-size: 0.8em;
+            margin: 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .step-1 { animation-delay: 0s; }
+        .step-2 { animation-delay: 1.4s; }
+        .step-3 { animation-delay: 2.8s; }
+        .step-4 { animation-delay: 4.2s; }
+        .step-5 { animation-delay: 5.6s; }
+        
+        .code-tag {
+            background: rgba(0,0,0,0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #ffb86c;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .message { max-width: 95%; }
+            .chat-container { width: 95%; margin: 20px auto; }
+            h1 { font-size: 1.4em; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fa-solid fa-code-branch"></i> 幕後花絮：從零打造即時文字雲</h1>
+        <p class="subtitle">看看老師如何與 AI 結對程式設計 (Pair Programming)，一步步迭代出完整的互動系統</p>
+    </header>
+
+    <div class="chat-container">
+
+        <!-- 迭代一 -->
+        <div class="step-label step-1">Iteration 1: 基礎網頁建立</div>
+        <div class="message user msg-1">
+            <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+            <div class="bubble">
+                我想做一個實際的文字雲網頁，大家都可以直接打文字送出來，讓所有人都看得到。請幫我寫一個前端頁面。
+            </div>
+        </div>
+        <div class="message ai msg-2">
+            <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+            <div class="bubble">
+                沒問題！我幫您寫好了一個結合 <span class="code-tag">HTML5 Canvas</span> 與 <span class="code-tag">wordcloud2.js</span> 的網頁，介面採用了高對比的玻璃擬物化風格，目前是「本機展示模式」。
+            </div>
+        </div>
+
+        <!-- 迭代二 -->
+        <div class="step-label step-2">Iteration 2: 雲端即時連線</div>
+        <div class="message user msg-3">
+            <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+            <div class="bubble">
+                我們來把文字雲連上 Firebase，讓大家都能同時上傳文字並立刻看到更新。順便將我們的連接過程寫成一個教學的 PPT！
+            </div>
+        </div>
+        <div class="message ai msg-4">
+            <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+            <div class="bubble">
+                太棒了！我已經串接 <strong>Firebase Realtime Database</strong>，並自動為您製作了連線教學簡報。現在只要填入金鑰，全班的手機就可以與大螢幕同步連線了！
+            </div>
+        </div>
+
+        <!-- 迭代三 -->
+        <div class="step-label step-3">Iteration 3: 課堂實用功能</div>
+        <div class="message user msg-5">
+            <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+            <div class="bubble">
+                需要在網站跟 PPT 內容中放一個 QR Code 讓學生掃碼。另外，我們設一個按鈕輸入密碼 (預設: 520) 才能重置清除資料，避免誤按。
+            </div>
+        </div>
+        <div class="message ai msg-6">
+            <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+            <div class="bubble">
+                搞定！我為您加上了動態產生的 <strong>QR Code 掃描按鈕</strong>，並使用 <span class="code-tag">SweetAlert2</span> 實作了防呆的 <span class="highlight-text">密碼重置機制</span>，讓課堂管理更安心。
+            </div>
+        </div>
+
+        <!-- 迭代四 -->
+        <div class="step-label step-4">Iteration 4: 資料管理閉環</div>
+        <div class="message user msg-7">
+            <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+            <div class="bubble">
+                在文字雲介面，我還想做匯出 CSV 以及匯入 CSV 檔案的功能，方便我管理資料。
+            </div>
+        </div>
+        <div class="message ai msg-8">
+            <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+            <div class="bubble">
+                已經加上了！現在您可以 <strong>一鍵下載 CSV 紀錄保留</strong>，或是把之前整理好的單字庫匯入系統中，完美延續上一堂課的互動狀態。
+            </div>
+        </div>
+
+        <!-- 迭代五 -->
+        <div class="step-label step-5">Iteration 5: 強化互動體驗</div>
+        <div class="message user msg-9">
+            <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+            <div class="bubble">
+                輸入的人要加上自己的暱稱，並記錄在瀏覽器上不用重打。<br>而且當有資料送出時，全班的網頁都要跳出「誰送出了什麼文字」的推播訊息！
+            </div>
+        </div>
+        <div class="message ai msg-10">
+            <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+            <div class="bubble">
+                這個點子太讚了！我實作了 Firebase 的 <span class="code-tag">child_added</span> 事件來觸發全域廣播，並用 LocalStorage 記住學生的暱稱。現在只要有人送出，全班畫面上都會即時跳出通知喔！🎉
+            </div>
+        </div>
+
+    </div>
+
+    <a href="index.html#/9" class="back-btn"><i class="fa-solid fa-arrow-left"></i> 回到簡報</a>
+
+</body>
+</html>
