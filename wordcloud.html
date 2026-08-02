@@ -128,7 +128,8 @@
 
     <div class="container">
         <div class="input-panel">
-            <input type="text" id="word-input" placeholder="請輸入您對 AI 的一個形容詞（例如：神奇、好用...）" maxlength="15">
+            <input type="text" id="nickname-input" placeholder="您的暱稱" maxlength="10" style="width: 120px; margin-right: 10px; border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 30px; padding: 15px 25px; font-size: 1.1em; background: rgba(0, 0, 0, 0.3); color: white;">
+            <input type="text" id="word-input" placeholder="對 AI 的一個形容詞（例如：神奇、好用...）" maxlength="15" style="flex: 1; border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 30px; padding: 15px 25px; font-size: 1.1em; background: rgba(0, 0, 0, 0.3); color: white; margin-right: 10px;">
             <button onclick="submitWord()"><i class="fa-solid fa-paper-plane"></i> 送出</button>
         </div>
 
@@ -214,17 +215,36 @@
             document.getElementById('word-input').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') submitWord();
             });
+            document.getElementById('nickname-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') document.getElementById('word-input').focus();
+            });
+            
+            // 載入儲存的暱稱
+            const savedNickname = localStorage.getItem('wordcloud_nickname');
+            if (savedNickname) {
+                document.getElementById('nickname-input').value = savedNickname;
+            }
         }
 
         // 送出文字
         function submitWord() {
+            const nicknameElement = document.getElementById('nickname-input');
             const inputElement = document.getElementById('word-input');
+            const nickname = nicknameElement.value.trim();
             const word = inputElement.value.trim();
+
+            if (!nickname) {
+                Swal.fire({ title: '提醒', text: '請先輸入您的暱稱喔！', icon: 'warning', confirmButtonColor: '#ff007f' });
+                return;
+            }
             if (!word) return;
 
+            // 儲存暱稱到本機
+            localStorage.setItem('wordcloud_nickname', nickname);
+
             if (isFirebaseActive) {
-                // 寫入 Firebase
-                firebase.database().ref('wordcloud').push({ text: word });
+                // 寫入 Firebase (加上暱稱紀錄)
+                firebase.database().ref('wordcloud').push({ text: word, nickname: nickname, timestamp: firebase.database.ServerValue.TIMESTAMP });
             } else {
                 // 寫入 LocalStorage
                 wordsArray.push(word);
@@ -232,7 +252,19 @@
                 renderWordCloud();
             }
 
+            // 清空單字輸入框，保留暱稱
             inputElement.value = '';
+            
+            // 顯示小提示
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: `${nickname} 送出了：${word}`,
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true
+            });
         }
 
         // 繪製文字雲
