@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>AI HTML 簡報生成器</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { margin: 0; font-family: 'Noto Sans TC', sans-serif; background: #121212; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+        .left-panel { width: 500px; padding: 20px; box-sizing: border-box; background: #1e1e1e; border-right: 1px solid #333; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+        .right-panel { flex-grow: 1; position: relative; background: #000; }
+        h1, h2, h3 { margin: 0 0 10px 0; }
+        .section-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 0.9em; color: #aaa; }
+        input[type="text"], input[type="password"], select, textarea { width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid #555; color: white; border-radius: 5px; font-family: inherit; box-sizing: border-box; }
+        textarea { height: 250px; resize: vertical; font-family: monospace; font-size: 0.9em; line-height: 1.4; }
+        .btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-primary { background: #1f6feb; }
+        .btn-primary:hover { background: #388bfd; }
+        .btn-success { background: #238636; }
+        .btn-success:hover { background: #2ea043; }
+        .btn-outline { background: transparent; border: 1px solid #8b949e; color: #c9d1d9; }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
+        
+        .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .theme-label { display: block; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 5px; cursor: pointer; text-align: center; border: 2px solid transparent; transition: 0.2s; font-size: 0.85em; }
+        .theme-label:hover { background: rgba(255,255,255,0.2); }
+        input[type="radio"]:checked + .theme-label { border-color: #1f6feb; background: rgba(31,111,235,0.3); }
+        
+        #preview-frame { width: 100%; height: 100%; border: none; }
+        
+        .loading-overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 10; flex-direction: column; }
+        .spinner { border: 4px solid rgba(255,255,255,0.1); border-left-color: #1f6feb; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="left-panel">
+        <h2><i class="fa-solid fa-wand-magic-sparkles"></i> AI 簡報生成器</h2>
+        
+        <div class="section-box">
+            <h3>⚙️ 1. API 設定</h3>
+            <div class="form-group">
+                <label>供應商</label>
+                <select id="api-provider" onchange="updateModels()">
+                    <option value="gemini">Google Gemini</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="nvidia">NVIDIA NIM</option>
+                    <option value="opencode">OpenCode (GO)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>API Key (安全存放於本機)</label>
+                <input type="password" id="api-key" placeholder="輸入 API Key">
+            </div>
+            <div class="form-group">
+                <label>選擇模型</label>
+                <select id="api-model"></select>
+            </div>
+        </div>
+
+        <div class="section-box">
+            <h3>📝 2. 生成大綱 (Markdown)</h3>
+            <div class="form-group">
+                <label>請輸入簡報主題或大綱方向</label>
+                <input type="text" id="topic-input" placeholder="例如：介紹光合作用的過程，共 5 頁">
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="generateOutline()"><i class="fa-solid fa-robot"></i> 讓 AI 產生大綱</button>
+            
+            <div style="display:flex; justify-content: space-between; margin-top: 15px; margin-bottom: 5px;">
+                <label style="font-size:0.9em; color:#aaa;">Markdown 編輯區</label>
+                <div style="display:flex; gap: 5px;">
+                    <input type="file" id="md-upload" accept=".md,.txt" style="display:none;" onchange="importMD(event)">
+                    <button class="btn btn-outline" style="padding: 2px 8px; font-size: 0.8em;" onclick="document.getElementById('md-upload').click()"><i class="fa-solid fa-file-import"></i> 匯入</button>
+                    <button class="btn btn-outline" style="padding: 2px 8px; font-size: 0.8em;" onclick="exportMD()"><i class="fa-solid fa-file-export"></i> 匯出</button>
+                </div>
+            </div>
+            <textarea id="md-editor" placeholder="AI 生成的 Markdown 大綱會顯示在這裡，您也可以直接手動修改..."></textarea>
+        </div>
+
+        <div class="section-box">
+            <h3>🎨 3. 風格與渲染</h3>
+            <div class="form-group">
+                <label>選擇 Reveal.js 佈景主題</label>
+                <div class="theme-grid">
+                    <label><input type="radio" name="theme" value="white" style="display:none;" checked onchange="renderPresentation()"><span class="theme-label">極簡純白 (White)</span></label>
+                    <label><input type="radio" name="theme" value="black" style="display:none;" onchange="renderPresentation()"><span class="theme-label">科技暗黑 (Black)</span></label>
+                    <label><input type="radio" name="theme" value="night" style="display:none;" onchange="renderPresentation()"><span class="theme-label">午夜深藍 (Night)</span></label>
+                    <label><input type="radio" name="theme" value="solarized" style="display:none;" onchange="renderPresentation()"><span class="theme-label">護眼鵝黃 (Solarized)</span></label>
+                    <label><input type="radio" name="theme" value="sky" style="display:none;" onchange="renderPresentation()"><span class="theme-label">專業天藍 (Sky)</span></label>
+                    <label><input type="radio" name="theme" value="league" style="display:none;" onchange="renderPresentation()"><span class="theme-label">復古粗體 (League)</span></label>
+                    <label><input type="radio" name="theme" value="serif" style="display:none;" onchange="renderPresentation()"><span class="theme-label">學術襯線 (Serif)</span></label>
+                    <label><input type="radio" name="theme" value="blood" style="display:none;" onchange="renderPresentation()"><span class="theme-label">大膽暗紅 (Blood)</span></label>
+                </div>
+            </div>
+            <button class="btn btn-success" style="width:100%; margin-bottom: 10px;" onclick="renderPresentation()"><i class="fa-solid fa-play"></i> 手動渲染更新</button>
+            <button class="btn btn-outline" style="width:100%;" onclick="downloadHTML()"><i class="fa-solid fa-download"></i> 下載獨立 HTML 檔</button>
+        </div>
+    </div>
+    
+    <div class="right-panel">
+        <div class="loading-overlay" id="loading">
+            <div class="spinner"></div>
+            <div id="loading-text">AI 正在努力為您撰寫大綱...</div>
+        </div>
+        <iframe id="preview-frame"></iframe>
+    </div>
+
+    <script>
+        const models = {
+            'openai': [
+                {id: 'gpt-4o-mini', label: 'gpt-4o-mini'},
+                {id: 'gpt-4o', label: 'gpt-4o'}
+            ],
+            'gemini': [
+                {id: 'gemini-2.5-flash', label: 'gemini-2.5-flash'},
+                {id: 'gemini-3.5-flash', label: 'gemini-3.5-flash'},
+                {id: 'gemini-3.1-pro', label: 'gemini-3.1-pro'}
+            ],
+            'nvidia': [
+                {id: 'deepseek-ai/deepseek-v4-flash', label: 'deepseek-v4-flash'},
+                {id: 'meta/llama-3.3-70b-instruct', label: 'llama-3.3-70b'},
+                {id: 'qwen/qwen2.5-72b-instruct', label: 'qwen2.5-72b'}
+            ],
+            'opencode': [
+                {id: 'deepseek-v4-flash', label: 'deepseek-v4-flash'},
+                {id: 'qwen3.7-plus', label: 'qwen3.7-plus'},
+                {id: 'glm-5.1', label: 'glm-5.1'}
+            ]
+        };
+
+        const SYS_PROMPT = `你是一個專業的簡報設計師。
+請根據使用者的主題，生成一份結構清晰的 Reveal.js Markdown 簡報內容。
+絕對嚴格遵守以下規則：
+1. 每一頁簡報之間，必須且只能用三個減號 '---' 來分隔 (前後要換行)。
+2. 第一頁必須是大標題頁，使用單個 '#' 來表示大標題，以及 '###' 表示副標題。
+3. 後續頁面使用 '##' 作為單頁標題。
+4. 內容盡量使用條列式 ('-') 以便閱讀。
+5. 不要輸出任何其他的解釋對話，直接輸出 Markdown 內容即可！`;
+
+        window.onload = () => {
+            const savedKey = localStorage.getItem('ta_apikey');
+            if (savedKey) document.getElementById('api-key').value = savedKey;
+            
+            const savedProvider = localStorage.getItem('ta_provider');
+            if (savedProvider) document.getElementById('api-provider').value = savedProvider;
+            
+            updateModels();
+            
+            const savedModel = localStorage.getItem('ta_model');
+            if (savedModel) document.getElementById('api-model').value = savedModel;
+        };
+
+        function updateModels() {
+            const provider = document.getElementById('api-provider').value;
+            const modelSelect = document.getElementById('api-model');
+            modelSelect.innerHTML = '';
+            
+            const currentModels = models[provider] || [];
+            currentModels.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m.id;
+                option.textContent = m.label;
+                modelSelect.appendChild(option);
+            });
+            
+            if (currentModels.length > 0) {
+                modelSelect.value = currentModels[0].id;
+            }
+        }
+
+        function importMD(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('md-editor').value = e.target.result;
+                renderPresentation();
+            };
+            reader.readAsText(file);
+            event.target.value = ''; 
+        }
+
+        function exportMD() {
+            const text = document.getElementById('md-editor').value;
+            if (!text) { alert('沒有內容可以匯出！'); return; }
+            const blob = new Blob([text], { type: "text/markdown" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "presentation-outline.md";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function generateOutline() {
+            const apikey = document.getElementById('api-key').value.trim();
+            const provider = document.getElementById('api-provider').value;
+            const model = document.getElementById('api-model').value;
+            const topic = document.getElementById('topic-input').value.trim();
+
+            if (!apikey) { alert('請輸入 API Key！'); return; }
+            if (!topic) { alert('請輸入簡報主題！'); return; }
+
+            localStorage.setItem('ta_apikey', apikey);
+            localStorage.setItem('ta_provider', provider);
+            localStorage.setItem('ta_model', model);
+
+            showLoading('AI 正在努力為您撰寫大綱...');
+            try {
+                let mdContent = '';
+                if (provider === 'gemini') {
+                    mdContent = await callGemini(apikey, model, topic);
+                } else {
+                    mdContent = await callOpenAICompatible(provider, apikey, model, topic);
+                }
+                
+                mdContent = mdContent.replace(/^```markdown\n?/gi, '').replace(/```$/gi, '').trim();
+                document.getElementById('md-editor').value = mdContent;
+                
+                renderPresentation(); // 自動幫他渲染第一次
+            } catch (err) {
+                alert('API 請求失敗: ' + err.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function callGemini(apikey, model, topic) {
+            const endpoint = \`https://generativelanguage.googleapis.com/v1beta/models/\${model}:generateContent?key=\${apikey}\`;
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    systemInstruction: { parts: [{ text: SYS_PROMPT }] },
+                    contents: [{ role: 'user', parts: [{ text: \`主題：\${topic}\` }] }],
+                    generationConfig: { temperature: 0.7 }
+                })
+            });
+            if (!response.ok) throw new Error(await response.text());
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        async function callOpenAICompatible(provider, apikey, model, topic) {
+            let endpoint = 'https://api.openai.com/v1/chat/completions';
+            if (provider === 'nvidia') endpoint = 'https://integrate.api.nvidia.com/v1/chat/completions';
+            if (provider === 'opencode') endpoint = 'https://api.opencode.tw/v1/chat/completions';
+            
+            const fetchUrl = (provider === 'openai' || provider === 'nvidia') 
+                             ? 'https://corsproxy.io/?' + encodeURIComponent(endpoint) 
+                             : endpoint;
+
+            const response = await fetch(fetchUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': \`Bearer \${apikey}\`
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [
+                        { role: 'system', content: SYS_PROMPT },
+                        { role: 'user', content: \`主題：\${topic}\` }
+                    ],
+                    temperature: 0.7
+                })
+            });
+            if (!response.ok) throw new Error(await response.text());
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        function showLoading(text) {
+            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('loading-text').textContent = text;
+        }
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function getGeneratedHTML() {
+            const mdContent = document.getElementById('md-editor').value;
+            if (!mdContent) {
+                // 如果是空的不渲染
+                return null;
+            }
+            
+            const selectedTheme = document.querySelector('input[name="theme"]:checked').value;
+            
+            return \`<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI 生成簡報</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.css">
+    <link rel="stylesheet" id="theme" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/\${selectedTheme}.css">
+    <style>
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-markdown>
+                <textarea data-template>
+\${mdContent}
+                </textarea>
+            </section>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"><\\/script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/markdown/markdown.min.js"><\\/script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            plugins: [ RevealMarkdown ]
+        });
+    <\\/script>
+</body>
+</html>\`;
+        }
+
+        function renderPresentation() {
+            const html = getGeneratedHTML();
+            if (html) {
+                const iframe = document.getElementById('preview-frame');
+                iframe.srcdoc = html;
+            }
+        }
+
+        function downloadHTML() {
+            const html = getGeneratedHTML();
+            if (!html) {
+                alert('編輯區沒有大綱可以下載！請先生成或匯入大綱。');
+                return;
+            }
+            const blob = new Blob([html], { type: "text/html" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "ai-presentation.html";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

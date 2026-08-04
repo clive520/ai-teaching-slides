@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幕後花絮：從零打造簡報系統</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --glass-bg: rgba(25, 25, 45, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f8f8f2;
+            --ai-color: #1f6feb;
+            --human-color: #4caf50;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: url('assets/images/cover_bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .btn-back {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.3s;
+        }
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 { margin: 0 0 10px 0; color: #fff; }
+        .header p { color: #aaa; margin: 0; font-size: 0.95rem; line-height: 1.5; }
+        .highlight { color: #ff79c6; font-weight: bold; }
+
+        .chat-block {
+            margin-bottom: 25px;
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .avatar.human { background: var(--human-color); }
+        .avatar.ai { background: var(--ai-color); }
+
+        .msg-wrapper {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .bubble {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            padding: 15px 20px;
+            border-radius: 0 15px 15px 15px;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .msg-wrapper.human-turn .bubble {
+            border-radius: 15px 15px 15px 0;
+            background: rgba(76, 175, 80, 0.1);
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+        
+        .msg-wrapper.human-turn {
+            flex-direction: row-reverse;
+        }
+
+        .bubble h4 { margin: 0 0 10px 0; font-size: 1rem; opacity: 0.8; color: #ff79c6; }
+        .bubble p { margin: 0 0 10px 0; }
+        .bubble p:last-child { margin: 0; }
+        
+        .plan-box {
+            background: #282a36;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            border: 1px solid #44475a;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .plan-box h1, .plan-box h2, .plan-box h3 { color: #8be9fd; margin-top: 0; }
+        .plan-box ul { padding-left: 20px; margin-top: 5px; }
+        .plan-box blockquote { border-left: 4px solid #bd93f9; margin: 0; padding-left: 15px; color: #f1fa8c; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <a href="index.html#/13" class="btn-back"><i class="fa-solid fa-arrow-left"></i> 返回簡報</a>
+            <h1><i class="fa-solid fa-code-branch"></i> 幕後花絮：從零打造簡報系統</h1>
+            <p>這一次，我們記錄了從需求構思到實際撰寫 <span class="highlight">「實作計畫書 (Implementation Plan)」</span> 的完整對話過程。<br>這正是 AI 開發中最珍貴的「Human-in-the-loop (人類參與迴圈)」精神！</p>
+        </div>
+
+        <div class="chat-block" style="animation-delay: 0.2s;">
+            <div class="msg-wrapper human-turn">
+                <div class="avatar human"><i class="fa-solid fa-user"></i></div>
+                <div class="bubble">
+                    <p>打造「AI HTML 簡報生成器」，根據這個題目，你有什麼想法？先給我想法，之後我們再開始，我們先討論。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block" style="animation-delay: 0.4s;">
+            <div class="msg-wrapper">
+                <div class="avatar ai"><i class="fa-solid fa-robot"></i></div>
+                <div class="bubble">
+                    <h4>【提案階段】AI 提出 5 大核心想法</h4>
+                    <p>太棒了！這將會是整個課程中最具視覺震撼力的「火力展示」。以下是我的想法：</p>
+                    <ol>
+                        <li><strong>介面佈局：</strong> 左右雙切設計，左邊控制台，右邊即時預覽。</li>
+                        <li><strong>詠唱策略：</strong> 嚴格的 Markdown 結構，用 '---' 分割頁面。</li>
+                        <li><strong>一鍵下載：</strong> 將 Reveal.js CDN 打包成獨立的 .html 檔案下載。</li>
+                        <li><strong>資源重用：</strong> 繼承之前教學助手的 PDF 上傳解析能力！</li>
+                        <li><strong>載入動畫：</strong> 安撫等待生成的焦慮感。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block" style="animation-delay: 0.6s;">
+            <div class="msg-wrapper human-turn">
+                <div class="avatar human"><i class="fa-solid fa-user"></i></div>
+                <div class="bubble">
+                    <p>對於簡報的產生，我想先產生一份階層非常清楚的 MD 檔，再藉由這份 MD 檔丟給 AI 產生簡報。</p>
+                    <p>這份 MD 檔在第一次產生後可以讓使用者下載，使用者甚至可以在修改後「再上傳回去」。這樣的架構會多出一個上傳檔案的問題，該怎麼解？</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block" style="animation-delay: 0.8s;">
+            <div class="msg-wrapper">
+                <div class="avatar ai"><i class="fa-solid fa-robot"></i></div>
+                <div class="bubble">
+                    <h4>【技術收斂】Human-in-the-loop 解決方案</h4>
+                    <p>這是一個非常精闢的設計！這叫做 <strong>「Human-in-the-loop (人類參與迴圈)」</strong>，把掌控權還給老師。</p>
+                    <p>關於上傳問題，我們可以用瀏覽器內建的 <code>FileReader API</code> 來解決。只要設計一個「MD 大綱編輯框」，使用者點擊「匯入」時，瀏覽器可以在零點幾秒內讀取文字檔並貼回編輯框，全程不需要後端伺服器！</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block" style="animation-delay: 1.0s;">
+            <div class="msg-wrapper human-turn">
+                <div class="avatar human"><i class="fa-solid fa-user"></i></div>
+                <div class="bubble">
+                    <p>這個想法太棒了！接下來我希望你能夠產生大概 8 種風格讓使用者選擇，他只要勾選或按鈕就可以套用。</p>
+                    <p>並且把我們這次的實作計畫書放在網頁上，讓別人可以直接看得到。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-block" style="animation-delay: 1.2s;">
+            <div class="msg-wrapper">
+                <div class="avatar ai"><i class="fa-solid fa-robot"></i></div>
+                <div class="bubble">
+                    <h4>【計畫擬定】正式產生 Implementation Plan</h4>
+                    <p>沒問題！我精選了 Reveal.js 的 8 種高質感主題。以下是我們最終確認後執行的「實作計畫書」原貌：</p>
+                    
+                    <div class="plan-box">
+                        <h2># AI HTML 簡報生成器：實作計畫</h2>
+                        <p>本計畫旨在打造一個將「AI 生成大綱」與「Reveal.js 簡報渲染」完美結合的純前端應用 (html-presentation-demo.html)。</p>
+                        
+                        <blockquote>
+                        <strong>架構確認：兩階段生成 (Human-in-the-loop)</strong><br>
+                        1. 大綱階段：AI 僅生成 Markdown 大綱 -> 顯示於網頁編輯框 (可修改、下載、上傳)。<br>
+                        2. 渲染階段：抓取編輯框內的最終文字，與選擇的風格結合，生成簡報。
+                        </blockquote>
+
+                        <h3>## Proposed Changes</h3>
+                        <ul>
+                            <li><strong>新增 html-presentation-demo.html</strong>：左右雙切版設計。</li>
+                            <li><strong>API 共用</strong>：延用教學助手的 localStorage 金鑰設定。</li>
+                            <li><strong>八大精選風格</strong>：White, Black, Night, Solarized, Sky, League, Serif, Blood。</li>
+                            <li><strong>神奇的渲染技術</strong>：利用 Reveal.js 的 Markdown 擴充套件，免去手寫 HTML 解析器的麻煩，將 MD 格式完美轉譯。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
