@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Codex 與 GPT 的差異</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/night.css">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+		<style>
+			.reveal h1, .reveal h2, .reveal h3 {
+				text-transform: none;
+				color: #42b983;
+			}
+			.reveal h2 { font-size: 2em; }
+			.reveal h3 { font-size: 1.5em; margin-bottom: 20px; }
+			.reveal p, .reveal li {
+				font-size: 0.95em;
+				line-height: 1.5;
+				margin-bottom: 12px;
+			}
+			.highlight-neon {
+				color: #ff79c6;
+				text-shadow: 0 0 5px #ff79c6;
+			}
+			.fa-solid {
+				margin-right: 15px;
+				color: #ff79c6;
+			}
+			.glass-panel {
+				background: rgba(0, 0, 0, 0.65);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				padding: 35px 45px;
+				border-radius: 20px;
+				border: 1px solid rgba(255, 255, 255, 0.1);
+				box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.glass-panel.center {
+				text-align: center;
+				align-items: center;
+			}
+			.slide-layout {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+				width: 100%;
+				gap: 30px;
+			}
+			.content-col { flex: 1; }
+			.img-col {
+				flex: 0 0 350px;
+				display: flex;
+				justify-content: center;
+			}
+			.spot-img {
+				width: 100%;
+				border-radius: 15px;
+				box-shadow: 0 0 25px rgba(66, 185, 131, 0.4);
+				border: 2px solid rgba(255, 255, 255, 0.1);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel center">
+						<h2><i class="fa-solid fa-code-compare"></i>Codex 與 GPT 的差異</h2>
+						<p>為什麼自動化需要專屬的「程式碼模型」？</p>
+					</div>
+				</section>
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-message"></i>1. 什麼是 GPT (對話模型)？</h3>
+							<ul>
+								<li><strong>定位</strong>：語言邏輯大師。</li>
+								<li><strong>優勢</strong>：擅長總結歸納、文字生成、情感分析、靈感發想。</li>
+								<li><strong>缺點</strong>：容易產生「幻覺 (Hallucination)」，為了討好使用者，可能會掰出不存在的資訊。</li>
+								<li><strong>代表</strong>：ChatGPT (一般模式), Gemini Pro, Claude 3 Sonnet</li>
+							</ul>
+						</div>
+					</div>
+					<aside class="notes">
+						解說：日常對話時，AI 講錯一點點我們聽得懂就好；但程式碼只要錯一個標點符號，系統就會崩潰。
+					</aside>
+				</section>
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-file-code"></i>2. 什麼是 Codex (程式碼模型)？</h3>
+							<ul>
+								<li><strong>定位</strong>：嚴謹的工程師。</li>
+								<li><strong>訓練資料</strong>：海量的 GitHub 開源程式碼與技術文件。</li>
+								<li><strong>特性</strong>：理解「語法樹結構」，非常注重邏輯與因果關係。</li>
+								<li><strong>容錯率</strong>：<span class="highlight-neon">零容錯率！</span>程式碼一旦有語法錯誤就無法執行，因此這類模型極少產生幻覺。</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-robot"></i>3. 為何 AI Agent 需要寫程式？</h3>
+							<ul>
+								<li>對話模型只能給你「計畫」，但它無法幫你「點擊滑鼠」。</li>
+								<li><strong>Agent 的運作本質</strong>：遇到任務時，撰寫一小段 Python 或 JavaScript 腳本，然後在背景執行這個腳本來達成目的（例如：呼叫 API、自動整理檔案）。</li>
+								<li>因此，Agent 底層必須依賴 <strong class="highlight-neon">程式碼模型</strong>，才能正確產出可執行的命令。</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-map-signs"></i>4. 模型選擇指南</h3>
+						<table>
+							<thead>
+								<tr>
+									<th style="color:white; padding:10px;">任務類型</th>
+									<th style="color:white; padding:10px;">應該選擇哪種模型？</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="color:#ff79c6; padding:10px;">寫文案、改作文、翻譯</td>
+									<td style="padding:10px;">GPT / Claude 3 (對話模型)</td>
+								</tr>
+								<tr>
+									<td style="color:#ff79c6; padding:10px;">讀取大檔找重點</td>
+									<td style="padding:10px;">Gemini 1.5 Pro (長文本模型)</td>
+								</tr>
+								<tr>
+									<td style="color:#ff79c6; padding:10px;">寫腳本、自動化任務、架網頁</td>
+									<td style="padding:10px;">Codex / Claude 3.5 Sonnet / OpenCode</td>
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px; text-align:center;">
+							<a href="index.html" style="color:white; border: 1px solid white; padding: 5px 15px; border-radius: 15px; text-decoration: none; font-size:0.8em;">🔙 返回首頁</a>
+						</div>
+					</div>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				plugins: [ RevealNotes ],
+				transition: 'fade'
+			});
+		</script>
+	</body>
+</html>

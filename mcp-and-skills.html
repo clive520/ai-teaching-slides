@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>MCP 與 Skill：AI Agent 的核心</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/night.css">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+		<style>
+			.reveal h1, .reveal h2, .reveal h3 {
+				text-transform: none;
+				color: #42b983;
+			}
+			.reveal h2 { font-size: 2em; }
+			.reveal h3 { font-size: 1.5em; margin-bottom: 20px; }
+			.reveal p, .reveal li {
+				font-size: 0.95em;
+				line-height: 1.5;
+				margin-bottom: 12px;
+			}
+			.highlight-neon {
+				color: #ff79c6;
+				text-shadow: 0 0 5px #ff79c6;
+			}
+			.fa-solid {
+				margin-right: 15px;
+				color: #ff79c6;
+			}
+			.glass-panel {
+				background: rgba(0, 0, 0, 0.65);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				padding: 35px 45px;
+				border-radius: 20px;
+				border: 1px solid rgba(255, 255, 255, 0.1);
+				box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.glass-panel.center {
+				text-align: center;
+				align-items: center;
+			}
+			.slide-layout {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+				width: 100%;
+				gap: 30px;
+			}
+			.content-col { flex: 1; }
+			
+			/* Mermaid SVG customization */
+			.mermaid svg {
+				background-color: transparent !important;
+				max-width: 100%;
+			}
+			.mermaid .node rect, .mermaid .node circle, .mermaid .node polygon {
+				fill: rgba(0,0,0,0.5) !important;
+				stroke: #42b983 !important;
+				stroke-width: 2px !important;
+			}
+			.mermaid .node text {
+				fill: white !important;
+			}
+			.mermaid .edgePath path {
+				stroke: #ff79c6 !important;
+				stroke-width: 2px !important;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel center">
+						<h2><i class="fa-solid fa-plug"></i>MCP 與 Skill</h2>
+						<p>為 AI 大腦裝上「雙手」與「眼睛」</p>
+					</div>
+				</section>
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-brain"></i>1. AI 最大的限制：大腦在雲端</h3>
+							<ul>
+								<li>傳統的 ChatGPT 就像一個超級天才，但被關在一個沒有窗戶的房間（雲端伺服器）裡。</li>
+								<li>它**看不見**你電腦裡的 Excel 報表。</li>
+								<li>它**摸不到**你的硬碟，沒辦法幫你把檔案歸檔。</li>
+								<li>**解決方案**：給它接上一條「安全傳輸線」，這條線就叫 MCP！</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-network-wired"></i>2. 什麼是 MCP？</h3>
+							<p><strong>Model Context Protocol (模型上下文協議)</strong> 是一個標準化的連線規格。</p>
+							<ul>
+								<li>就像是 USB 插頭：以前每個 AI 系統都要自己寫外掛，現在有了 MCP，只要寫好一個工具（MCP Server），所有的 AI Agent 都可以「隨插即用」。</li>
+								<li>MCP 是連接「AI 大腦」與「你本地電腦資源」的關鍵橋樑。</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel">
+						<h3><i class="fa-solid fa-diagram-project"></i>3. MCP 架構圖解</h3>
+						<div class="mermaid" style="text-align: center; margin-top:20px;">
+							graph LR
+								AI["AI 大腦\n(Claude / GPT)"] <-->|標準化協議| MCP["MCP Client\n(你的編輯器)"]
+								MCP <-->|請求存取| S1["檔案系統 Server"]
+								MCP <-->|請求存取| S2["瀏覽器搜尋 Server"]
+								MCP <-->|請求存取| S3["資料庫 Server"]
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-toolbox"></i>4. 什麼是 Skill (技能)？</h3>
+							<ul>
+								<li>在 MCP 架構下，我們可以把一包程式碼包裝成一個 <strong>Skill</strong>。</li>
+								<li><span class="highlight-neon">例如：</span>一個叫「網頁爬蟲」的 Skill，它知道如何打開網頁並抓取文字。</li>
+								<li>當我們給 AI 下達任務時，AI 會先去自己的「工具箱」裡面翻找：「我有網頁爬蟲這個 Skill 嗎？有！那我就可以用它來完成任務。」</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel slide-layout">
+						<div class="content-col">
+							<h3><i class="fa-solid fa-shield-halved"></i>5. 安全機制：Human-in-the-loop</h3>
+							<ul>
+								<li>把電腦交給 AI 操作，萬一它把 C 槽格式化怎麼辦？</li>
+								<li><strong>授權機制</strong>：透過 MCP，AI 每執行一個重大 Skill (例如：刪除檔案、執行指令)，都必須在畫面上彈出一個確認框。</li>
+								<li><span class="highlight-neon">人類始終擁有最終決定權！</span>(這就是所謂的 Human-in-the-loop)</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section data-background-image="assets/images/agent_concept.jpg" data-background-opacity="1">
+					<div class="glass-panel center">
+						<h3>準備好讓 AI 接管滑鼠與鍵盤了嗎？</h3>
+						<div style="margin-top:30px;">
+							<a href="index.html" style="color:white; border: 1px solid white; padding: 10px 25px; border-radius: 15px; text-decoration: none; font-size:0.9em; background:#42b983; box-shadow: 0 4px 15px rgba(66, 185, 131, 0.4);"><i class="fa-solid fa-rocket"></i> 返回首頁，開始自動化實戰</a>
+						</div>
+					</div>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.js"></script>
+		<!-- 加入 Mermaid.js -->
+		<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+		<script>
+			mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+			Reveal.initialize({
+				hash: true,
+				plugins: [ RevealNotes ],
+				transition: 'slide'
+			});
+		</script>
+	</body>
+</html>
