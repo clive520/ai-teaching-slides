@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 自動化腳本生成器 - 辦公與檔案整理</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-primary: #3b82f6;
+            --accent-hover: #2563eb;
+            --accent-success: #10b981;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.15), transparent 25%);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 15px 30px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header h1 i { color: var(--accent-primary); }
+
+        .btn-home {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-home:hover { background: rgba(255, 255, 255, 0.2); }
+
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* 左側控制面板 */
+        .control-panel {
+            flex: 0 0 380px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        select, input[type="text"], textarea {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* 提供者設定區 */
+        .api-settings {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+        }
+
+        button.btn-primary {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button.btn-primary:hover { background: var(--accent-hover); }
+        button.btn-primary:disabled {
+            background: #475569;
+            cursor: not-allowed;
+        }
+
+        /* 右側程式碼輸出區 */
+        .output-panel {
+            flex: 1;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .output-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-action:hover { background: rgba(255, 255, 255, 0.2); }
+        .btn-action.success { background: var(--accent-success); color: white; }
+
+        .code-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        pre {
+            margin: 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* 滾動條美化 */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1><i class="fa-solid fa-wand-magic-sparkles"></i> AI 自動化腳本生成器</h1>
+        <a href="index.html" class="btn-home"><i class="fa-solid fa-house"></i> 返回首頁</a>
+    </div>
+
+    <div class="container">
+        <!-- 左側控制面板 -->
+        <div class="control-panel">
+            
+            <div>
+                <div class="section-title">1. 模型與金鑰設定</div>
+                <div class="api-settings form-group">
+                    <label for="providerSelect">選擇服務商</label>
+                    <select id="providerSelect" onchange="updateModelOptions()">
+                        <option value="gemini">Google Gemini</option>
+                        <option value="openai">OpenAI (需綁卡)</option>
+                        <option value="groq">Groq (極速)</option>
+                        <option value="nvidia">NVIDIA NIM</option>
+                        <option value="opencode">OpenCode (需授權)</option>
+                    </select>
+
+                    <label for="modelSelect">選擇模型</label>
+                    <select id="modelSelect"></select>
+
+                    <label for="apiKey">API Key (自動儲存於本機)</label>
+                    <input type="password" id="apiKey" placeholder="請輸入 API Key...">
+                </div>
+            </div>
+
+            <div>
+                <div class="section-title">2. 任務設定</div>
+                <div class="form-group">
+                    <label for="taskType">選擇預設自動化任務</label>
+                    <select id="taskType" onchange="updateTaskDetails()">
+                        <option value="sort_files">整理桌面/下載夾：依副檔名自動分類檔案</option>
+                        <option value="generate_excel">Excel 辦公：生成 100 筆測試用假資料 (含圖表)</option>
+                        <option value="word_to_pdf">Word 辦公：將資料夾內所有 Word 檔轉為 PDF</option>
+                        <option value="rename_files">檔案管理：批次重新命名檔案 (加入日期字首)</option>
+                        <option value="custom">自訂任務...</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="taskDetails">任務詳細描述與條件限制</label>
+                    <textarea id="taskDetails" placeholder="例如：請把桌面所有的 .jpg 和 .png 放進 '圖片' 資料夾..."></textarea>
+                </div>
+            </div>
+
+            <div>
+                <div class="section-title">3. 語言選擇</div>
+                <div class="form-group">
+                    <label for="langSelect">您希望產生哪種腳本？</label>
+                    <select id="langSelect">
+                        <option value="python">Python (.py) - 需要安裝 Python 環境，語法強大</option>
+                        <option value="powershell">PowerShell (.ps1) - Windows 內建，免安裝即可跑</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="generateBtn" onclick="generateScript()">
+                <i class="fa-solid fa-bolt"></i> 生成自動化腳本
+            </button>
+        </div>
+
+        <!-- 右側程式碼輸出區 -->
+        <div class="output-panel">
+            <div class="output-header">
+                <div style="font-weight: 600; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-code"></i> 產生的腳本
+                </div>
+                <div class="output-actions">
+                    <button class="btn-action" onclick="copyCode()" id="copyBtn">
+                        <i class="fa-regular fa-copy"></i> 複製代碼
+                    </button>
+                    <button class="btn-action" onclick="downloadCode()" id="downloadBtn">
+                        <i class="fa-solid fa-download"></i> 下載腳本
+                    </button>
+                </div>
+            </div>
+            
+            <div class="code-container">
+                <div class="loader" id="loader">
+                    <div class="spinner"></div>
+                    <div>AI 正在為您撰寫程式碼...</div>
+                </div>
+                <pre id="codeOutput" style="display:none;">// 點擊左側「生成自動化腳本」開始...</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化與模型選單 (與之前相同)
+        const models = {
+            gemini: ["gemini-1.5-flash", "gemini-1.5-pro"],
+            openai: ["gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"],
+            groq: ["llama3-70b-8192", "mixtral-8x7b-32768", "gemma2-9b-it"],
+            nvidia: ["meta/llama3-70b-instruct", "google/gemma-2-27b-it"],
+            opencode: ["opencode-34b-instruct"]
+        };
+
+        const taskTemplates = {
+            sort_files: "請寫一段腳本，掃描目前目錄下的所有檔案。將圖片檔 (.jpg, .png, .gif) 移入 'Images' 資料夾；文件檔 (.pdf, .docx, .txt) 移入 'Documents' 資料夾。如果資料夾不存在請自動建立。",
+            generate_excel: "請寫一段腳本，產生一份名為 'Sales_Report.xlsx' 的 Excel 檔案。裡面需要包含 100 筆隨機的訂單資料 (欄位：訂單編號, 日期, 客戶名稱, 產品類別, 金額)。",
+            word_to_pdf: "請寫一段腳本，尋找目前目錄及其子目錄下所有的 .docx 檔案，並自動將它們轉換/匯出為同名的 .pdf 檔案。",
+            rename_files: "請寫一段腳本，找出目前目錄下的所有 .mp4 與 .jpg 檔案，在它們的檔名前面加上今天的日期 (格式：YYYYMMDD_)。",
+            custom: "請輸入您想要的自動化任務..."
+        };
+
+        // DOM Elements
+        const providerSelect = document.getElementById('providerSelect');
+        const modelSelect = document.getElementById('modelSelect');
+        const apiKeyInput = document.getElementById('apiKey');
+        const taskType = document.getElementById('taskType');
+        const taskDetails = document.getElementById('taskDetails');
+        const langSelect = document.getElementById('langSelect');
+        const codeOutput = document.getElementById('codeOutput');
+        const loader = document.getElementById('loader');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+
+        // 當畫面載入時
+        window.addEventListener('DOMContentLoaded', () => {
+            providerSelect.value = localStorage.getItem('ta_provider') || 'gemini';
+            updateModelOptions();
+            modelSelect.value = localStorage.getItem('ta_model') || models[providerSelect.value][0];
+            apiKeyInput.value = localStorage.getItem('ta_apikey') || '';
+            updateTaskDetails();
+            codeOutput.style.display = 'block';
+        });
+
+        // 保存設定
+        apiKeyInput.addEventListener('input', () => localStorage.setItem('ta_apikey', apiKeyInput.value));
+        providerSelect.addEventListener('change', () => localStorage.setItem('ta_provider', providerSelect.value));
+        modelSelect.addEventListener('change', () => localStorage.setItem('ta_model', modelSelect.value));
+
+        function updateModelOptions() {
+            const provider = providerSelect.value;
+            modelSelect.innerHTML = '';
+            models[provider].forEach(model => {
+                const option = document.createElement('option');
+                option.value = model;
+                option.textContent = model;
+                modelSelect.appendChild(option);
+            });
+        }
+
+        function updateTaskDetails() {
+            taskDetails.value = taskTemplates[taskType.value];
+        }
+
+        // 清理 AI 輸出的 Markdown backticks
+        function cleanCodeBlock(text) {
+            let code = text.trim();
+            // 移除開頭的 ```python 或 ```powershell
+            code = code.replace(/^```[\w]*\n/, '');
+            // 移除結尾的 ```
+            code = code.replace(/```$/, '');
+            return code.trim();
+        }
+
+        // 呼叫 API
+        async function generateScript() {
+            const apiKey = apiKeyInput.value.trim();
+            if (!apiKey) {
+                alert("請先輸入 API Key！");
+                return;
+            }
+
+            const provider = providerSelect.value;
+            const model = modelSelect.value;
+            const task = taskDetails.value.trim();
+            const lang = langSelect.value;
+
+            if (!task) {
+                alert("請輸入任務描述！");
+                return;
+            }
+
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 生成中...';
+            codeOutput.style.display = 'none';
+            loader.style.display = 'flex';
+
+            const systemPrompt = `你是一個資深的系統自動化工程師。你的任務是根據使用者的需求，寫出可以直接執行的 ${lang === 'python' ? 'Python' : 'PowerShell'} 腳本。
+絕對嚴格規則：
+1. 你「只能」輸出純粹的程式碼，不要包含任何開場白、結語或 Markdown 的 \`\`\` 標記。
+2. 程式碼必須完整，包含必要的 import。
+3. 加上中文的註解解釋每一行在做什麼。
+4. 如果是 Python 且需要第三方套件(如 pandas/openpyxl)，請在程式碼最上方用註解寫出 \`# pip install ...\``;
+
+            let apiUrl = '';
+            let requestBody = {};
+            let headers = { 'Content-Type': 'application/json' };
+            const isGemini = provider === 'gemini';
+
+            if (isGemini) {
+                apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                requestBody = {
+                    system_instruction: { parts: { text: systemPrompt } },
+                    contents: [{ role: "user", parts: [{ text: task }] }],
+                    generationConfig: { temperature: 0.2 }
+                };
+            } else {
+                let baseUrl = '';
+                if(provider === 'openai') baseUrl = 'https://api.openai.com/v1/chat/completions';
+                else if(provider === 'groq') baseUrl = 'https://api.groq.com/openai/v1/chat/completions';
+                else if(provider === 'nvidia') baseUrl = 'https://integrate.api.nvidia.com/v1/chat/completions';
+                else if(provider === 'opencode') baseUrl = 'https://api.opencode.tw/v1/chat/completions';
+
+                apiUrl = `https://corsproxy.io/?${encodeURIComponent(baseUrl)}`;
+                headers['Authorization'] = `Bearer ${apiKey}`;
+                
+                requestBody = {
+                    model: model,
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: task }
+                    ],
+                    temperature: 0.2
+                };
+            }
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                    const err = await response.text();
+                    throw new Error(`API 請求失敗 (狀態碼: ${response.status})\n${err}`);
+                }
+
+                const data = await response.json();
+                let generatedText = "";
+                
+                if (isGemini) {
+                    generatedText = data.candidates[0].content.parts[0].text;
+                } else {
+                    generatedText = data.choices[0].message.content;
+                }
+
+                // 清洗回傳的內容
+                codeOutput.textContent = cleanCodeBlock(generatedText);
+
+            } catch (error) {
+                console.error(error);
+                codeOutput.textContent = `錯誤：\n${error.message}`;
+            } finally {
+                loader.style.display = 'none';
+                codeOutput.style.display = 'block';
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> 生成自動化腳本';
+                
+                // 重置複製按鈕
+                copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> 複製代碼';
+                copyBtn.classList.remove('success');
+            }
+        }
+
+        // 複製代碼
+        function copyCode() {
+            const code = codeOutput.textContent;
+            if(!code || code.includes("點擊左側")) return;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> 已複製';
+                copyBtn.classList.add('success');
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> 複製代碼';
+                    copyBtn.classList.remove('success');
+                }, 2000);
+            });
+        }
+
+        // 下載代碼
+        function downloadCode() {
+            const code = codeOutput.textContent;
+            if(!code || code.includes("點擊左側") || code.startsWith("錯誤")) {
+                alert("沒有可下載的程式碼！");
+                return;
+            }
+
+            const lang = langSelect.value;
+            const ext = lang === 'python' ? '.py' : '.ps1';
+            const filename = `automation_script${ext}`;
+
+            const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+    </script>
+</body>
+</html>
